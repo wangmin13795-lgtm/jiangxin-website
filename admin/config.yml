@@ -1,0 +1,107 @@
+# Decap CMS 配置（原 Netlify CMS）
+# 已改为 GitHub 登录（适用于 Cloudflare Pages / 任意托管）
+# 登录中转由仓库里的 functions/api/auth.js 提供
+backend:
+  name: github
+  repo: wangmin13795-lgdm/jiangxin-website   # 改成 你的GitHub用户名/仓库名
+  branch: main          # 若你的仓库默认分支是 master，请改成 master
+  base_url: https://jiangxin-website.pages.dev  # 改成你的 Cloudflare Pages 网址
+  auth_endpoint: api/auth
+
+# 上传的图片保存到仓库的 images/ 目录，网页中引用路径也是 images/xxx.jpg
+media_folder: "images"
+public_folder: "images"
+
+locale: en
+
+collections:
+  - name: "content"
+    label: "网站内容"
+    files:
+      - name: "site-content"
+        label: "全站内容（一处改完，整站更新）"
+        file: "content.json"
+        fields:
+          - name: company
+            label: "公司名称"
+            widget: object
+            fields:
+              - { name: name, label: "完整公司名", widget: string }
+              - { name: short, label: "简称（导航/页脚用）", widget: string }
+
+          - name: hero
+            label: "首页"
+            widget: object
+            fields:
+              - { name: eyebrow, label: "小标题", widget: string }
+              - { name: title1, label: "标题第一行", widget: string }
+              - { name: titleAccent, label: "标题高亮词", widget: string }
+              - { name: lead, label: "引导语", widget: text }
+              - { name: cta1, label: "按钮1文字", widget: string }
+              - { name: cta2, label: "按钮2文字", widget: string }
+              - name: trust
+                label: "信任背书（可增删）"
+                widget: list
+                field: { name: item, label: "条目", widget: string }
+
+          - name: about
+            label: "关于我们"
+            widget: object
+            fields:
+              - { name: eyebrow, label: "小标题", widget: string }
+              - { name: title, label: "标题", widget: string }
+              - name: paragraphs
+                label: "段落（可增删）"
+                widget: list
+                field: { name: text, label: "段落", widget: text }
+              - name: checklist
+                label: "要点清单（可增删）"
+                widget: list
+                field: { name: item, label: "要点", widget: string }
+              - name: stats
+                label: "数据卡片（可增删）"
+                widget: list
+                fields:
+                  - { name: value, label: "数值", widget: number }
+                  - { name: suffix, label: "单位/后缀", widget: string }
+                  - { name: label, label: "说明文字", widget: string }
+              - { name: image, label: "工厂图片（可选，留空则不显示）", widget: image }
+
+          - name: products
+            label: "产品"
+            widget: object
+            fields:
+              - { name: eyebrow, label: "小标题", widget: string }
+              - { name: title, label: "标题", widget: string }
+              - name: items
+                label: "产品列表（可增删/排序）"
+                widget: list
+                fields:
+                  - { name: title, label: "产品名", widget: string }
+                  - { name: description, label: "描述", widget: text }
+                  - { name: image, label: "产品图片", widget: image }
+
+          - name: why
+            label: "为什么选我们"
+            widget: object
+            fields:
+              - { name: eyebrow, label: "小标题", widget: string }
+              - { name: title, label: "标题", widget: string }
+              - name: items
+                label: "优势列表（可增删）"
+                widget: list
+                fields:
+                  - { name: num, label: "编号(如 01)", widget: string }
+                  - { name: title, label: "标题", widget: string }
+                  - { name: description, label: "描述", widget: text }
+
+          - name: contact
+            label: "联系方式"
+            widget: object
+            fields:
+              - { name: eyebrow, label: "小标题", widget: string }
+              - { name: title, label: "标题", widget: string }
+              - { name: lead, label: "引导语", widget: text }
+              - { name: email, label: "邮箱", widget: string }
+              - { name: phone, label: "电话 / WhatsApp", widget: string }
+              - { name: address, label: "地址", widget: string }
