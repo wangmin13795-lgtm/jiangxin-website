@@ -11,14 +11,15 @@ export async function onRequestGet({ request, env }) {
   const redirectUri = `${url.origin}/api/auth`;
 
   const code = url.searchParams.get('code');
-  const state = url.searchParams.get('state') || url.origin;
+  // 令牌必须送回 /admin/ 页面，Decap 才能接住它完成登录
+  const state = url.searchParams.get('state') || `${url.origin}/admin/`;
 
   // 第 1 步：还没有授权码，把浏览器导向 GitHub 授权页
   if (!code) {
     const gh =
       `https://github.com/login/oauth/authorize` +
       `?client_id=${clientId}` +
-      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)` +
       `&scope=repo` +
       `&state=${encodeURIComponent(state)}`;
     return Response.redirect(gh, 302);
