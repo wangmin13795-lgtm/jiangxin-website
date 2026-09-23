@@ -44,6 +44,18 @@ collections:
                 label: "信任背书（可增删）"
                 widget: list
                 field: { name: item, label: "条目", widget: string }
+              - { name: bgImage, label: "背景图片（可选，覆盖淡绿色背景）", widget: image, required: false }
+              - { name: bgVideo, label: "背景视频链接（可选，填 MP4 网址，优先于图片）", widget: string, required: false }
+              - name: images
+                label: "右侧图片（可插 2-3 张，可分别调尺寸/位置/旋转）"
+                widget: list
+                summary: "{{fields.src}}"
+                fields:
+                  - { name: src, label: "图片", widget: image, required: false }
+                  - { name: x, label: "水平位置 (0-100, 百分比)", widget: number, default: 50, required: false }
+                  - { name: y, label: "垂直位置 (0-100, 百分比)", widget: number, default: 50, required: false }
+                  - { name: width, label: "宽度 (px)", widget: number, default: 300, required: false }
+                  - { name: rotate, label: "旋转角度 (度, 可正可负)", widget: number, default: 0, required: false }
 
           - name: about
             label: "关于我们"
