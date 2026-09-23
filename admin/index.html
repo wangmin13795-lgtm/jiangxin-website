@@ -8,5 +8,23 @@
 <body>
   <!-- Decap CMS（原 Netlify CMS），自动读取同目录下的 config.yml -->
   <script src="https://unpkg.com/decap-cms@^3.3.3/dist/decap-cms.js"></script>
+  <!-- 在后台右下角注入“打开可视化编辑器”快捷按钮 -->
+  <script>
+    (function () {
+      function addBtn() {
+        if (document.getElementById('open-editor-btn')) return;
+        var b = document.createElement('a');
+        b.id = 'open-editor-btn';
+        b.textContent = '🎨 打开可视化编辑器';
+        b.href = window.location.origin + '/hero-editor.html';
+        b.target = '_blank';
+        b.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:99999;background:#155e63;color:#fff;padding:11px 16px;border-radius:10px;font:14px/1.2 -apple-system,Segoe UI,Roboto,sans-serif;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.25)';
+        document.body.appendChild(b);
+      }
+      window.addEventListener('load', function () { setTimeout(addBtn, 800); });
+      var t = setInterval(addBtn, 1000);
+      setTimeout(function () { clearInterval(t); }, 12000);
+    })();
+  </script>
 </body>
 </html>
