@@ -164,8 +164,11 @@ function render(c) {
       <span class="num" data-target="${esc(s.value)}">0</span><span class="suffix">${esc(s.suffix)}</span>
       <p>${esc(s.label)}</p>
     </div>`).join("");
+  const isVideo = src => /\.(mp4|webm|ogg|mov)(\?|$)/i.test(src || '');
   const aboutImg = c.about.image
-    ? `<img src="${esc(c.about.image)}" alt="Our factory" style="width:100%;border-radius:14px;margin-top:18px;" />`
+    ? (isVideo(c.about.image)
+        ? `<video src="${esc(c.about.image)}" autoplay muted loop playsinline style="width:100%;border-radius:14px;margin-top:18px;display:block;"></video>`
+        : `<img src="${esc(c.about.image)}" alt="Our factory" style="width:100%;border-radius:14px;margin-top:18px;" />`)
     : "";
   html += `
   <section class="section" id="about">
