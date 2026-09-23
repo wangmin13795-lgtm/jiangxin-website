@@ -204,3 +204,42 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
 /* 入场动画 */
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
 .reveal.show { opacity: 1; transform: none; }
+
+/* ===================== 生产流程 ===================== */
+.process-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.step { display: flex; gap: 16px; padding: 22px; border-radius: var(--radius); background: #fff; border: 1px solid #eef1f2; box-shadow: var(--shadow); }
+.step-num { flex: 0 0 auto; width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; background: var(--teal); color: #fff; font-weight: 800; font-size: 18px; }
+.step-body h3 { font-size: 17px; margin-bottom: 6px; }
+.step-body p { color: var(--muted); font-size: 14.5px; }
+
+/* ===================== 公司场景卡片 ===================== */
+.life-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.life-card { display: block; border-radius: var(--radius); overflow: hidden; background: #fff; box-shadow: var(--shadow); transition: transform .2s; }
+.life-card:hover { transform: translateY(-6px); }
+.life-cover { height: 180px; }
+.life-meta { padding: 18px 20px 22px; }
+.life-meta h3 { font-size: 18px; margin-bottom: 6px; }
+.life-meta p { color: var(--muted); font-size: 14px; margin-bottom: 12px; }
+.life-cta { color: var(--teal); font-weight: 700; font-size: 14px; }
+
+/* ===================== 画廊二级页 ===================== */
+.back-link { display: inline-block; color: var(--teal); font-weight: 600; margin-bottom: 6px; }
+.g-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.g-item { margin: 0; cursor: pointer; }
+.g-thumb { height: 220px; border-radius: var(--radius); box-shadow: var(--shadow); transition: transform .2s; }
+.g-item:hover .g-thumb { transform: translateY(-4px); }
+.g-item figcaption { margin-top: 10px; color: var(--muted); font-size: 14px; text-align: center; }
+
+/* lightbox */
+#lightbox { position: fixed; inset: 0; background: rgba(12,43,46,.92); display: none; align-items: center; justify-content: center; flex-direction: column; z-index: 200; padding: 24px; }
+#lightbox.open { display: flex; }
+.lb-img { width: min(90vw, 900px); height: min(80vh, 640px); background-size: contain; background-repeat: no-repeat; background-position: center; border-radius: 8px; display: grid; place-items: center; color: #cfe0e0; }
+.lb-cap { color: #cfe0e0; margin-top: 14px; font-size: 15px; }
+.lb-close { position: absolute; top: 18px; right: 22px; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(255,255,255,.15); color: #fff; font-size: 26px; cursor: pointer; }
+
+@media (max-width: 900px) {
+  .process-steps, .life-cards, .g-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .process-steps, .life-cards, .g-grid { grid-template-columns: 1fr; }
+}
