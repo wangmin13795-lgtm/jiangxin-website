@@ -124,13 +124,12 @@ const y = document.getElementById('year');
 if (y) y.textContent = new Date().getFullYear();
 
 // Logo 图片（后台可上传，留空显示默认 JX）
+// 尺寸由 styles.css 中 .logo-mark.has-img 控制，固定为原 JX 方块大小
 function applyLogo(logo) {
   if (!logo) return;
   document.querySelectorAll('.logo-mark').forEach(el => {
-    el.style.background = 'transparent';
-    el.style.width = 'auto';
-    el.style.height = '42px';
-    el.innerHTML = '<img src="' + esc(logo) + '" alt="logo" style="height:100%;width:auto;object-fit:contain;display:block;" />';
+    el.classList.add('has-img');
+    el.innerHTML = '<img src="' + esc(logo) + '" alt="logo" />';
   });
 }
 
