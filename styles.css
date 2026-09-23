@@ -76,7 +76,11 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
   display: grid; place-items: center;
   width: 38px; height: 38px; border-radius: 9px;
   background: var(--teal); color: #fff; font-size: 16px; letter-spacing: 1px;
+  overflow: hidden; flex: none;
 }
+/* 上传了自定义 logo：固定为原 JX 方块大小，图片等比缩放居中，绝不会被撑大 */
+.logo-mark.has-img { background: transparent; }
+.logo-mark.has-img img { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: 8px; }
 .logo-text { font-size: 16px; color: var(--ink); }
 .nav-links { display: flex; align-items: center; gap: 26px; }
 .nav-links a { font-weight: 500; color: var(--ink); transition: color .2s; }
