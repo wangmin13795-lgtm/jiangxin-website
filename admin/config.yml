@@ -3,7 +3,7 @@
 # 登录中转由仓库里的 functions/api/auth.js 提供
 backend:
   name: github
-  repo: wangmin13795-lgtm/jiangxin-website   # 改成 你的GitHub用户名/仓库名
+  repo: wangmin13795-lgtm/jiangxin-website   # 你的GitHub用户名/仓库名
   branch: main          # 若你的仓库默认分支是 master，请改成 master
   base_url: https://jiangxin-website.pages.dev  # 改成你的 Cloudflare Pages 网址
   auth_endpoint: api/auth
@@ -105,3 +105,39 @@ collections:
               - { name: email, label: "邮箱", widget: string }
               - { name: phone, label: "电话 / WhatsApp", widget: string }
               - { name: address, label: "地址", widget: string }
+
+          - name: process
+            label: "生产流程（首页展示）"
+            widget: object
+            fields:
+              - { name: eyebrow, label: "小标题", widget: string }
+              - { name: title, label: "标题", widget: string }
+              - name: steps
+                label: "流程步骤（可增删/排序）"
+                widget: list
+                fields:
+                  - { name: num, label: "编号(如 01)", widget: string }
+                  - { name: title, label: "标题", widget: string }
+                  - { name: desc, label: "描述", widget: text }
+
+          - name: galleries
+            label: "公司场景图库（首页卡片 + 二级页）"
+            widget: object
+            fields:
+              - { name: eyebrow, label: "小标题", widget: string }
+              - { name: title, label: "标题", widget: string }
+              - { name: intro, label: "引导语", widget: text }
+              - name: categories
+                label: "相册分类（可增删/排序）"
+                widget: list
+                fields:
+                  - { name: slug, label: "英文标识(如 team-building，勿含空格)", widget: string }
+                  - { name: title, label: "分类名", widget: string }
+                  - { name: subtitle, label: "副标题", widget: string }
+                  - { name: cover, label: "封面图", widget: image }
+                  - name: images
+                    label: "图片（可增删，每张可写说明）"
+                    widget: list
+                    fields:
+                      - { name: src, label: "图片", widget: image }
+                      - { name: caption, label: "图片说明", widget: string }
