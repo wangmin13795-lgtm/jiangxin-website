@@ -3,7 +3,7 @@
 # 登录中转由仓库里的 functions/api/auth.js 提供
 backend:
   name: github
-  repo: wangmin13795-lgdm/jiangxin-website   # 改成 你的GitHub用户名/仓库名
+  repo: wangmin13795-lgtm/jiangxin-website   # 改成 你的GitHub用户名/仓库名
   branch: main          # 若你的仓库默认分支是 master，请改成 master
   base_url: https://jiangxin-website.pages.dev  # 改成你的 Cloudflare Pages 网址
   auth_endpoint: api/auth
