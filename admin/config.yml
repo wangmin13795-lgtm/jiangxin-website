@@ -28,6 +28,7 @@ collections:
             fields:
               - { name: name, label: "完整公司名", widget: string }
               - { name: short, label: "简称（导航/页脚用）", widget: string }
+              - { name: logo, label: "Logo 图片（可选，留空显示默认 JX 方块）", widget: image }
 
           - name: hero
             label: "首页"
