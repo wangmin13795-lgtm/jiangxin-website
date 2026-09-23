@@ -136,5 +136,39 @@ function applyLogo(logo) {
 // 加载数据：优先 content.json，失败用内置默认
 fetch('content.json', { cache: 'no-cache' })
   .then(r => r.ok ? r.json() : Promise.reject())
-  .then(c => { applyLogo(c.company && c.company.logo); renderGallery(c.galleries); })
+  .then(c => { applyLogo(c.company && c.company.logo); renderGallery(c.galleries); setupMusic(c); })
   .catch(() => renderGallery(DEFAULT_GALLERIES));
+
+// 背景音乐：后台填了音频路径才会出现；右下角按钮可随时开关
+function setupMusic(c) {
+  const src = c.music;
+  if (!src) return;
+  if (document.getElementById('bgm')) return;
+
+  const audio = document.createElement('audio');
+  audio.id = 'bgm';
+  audio.src = esc(src);
+  audio.loop = true;
+  audio.preload = 'auto';
+  audio.volume = 0.4;
+  document.body.appendChild(audio);
+
+  const btn = document.createElement('button');
+  btn.id = 'musicToggle';
+  btn.type = 'button';
+  btn.className = 'music-toggle';
+  btn.setAttribute('aria-label', '背景音乐 开/关');
+  btn.innerHTML = '<span class="mt-ico">♪</span><span class="mt-off">✕</span>';
+  document.body.appendChild(btn);
+
+  btn.addEventListener('click', () => {
+    if (audio.paused) audio.play().catch(() => {});
+    else audio.pause();
+  });
+  audio.addEventListener('play', () => btn.classList.add('on'));
+  audio.addEventListener('pause', () => btn.classList.remove('on'));
+
+  const tryAuto = () => audio.play().catch(() => {});
+  window.addEventListener('pointerdown', tryAuto, { once: true });
+  window.addEventListener('keydown', tryAuto, { once: true });
+}
