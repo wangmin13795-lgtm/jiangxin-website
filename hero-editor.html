@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hero 可视化编辑器（本地工具）</title>
+<style>
+  :root{ --teal:#155e63; --kraft:#c9873c; --ink:#102a33; --muted:#5b6b72; --line:#e3e9ea; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif; color:var(--ink); background:#f4f6f7; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:24px 20px 60px; }
+  h1{ font-size:22px; margin:0 0 4px; }
+  .sub{ color:var(--muted); font-size:13px; margin-bottom:18px; }
+  .panel{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:18px; }
+  .panel h2{ font-size:15px; margin:0 0 12px; display:flex; align-items:center; gap:8px; }
+  .row{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+  .row + .row{ margin-top:10px; }
+  label{ font-size:13px; color:var(--muted); }
+  button{ cursor:pointer; border:1px solid var(--teal); background:var(--teal); color:#fff; padding:8px 14px; border-radius:9px; font-size:13px; }
+  button.ghost{ background:#fff; color:var(--teal); }
+  button.danger{ border-color:#d9534f; background:#fff; color:#d9534f; }
+  input[type=text]{ padding:8px 10px; border:1px solid var(--line); border-radius:9px; font-size:13px; min-width:220px; }
+  .hint{ font-size:12px; color:var(--muted); margin-top:6px; }
+  /* 舞台 */
+  #stage{ position:relative; width:100%; height:520px; border-radius:16px; overflow:hidden;
+          background:linear-gradient(135deg,#eef6f6 0%,#fbf6ee 100%); box-shadow:inset 0 0 0 1px var(--line); }
+  #stage .bgmedia{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  #stage .bgmask{ position:absolute; inset:0; background:linear-gradient(135deg,rgba(238,246,246,.78),rgba(251,246,238,.82)); }
+  .node{ position:absolute; transform-origin:center; cursor:grab; border-radius:14px; user-select:none; }
+  .node img{ width:100%; height:100%; object-fit:cover; border-radius:14px; box-shadow:0 12px 30px rgba(16,42,51,.18); display:block; pointer-events:none; }
+  .node.selected{ outline:2px solid var(--teal); outline-offset:2px; }
+  .node .rh{ position:absolute; top:-26px; left:50%; transform:translateX(-50%); width:14px; height:14px; border-radius:50%; background:var(--teal); cursor:grab; }
+  .node .rs{ position:absolute; right:-7px; bottom:-7px; width:16px; height:16px; border-radius:4px; background:#fff; border:2px solid var(--teal); cursor:nwse-resize; }
+  .node .tag{ position:absolute; top:-22px; left:0; font-size:11px; background:var(--teal); color:#fff; padding:1px 6px; border-radius:6px; white-space:nowrap; }
+  .ctrl{ margin-top:14px; display:flex; flex-direction:column; gap:8px; }
+  .ctrl .citem{ display:flex; align-items:center; gap:10px; font-size:13px; background:#f8fafb; border:1px solid var(--line); border-radius:10px; padding:8px 10px; }
+  .ctrl .citem input[type=number]{ width:80px; padding:6px 8px; border:1px solid var(--line); border-radius:8px; }
+  .ctrl .citem .grow{ flex:1; }
+  textarea{ width:100%; min-height:160px; border:1px solid var(--line); border-radius:10px; padding:12px; font-size:12px; font-family:ui-monospace,Menlo,Consolas,monospace; }
+  .step{ font-size:13px; line-height:1.7; color:var(--ink); }
+  .step code{ background:#eef3f4; padding:1px 6px; border-radius:6px; font-size:12px; }
+  .ok{ color:var(--teal); font-weight:600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Hero 可视化编辑器</h1>
+  <div class="sub">本地工具：双击打开即可用。拖动图片、拉右下角缩放、拖顶部圆点旋转，把喜欢的布局导出后填回后台即可。不影响线上网站，可反复试。</div>
+
+  <div class="panel">
+    <h2>① 背景设置</h2>
+    <div class="row">
+      <label>背景图片（可选）：</label>
+      <input type="file" id="bgFile" accept="image/*" />
+      <input type="text" id="bgImage" placeholder="或填已上传图片的路径，如 images/hero-bg.jpg" />
+    </div>
+    <div class="row">
+      <label>背景视频链接（可选，填 .mp4 直链）：</label>
+      <input type="text" id="bgVideo" placeholder="https://.../bg.mp4（优先于背景图片）" />
+    </div>
+    <div class="hint">图片/视频只是预览。最终要在网站后台或图床里把文件上传到 <code>images/</code> 文件夹，路径一致才会显示。</div>
+  </div>
+
+  <div class="panel">
+    <h2>② 添加右侧图片（可加 2–3 张）</h2>
+    <div class="row">
+      <input type="file" id="imgFiles" accept="image/*" multiple />
+      <button class="ghost" id="addSample">放一张示例图（便于先看效果）</button>
+    </div>
+    <div class="hint">选图后会出现在下方舞台里，直接拖到想要的位置。</div>
+  </div>
+
+  <div class="panel">
+    <h2>③ 可视化拖拽舞台</h2>
+    <div id="stage">
+      <div class="bgmask" id="bgMask"></div>
+    </div>
+    <div class="ctrl" id="ctrl"></div>
+  </div>
+
+  <div class="panel">
+    <h2>④ 导出</h2>
+    <div class="row">
+      <button id="exportBtn">生成配置</button>
+      <button class="ghost" id="copyBtn">复制配置</button>
+      <button class="ghost" id="importBtn">导入 content.json（可选）</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" />
+      <button class="danger" id="resetBtn">清空</button>
+    </div>
+    <div class="hint" id="status"></div>
+    <textarea id="out" placeholder="点“生成配置”后这里会出现可以直接填回后台的数值和 JSON"></textarea>
+  </div>
+
+  <div class="panel">
+    <h2>⑤ 怎么用导出的内容（两种办法）</h2>
+    <div class="step">
+      <p><b>办法 A（推荐，用后台 Decap CMS）：</b></p>
+      <ol>
+        <li>先把第 ① 步、第 ② 步用到的图片/视频文件，通过网站后台「<b>Media</b>」或 GitHub 上传到 <code>images/</code> 文件夹（文件名要和导出里的路径一致）。</li>
+        <li>打开 <code>你的网址/admin/</code> → 全站内容 → 「首页」区块。</li>
+        <li>把<b>背景图片</b>、<b>背景视频链接</b>填进去；点「右侧图片 → Add」逐个添加，把每列对应的 <b>水平位置/垂直位置/宽度/旋转</b> 数字填进去（src 选那张图）。</li>
+        <li>右上角 <b>Publish</b> → 约 1 分钟后网站更新。</li>
+      </ol>
+      <p><b>办法 B（直接改文件）：</b>如果你愿意改 <code>content.json</code>，把导出结果里的 <code>images</code> 数组和 <code>bgImage / bgVideo</code> 整段替换到对应位置，上传即可。</p>
+      <p class="ok">提示：导出的「水平/垂直位置」是百分比，已按舞台自动换算，所以你在编辑器里看到的位置比例，到网站上基本一致。</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const stage = document.getElementById('stage');
+const bgMask = document.getElementById('bgMask');
+const ctrl = document.getElementById('ctrl');
+const out = document.getElementById('out');
+const statusEl = document.getElementById('status');
+
+let nodes = [];   // {id, src, name, x, y, width, rotate, el, imgEl}
+let seq = 0;
+let dnd = null;   // 拖拽状态
+
+const bgImageInput = document.getElementById('bgImage');
+const bgVideoInput = document.getElementById('bgVideo');
+
+/* ---------- 背景预览 ---------- */
+function refreshBg(){
+  // 移除旧 bg media
+  stage.querySelectorAll('.bgmedia').forEach(e=>e.remove());
+  const vid = bgVideoInput.value.trim();
+  const img = bgImageInput.value.trim();
+  if(vid){
+    const v=document.createElement('video');
+    v.className='bgmedia'; v.src=vid; v.autoplay=true; v.muted=true; v.loop=true; v.playsInline=true;
+    stage.insertBefore(v, bgMask);
+    bgMask.style.display='block';
+  } else if(img){
+    const i=document.createElement('img');
+    i.className='bgmedia'; i.src=img;
+    stage.insertBefore(i, bgMask);
+    bgMask.style.display='block';
+  } else {
+    bgMask.style.display='block';
+  }
+}
+bgImageInput.addEventListener('input', refreshBg);
+bgVideoInput.addEventListener('input', refreshBg);
+
+document.getElementById('bgFile').addEventListener('change', e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const url=URL.createObjectURL(f);
+  bgImageInput.value='images/'+f.name.replace(/\s+/g,'-');
+  refreshBg();
+  // 同时把预览设为 objectURL 方便先看效果
+  stage.querySelectorAll('.bgmedia').forEach(el=>{ if(el.tagName==='IMG') el.src=url; });
+});
+
+/* ---------- 添加图片 ---------- */
+document.getElementById('imgFiles').addEventListener('change', e=>{
+  [...e.target.files].forEach(f=> addNode('images/'+f.name.replace(/\s+/g,'-'), f.name, URL.createObjectURL(f)));
+  e.target.value='';
+});
+
+document.getElementById('addSample').addEventListener('click', ()=>{
+  addNode('images/sample.jpg','sample.jpg','data:image/svg+xml;utf8,'+encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="400" height="300" fill="#c9873c"/><text x="200" y="160" font-size="34" fill="#fff" text-anchor="middle" font-family="sans-serif">示例图</text></svg>'
+  ));
+});
+
+function addNode(src, name, previewUrl){
+  const id='n'+(++seq);
+  const el=document.createElement('div');
+  el.className='node';
+  el.innerHTML = `<div class="tag">${name}</div>
+    <div class="rh" title="拖动旋转"></div>
+    <img src="${previewUrl||src}" alt="">
+    <div class="rs" title="拖动缩放"></div>`;
+  // 初始位置：居中错开
+  const x = 30 + (nodes.length%3)*20;
+  const y = 25 + (nodes.length%2)*20;
+  const data={ id, src, name, x, y, width:240, rotate:0, el, imgEl:el.querySelector('img') };
+  el.style.left=x+'%'; el.style.top=y+'%'; el.style.width=data.width+'px';
+  el.style.transform=`rotate(0deg)`;
+  stage.appendChild(el);
+  nodes.push(data);
+  bindNode(data);
+  selectNode(data);
+  renderCtrl();
+}
+
+/* ---------- 选中与控件 ---------- */
+function selectNode(d){ nodes.forEach(n=>n.el.classList.toggle('selected', n===d)); }
+stage.addEventListener('pointerdown', e=>{
+  const n = e.target.closest('.node'); if(n){ const d=nodes.find(x=>x.el===n); if(d) selectNode(d); }
+});
+
+function bindNode(d){
+  const el=d.el;
+  const img=el.querySelector('img');
+  const rh=el.querySelector('.rh');
+  const rs=el.querySelector('.rs');
+
+  // 移动
+  el.addEventListener('pointerdown', e=>{
+    if(e.target===rh||e.target===rs) return;
+    e.preventDefault();
+    const r=stage.getBoundingClientRect();
+    const ex=e.clientX, ey=e.clientY;
+    const startLeft=parseFloat(el.style.left), startTop=parseFloat(el.style.top);
+    dnd={type:'move', r, ex, ey, startLeft, startTop};
+    el.setPointerCapture(e.pointerId);
+  });
+  // 旋转手柄
+  rh.addEventListener('pointerdown', e=>{
+    e.preventDefault(); e.stopPropagation();
+    dnd={type:'rot', el};
+    rh.setPointerCapture(e.pointerId);
+  });
+  // 缩放手柄
+  rs.addEventListener('pointerdown', e=>{
+    e.preventDefault(); e.stopPropagation();
+    dnd={type:'resize', el};
+    rs.setPointerCapture(e.pointerId);
+  });
+
+  el.addEventListener('pointermove', e=>{
+    if(!dnd) return;
+    const r=stage.getBoundingClientRect();
+    if(dnd.type==='move'){
+      let nx=dnd.startLeft + (e.clientX-dnd.ex)/r.width*100;
+      let ny=dnd.startTop + (e.clientY-dnd.ey)/r.height*100;
+      nx=Math.max(-15,Math.min(115,nx)); ny=Math.max(-15,Math.min(115,ny));
+      el.style.left=nx+'%'; el.style.top=ny+'%';
+      d.x=nx; d.y=ny;
+    } else if(dnd.type==='rot'){
+      const c=el.getBoundingClientRect();
+      const cx=c.left+c.width/2, cy=c.top+c.height/2;
+      let ang=Math.atan2(e.clientY-cy, e.clientX-cx)*180/Math.PI+90;
+      el.style.transform=`rotate(${ang}deg)`; d.rotate=Math.round(ang);
+      syncCtrl(d);
+    } else if(dnd.type==='resize'){
+      const c=el.getBoundingClientRect();
+      let w=Math.max(60, e.clientX-c.left);
+      el.style.width=w+'px'; d.width=Math.round(w);
+      syncCtrl(d);
+    }
+  });
+  const end=()=>{ dnd=null; renderCtrl(); };
+  el.addEventListener('pointerup', end);
+  el.addEventListener('pointercancel', end);
+}
+
+function renderCtrl(){
+  ctrl.innerHTML='';
+  if(!nodes.length){ ctrl.innerHTML='<div class="hint">还没有图片，点上面“添加右侧图片”或“放一张示例图”。</div>'; return; }
+  nodes.forEach((d,i)=>{
+    const div=document.createElement('div');
+    div.className='citem';
+    div.innerHTML=`<span class="grow">图 ${i+1}：<b>${d.name}</b></span>
+      <label>位置X<input type="number" data-k="x" value="${Math.round(d.x)}"></label>
+      <label>Y<input type="number" data-k="y" value="${Math.round(d.y)}"></label>
+      <label>宽<input type="number" data-k="width" value="${d.width}"></label>
+      <label>旋<input type="number" data-k="rotate" value="${d.rotate}"></label>
+      <button class="danger" data-del>删</button>`;
+    div.querySelectorAll('input').forEach(inp=>{
+      inp.addEventListener('input', ()=>{
+        const k=inp.dataset.k, v=parseFloat(inp.value)||0;
+        d[k]=v;
+        if(k==='x') d.el.style.left=v+'%';
+        if(k==='y') d.el.style.top=v+'%';
+        if(k==='width') d.el.style.width=v+'px';
+        if(k==='rotate') d.el.style.transform=`rotate(${v}deg)`;
+      });
+    });
+    div.querySelector('[data-del]').addEventListener('click', ()=>{
+      d.el.remove(); nodes=nodes.filter(n=>n!==d); renderCtrl();
+    });
+    ctrl.appendChild(div);
+  });
+}
+function syncCtrl(d){
+  const items=ctrl.querySelectorAll('.citem');
+  const i=nodes.indexOf(d);
+  if(i<0) return;
+  const item=items[i]; if(!item) return;
+  item.querySelector('[data-k="rotate"]').value=Math.round(d.rotate);
+  item.querySelector('[data-k="width"]').value=d.width;
+}
+
+/* ---------- 导出 ---------- */
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  const images = nodes.map(d=>({
+    src:d.src, x:Math.round(d.x), y:Math.round(d.y), width:d.width, rotate:d.rotate
+  }));
+  const result = {
+    bgImage: bgImageInput.value.trim(),
+    bgVideo: bgVideoInput.value.trim(),
+    images
+  };
+  out.value = JSON.stringify(result, null, 2)
+    + '\n\n/* 也可以直接把上面 images 数组复制到 content.json 的 hero.images，\n   并把 bgImage / bgVideo 填到对应位置 */';
+  statusEl.textContent='已生成。可点“复制配置”，再按第⑤步填回后台。';
+  statusEl.className='hint ok';
+});
+
+document.getElementById('copyBtn').addEventListener('click', ()=>{
+  if(!out.value){ statusEl.textContent='请先点“生成配置”。'; return; }
+  navigator.clipboard.writeText(out.value).then(()=>{
+    statusEl.textContent='已复制到剪贴板。'; statusEl.className='hint ok';
+  }).catch(()=>{ out.select(); document.execCommand('copy'); statusEl.textContent='已复制（选中状态）。'; });
+});
+
+/* ---------- 导入已有 content.json ---------- */
+document.getElementById('importBtn').addEventListener('click', ()=> document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change', e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const data=JSON.parse(rd.result);
+      const h=data.hero||{};
+      bgImageInput.value=h.bgImage||''; bgVideoInput.value=h.bgVideo||'';
+      refreshBg();
+      // 清空现有节点
+      nodes.forEach(n=>n.el.remove()); nodes=[];
+      (h.images||[]).forEach(im=>{
+        if(im&&im.src){
+          const d=addNodeRaw(im.src, im.src.split('/').pop(), parseFloat(im.x), parseFloat(im.y), parseFloat(im.width)||240, parseFloat(im.rotate)||0);
+        }
+      });
+      statusEl.textContent='已导入现有 hero 配置，可继续微调后重新导出。'; statusEl.className='hint ok';
+    }catch(err){ statusEl.textContent='解析失败：'+err.message; }
+  };
+  rd.readAsText(f);
+  e.target.value='';
+});
+function addNodeRaw(src,name,x,y,width,rotate){
+  const id='n'+(++seq);
+  const el=document.createElement('div'); el.className='node';
+  el.innerHTML=`<div class="tag">${name}</div><div class="rh"></div><img src="${src}" alt=""><div class="rs"></div>`;
+  const data={id,src,name,x:x||50,y:y||50,width:width||240,rotate:rotate||0,el,imgEl:el.querySelector('img')};
+  el.style.left=data.x+'%'; el.style.top=data.y+'%'; el.style.width=data.width+'px'; el.style.transform=`rotate(${data.rotate}deg)`;
+  stage.appendChild(el); nodes.push(data); bindNode(data); renderCtrl(); return data;
+}
+
+/* ---------- 清空 ---------- */
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  nodes.forEach(n=>n.el.remove()); nodes=[]; renderCtrl();
+  bgImageInput.value=''; bgVideoInput.value=''; refreshBg(); out.value=''; statusEl.textContent='';
+});
+
+renderCtrl();
+refreshBg();
+</script>
+</body>
+</html>
