@@ -25,7 +25,7 @@
   #stage{ position:relative; width:100%; height:520px; border-radius:16px; overflow:hidden;
           background:linear-gradient(135deg,#eef6f6 0%,#fbf6ee 100%); box-shadow:inset 0 0 0 1px var(--line); }
   #stage .bgmedia{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-  #stage .bgmask{ position:absolute; inset:0; background:linear-gradient(135deg,rgba(238,246,246,.78),rgba(251,246,238,.82)); }
+  #stage .bgmask{ position:absolute; inset:0; background:linear-gradient(135deg,#eef6f6 0%,#fbf6ee 100%); opacity:.8; }
   .node{ position:absolute; transform-origin:center; cursor:grab; border-radius:14px; user-select:none; }
   .node img{ width:100%; height:100%; object-fit:cover; border-radius:14px; box-shadow:0 12px 30px rgba(16,42,51,.18); display:block; pointer-events:none; }
   .node.selected{ outline:2px solid var(--teal); outline-offset:2px; }
@@ -58,11 +58,15 @@
       <label>背景视频链接（可选，填 .mp4 直链）：</label>
       <input type="text" id="bgVideo" placeholder="https://.../bg.mp4（优先于背景图片）" />
     </div>
+    <div class="row">
+      <label>遮罩强度：<input type="range" id="maskRange" min="0" max="100" value="80" style="vertical-align:middle;" /> <b id="maskVal">80</b>%</label>
+      <span class="hint" style="margin-top:0;">0=背景最清晰（文字可能不好读），100=遮罩最重（文字最清楚）</span>
+    </div>
     <div class="hint">图片/视频只是预览。最终要在网站后台或图床里把文件上传到 <code>images/</code> 文件夹，路径一致才会显示。</div>
   </div>
 
   <div class="panel">
-    <h2>② 添加右侧图片（可加 2–3 张）</h2>
+    <h2>② 添加自由图片（可加 2–3 张，整个首屏随意摆放）</h2>
     <div class="row">
       <input type="file" id="imgFiles" accept="image/*" multiple />
       <button class="ghost" id="addSample">放一张示例图（便于先看效果）</button>
@@ -98,7 +102,7 @@
       <ol>
         <li>先把第 ① 步、第 ② 步用到的图片/视频文件，通过网站后台「<b>Media</b>」或 GitHub 上传到 <code>images/</code> 文件夹（文件名要和导出里的路径一致）。</li>
         <li>打开 <code>你的网址/admin/</code> → 全站内容 → 「首页」区块。</li>
-        <li>把<b>背景图片</b>、<b>背景视频链接</b>填进去；点「右侧图片 → Add」逐个添加，把每列对应的 <b>水平位置/垂直位置/宽度/旋转</b> 数字填进去（src 选那张图）。</li>
+        <li>把<b>背景图片</b>、<b>背景视频链接</b>、<b>遮罩强度</b>填进去；点「自由图片 → Add」逐个添加，把每列对应的 <b>水平位置/垂直位置/宽度/旋转</b> 数字填进去（src 选那张图）。</li>
         <li>右上角 <b>Publish</b> → 约 1 分钟后网站更新。</li>
       </ol>
       <p><b>办法 B（直接改文件）：</b>如果你愿意改 <code>content.json</code>，把导出结果里的 <code>images</code> 数组和 <code>bgImage / bgVideo</code> 整段替换到对应位置，上传即可。</p>
@@ -120,6 +124,12 @@ let dnd = null;   // 拖拽状态
 
 const bgImageInput = document.getElementById('bgImage');
 const bgVideoInput = document.getElementById('bgVideo');
+const maskRange = document.getElementById('maskRange');
+const maskVal = document.getElementById('maskVal');
+
+/* ---------- 遮罩强度 ---------- */
+function applyMask(){ bgMask.style.opacity = (Number(maskRange.value)/100).toFixed(2); maskVal.textContent = maskRange.value; }
+maskRange.addEventListener('input', applyMask);
 
 /* ---------- 背景预览 ---------- */
 function refreshBg(){
@@ -293,10 +303,11 @@ document.getElementById('exportBtn').addEventListener('click', ()=>{
   const result = {
     bgImage: bgImageInput.value.trim(),
     bgVideo: bgVideoInput.value.trim(),
+    bgMask: Number(maskRange.value),
     images
   };
   out.value = JSON.stringify(result, null, 2)
-    + '\n\n/* 也可以直接把上面 images 数组复制到 content.json 的 hero.images，\n   并把 bgImage / bgVideo 填到对应位置 */';
+    + '\n\n/* 也可以直接把上面 images 数组复制到 content.json 的 hero.images，\n   并把 bgImage / bgVideo / bgMask 填到对应位置 */';
   statusEl.textContent='已生成。可点“复制配置”，再按第⑤步填回后台。';
   statusEl.className='hint ok';
 });
@@ -318,6 +329,7 @@ document.getElementById('importFile').addEventListener('change', e=>{
       const data=JSON.parse(rd.result);
       const h=data.hero||{};
       bgImageInput.value=h.bgImage||''; bgVideoInput.value=h.bgVideo||'';
+      maskRange.value = h.bgMask != null ? h.bgMask : 80; applyMask();
       refreshBg();
       // 清空现有节点
       nodes.forEach(n=>n.el.remove()); nodes=[];
@@ -344,11 +356,12 @@ function addNodeRaw(src,name,x,y,width,rotate){
 /* ---------- 清空 ---------- */
 document.getElementById('resetBtn').addEventListener('click', ()=>{
   nodes.forEach(n=>n.el.remove()); nodes=[]; renderCtrl();
-  bgImageInput.value=''; bgVideoInput.value=''; refreshBg(); out.value=''; statusEl.textContent='';
+  bgImageInput.value=''; bgVideoInput.value=''; refreshBg(); maskRange.value=80; applyMask(); out.value=''; statusEl.textContent='';
 });
 
 renderCtrl();
 refreshBg();
+applyMask();
 </script>
 </body>
 </html>
