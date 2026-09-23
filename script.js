@@ -59,6 +59,29 @@ const DEFAULT_CONTENT = {
     eyebrow: "Contact Us", title: "Let's build your packaging together",
     lead: "Send us your requirements — size, material, quantity and artwork — and we'll reply with a quote within 24 hours.",
     email: "sales@jiangxinpack.com", phone: "+86 532 8888 8888", address: "Qingdao, Shandong Province, China"
+  },
+  process: {
+    eyebrow: "How We Work",
+    title: "From inquiry to delivery in 6 steps",
+    steps: [
+      { num: "01", title: "Consultation", desc: "Tell us your size, material, quantity and artwork. We reply within 24 hours." },
+      { num: "02", title: "Design & Quote", desc: "We provide dieline, 3D mockup and a competitive factory-direct quote." },
+      { num: "03", title: "Sampling", desc: "Physical samples are made and approved before mass production starts." },
+      { num: "04", title: "Production", desc: "Printing, die-cutting, gluing and assembly on our in-house production lines." },
+      { num: "05", title: "Quality Check", desc: "In-line QC and pre-shipment inspection ensure every carton meets spec." },
+      { num: "06", title: "Shipping", desc: "Qingdao port consolidation and reliable global freight to your door." }
+    ]
+  },
+  galleries: {
+    eyebrow: "Company Life",
+    title: "Inside Jiangxin — team, factory & beyond",
+    intro: "More than products — meet the people and the place behind every order.",
+    categories: [
+      { slug: "team-building", title: "Team Building", subtitle: "Our annual outings and activities", cover: "", images: [ { src: "", caption: "Team building day" } ] },
+      { slug: "factory", title: "Factory & Production", subtitle: "Workshop, machines and workflow", cover: "", images: [ { src: "", caption: "Production line" } ] },
+      { slug: "office", title: "Office & Team", subtitle: "The people behind your orders", cover: "", images: [ { src: "", caption: "Our team" } ] },
+      { slug: "certificates", title: "Certificates & Events", subtitle: "Awards, trade fairs and certifications", cover: "", images: [ { src: "", caption: "Certificate / event" } ] }
+    ]
   }
 };
 
@@ -131,6 +154,28 @@ function render(c) {
     </div>
   </section>`;
 
+  // Process
+  if (c.process && c.process.steps && c.process.steps.length) {
+    const steps = c.process.steps.map(s => `
+      <div class="step">
+        <span class="step-num">${esc(s.num)}</span>
+        <div class="step-body">
+          <h3>${esc(s.title)}</h3>
+          <p>${esc(s.desc)}</p>
+        </div>
+      </div>`).join("");
+    html += `
+  <section class="section" id="process">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">${esc(c.process.eyebrow)}</p>
+        <h2>${esc(c.process.title)}</h2>
+      </div>
+      <div class="process-steps">${steps}</div>
+    </div>
+  </section>`;
+  }
+
   // Products
   const cards = c.products.items.map((it, i) => {
     const ph = it.image ? "" : ` ph-${(i % 6) + 1}`;
@@ -171,6 +216,35 @@ function render(c) {
     </div>
   </section>`;
 
+  // Company Life (links to gallery.html)
+  if (c.galleries && c.galleries.categories && c.galleries.categories.length) {
+    const g = c.galleries;
+    const lifeCards = g.categories.map((cat, i) => {
+      const ph = cat.cover ? "" : ` ph-${(i % 6) + 1}`;
+      const style = cat.cover ? `background-image:url('${esc(cat.cover)}');background-size:cover;background-position:center;` : "";
+      return `
+      <a class="life-card" href="gallery.html?cat=${encodeURIComponent(cat.slug)}">
+        <div class="life-cover${ph}" style="${style}"></div>
+        <div class="life-meta">
+          <h3>${esc(cat.title)}</h3>
+          <p>${esc(cat.subtitle)}</p>
+          <span class="life-cta">View gallery →</span>
+        </div>
+      </a>`;
+    }).join("");
+    html += `
+  <section class="section section-alt" id="life">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">${esc(g.eyebrow)}</p>
+        <h2>${esc(g.title)}</h2>
+        <p class="lead">${esc(g.intro)}</p>
+      </div>
+      <div class="life-cards">${lifeCards}</div>
+    </div>
+  </section>`;
+  }
+
   // Contact
   html += `
   <section class="section section-contact" id="contact">
@@ -206,7 +280,7 @@ function afterRender() {
   document.getElementById('year').textContent = new Date().getFullYear();
 
   // 滚动入场动画
-  const revealEls = document.querySelectorAll('.section, .card, .why-item, .stat');
+  const revealEls = document.querySelectorAll('.section, .card, .why-item, .stat, .step, .life-card');
   revealEls.forEach(el => el.classList.add('reveal'));
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
