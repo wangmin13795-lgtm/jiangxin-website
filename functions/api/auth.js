@@ -1,5 +1,9 @@
 // Cloudflare Pages Function — 用作 Decap CMS 的 GitHub OAuth 登录中转
-// 严格实现 Decap 的 NetlifyAuthenticator 握手协议（源自 decap-cms 源码）
+// 严格实现 Decap 的 NetlifyAuthenticator 握手协议（源自 decap-cms 源码）：
+//   1. 后台打开弹窗后监听 'authorizing:github'（且消息 origin 必须等于 base_url）
+//   2. 弹窗先 postMessage('authorizing:github')
+//   3. 后台回复同样的 'authorizing:github'
+//   4. 弹窗再发 'authorization:github:success:{json}'，后台完成登录并关闭弹窗
 // 需要在 Cloudflare Pages 后台设置两个环境变量：
 //   GITHUB_CLIENT_ID     （GitHub OAuth App 的 Client ID）
 //   GITHUB_CLIENT_SECRET （GitHub OAuth App 的 Client Secret）
