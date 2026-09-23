@@ -19,7 +19,7 @@ export async function onRequestGet({ request, env }) {
     const gh =
       `https://github.com/login/oauth/authorize` +
       `?client_id=${clientId}` +
-      `&redirect_uri=${encodeURIComponent(redirectUri)` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
       `&scope=repo` +
       `&state=${encodeURIComponent(state)}`;
     return Response.redirect(gh, 302);
