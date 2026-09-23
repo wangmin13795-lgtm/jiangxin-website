@@ -29,6 +29,7 @@ collections:
               - { name: name, label: "完整公司名", widget: string }
               - { name: short, label: "简称（导航/页脚用）", widget: string }
               - { name: logo, label: "Logo 图片（可选，留空显示默认 JX 方块）", widget: image, required: false }
+              - { name: music, label: "背景音乐（可选，填音频路径如 images/bgm.mp3，留空则无音乐）", widget: string, required: false }
 
           - name: hero
             label: "首页"
@@ -46,8 +47,9 @@ collections:
                 field: { name: item, label: "条目", widget: string }
               - { name: bgImage, label: "背景图片（可选，覆盖淡绿色背景）", widget: image, required: false }
               - { name: bgVideo, label: "背景视频链接（可选，填 MP4 网址，优先于图片）", widget: string, required: false }
+              - { name: bgMask, label: "遮罩强度 (0-100：0=背景最清晰，100=遮罩最重文字最清楚)", widget: number, required: false, min: 0, max: 100, default: 80 }
               - name: images
-                label: "右侧图片（可插 2-3 张，可分别调尺寸/位置/旋转）"
+                label: "自由图片（可加多张，位置相对整个首屏，可分别调尺寸/位置/旋转）"
                 widget: list
                 summary: "{{fields.src}}"
                 fields:
