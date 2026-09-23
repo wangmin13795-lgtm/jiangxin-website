@@ -120,7 +120,11 @@ function render(c) {
       ? `<img class="hero-bg-media" src="${esc(c.hero.bgImage)}" alt="" />`
       : '';
 
-  // 右侧多图：每张可单独设置位置/尺寸/旋转角度
+  // 遮罩强度：0-100 后台可调（0=背景最清晰，100=遮罩最重文字最清楚），仅在有背景时渲染
+  const maskOpacity = Math.min(100, Math.max(0, c.hero.bgMask != null ? Number(c.hero.bgMask) : 80)) / 100;
+  const heroMask = heroBg ? `<div class="hero-bg-mask" style="opacity:${maskOpacity}"></div>` : '';
+
+  // 全屏自由图层：每张图可单独设置位置/尺寸/旋转角度（坐标相对整个首屏区域）
   const heroFloats = (c.hero.images || [])
     .filter(im => im && im.src)
     .map(im => `
@@ -135,8 +139,9 @@ function render(c) {
 
   let html = `
   <section class="hero" id="home">
-    <div class="hero-bg" aria-hidden="true">${heroBg}</div>
-    <div class="container hero-inner">
+    <div class="hero-bg" aria-hidden="true">${heroBg}${heroMask}</div>
+    <div class="hero-stage" aria-hidden="true">${heroFloats}</div>
+    <div class="container hero-inner${heroFloats ? ' has-floats' : ''}">
       <div class="hero-copy">
         <p class="eyebrow">${esc(c.hero.eyebrow)}</p>
         <h1>${esc(c.hero.title1)}<br /><span class="accent">${esc(c.hero.titleAccent)}</span></h1>
@@ -147,9 +152,7 @@ function render(c) {
         </div>
         <div class="trust">${trust}</div>
       </div>
-      <div class="hero-art">
-        ${heroFloats || boxFallback}
-      </div>
+      ${heroFloats ? '' : `<div class="hero-art">${boxFallback}</div>`}
     </div>
   </section>`;
 
