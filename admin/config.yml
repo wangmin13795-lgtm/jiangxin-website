@@ -46,7 +46,13 @@ collections:
                 widget: list
                 field: { name: item, label: "条目", widget: string }
               - { name: bgImage, label: "背景图片（可选，覆盖淡绿色背景）", widget: image, required: false }
-              - { name: bgVideo, label: "背景视频链接（可选，填 MP4 网址，优先于图片）", widget: string, required: false }
+              - name: bgVideo
+                label: "背景视频（可选：点上传按钮选电脑里的 mp4，或填外链网址；优先于背景图片）"
+                widget: image
+                required: false
+                media_library:
+                  config:
+                    multiple: false
               - { name: bgMask, label: "遮罩强度 (0-100：0=背景最清晰，100=遮罩最重文字最清楚)", widget: number, required: false, min: 0, max: 100, default: 80 }
               - name: images
                 label: "自由图片（可加多张，位置相对整个首屏，可分别调尺寸/位置/旋转）"
@@ -80,7 +86,13 @@ collections:
                   - { name: value, label: "数值", widget: number }
                   - { name: suffix, label: "单位/后缀", widget: string }
                   - { name: label, label: "说明文字", widget: string }
-              - { name: image, label: "工厂图片（可选，留空则不显示）", widget: image, required: false }
+              - name: image
+                label: "工厂图片或视频（可选，可上传 mp4；留空则不显示）"
+                widget: image
+                required: false
+                media_library:
+                  config:
+                    multiple: false
 
           - name: products
             label: "产品"
