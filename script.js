@@ -6,7 +6,7 @@
 
 // 内置默认内容（与 content.json 一致，仅作离线兜底）
 const DEFAULT_CONTENT = {
-  company: { name: "Qingdao Jiangxin Packaging Products Co., Ltd.", short: "Qingdao Jiangxin Packaging" },
+  company: { name: "Qingdao Jiangxin Packaging Products Co., Ltd.", short: "Qingdao Jiangxin Packaging", logo: "" },
   hero: {
     eyebrow: "Custom Packaging Manufacturer · Qingdao, China",
     title1: "Your Trusted Partner for",
@@ -100,6 +100,16 @@ function render(c) {
   // 顶部/底部公司名
   document.getElementById('logoText').textContent = c.company.short;
   document.getElementById('footerName').textContent = c.company.name;
+
+  // Logo 图片（后台可上传，留空显示默认 JX 方块）
+  if (c.company.logo) {
+    document.querySelectorAll('.logo-mark').forEach(el => {
+      el.style.background = 'transparent';
+      el.style.width = 'auto';
+      el.style.height = '42px';
+      el.innerHTML = `<img src="${esc(c.company.logo)}" alt="logo" style="height:100%;width:auto;object-fit:contain;display:block;" />`;
+    });
+  }
 
   // Hero
   const trust = c.hero.trust.map(t => `<span>${esc(t)}</span>`).join('<span>·</span>');
