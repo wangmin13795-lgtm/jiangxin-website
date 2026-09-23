@@ -204,7 +204,7 @@
     "titleAccent": "Premium Packaging",
     "eyebrow": "Custom Packaging Manufacturer · Qingdao, China",
     "bgMask": 80,
-    "bgImage": "images/770tt0l13-r34w0010-副本5.jpg",
+    "bgImage": "",
     "bgVideo": "",
     "trust": [
       "ISO 9001",
@@ -217,7 +217,7 @@
         "y": -15,
         "width": 549,
         "rotate": 0,
-        "src": "images/770tt0l13-r34w0010-2.jpg"
+        "src": ""
       }
     ],
     "title1": "Your Trusted Partner for",
