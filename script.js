@@ -112,8 +112,30 @@ function render(c) {
 
   // Hero
   const trust = c.hero.trust.map(t => `<span>${esc(t)}</span>`).join('<span>·</span>');
+
+  // 背景层：视频优先 → 图片 → 都没填则保留淡绿色渐变
+  const heroBg = c.hero.bgVideo
+    ? `<video class="hero-bg-media" autoplay muted loop playsinline><source src="${esc(c.hero.bgVideo)}" type="video/mp4"></video>`
+    : c.hero.bgImage
+      ? `<img class="hero-bg-media" src="${esc(c.hero.bgImage)}" alt="" />`
+      : '';
+
+  // 右侧多图：每张可单独设置位置/尺寸/旋转角度
+  const heroFloats = (c.hero.images || [])
+    .filter(im => im && im.src)
+    .map(im => `
+        <img class="hero-float" src="${esc(im.src)}" alt=""
+             style="left:${im.x != null ? im.x : 50}%;top:${im.y != null ? im.y : 50}%;width:${im.width != null ? im.width : 300}px;transform:rotate(${(im.rotate != null ? im.rotate : 0)}deg)" />`)
+    .join('');
+
+  const boxFallback = `<div class="box-illustration">
+      <div class="box-top"></div>
+      <div class="box-body"><span>JIANGXIN</span><small>Packaging</small></div>
+    </div>`;
+
   let html = `
   <section class="hero" id="home">
+    <div class="hero-bg" aria-hidden="true">${heroBg}</div>
     <div class="container hero-inner">
       <div class="hero-copy">
         <p class="eyebrow">${esc(c.hero.eyebrow)}</p>
@@ -125,11 +147,8 @@ function render(c) {
         </div>
         <div class="trust">${trust}</div>
       </div>
-      <div class="hero-art" aria-hidden="true">
-        <div class="box-illustration">
-          <div class="box-top"></div>
-          <div class="box-body"><span>JIANGXIN</span><small>Packaging</small></div>
-        </div>
+      <div class="hero-art">
+        ${heroFloats || boxFallback}
       </div>
     </div>
   </section>`;
