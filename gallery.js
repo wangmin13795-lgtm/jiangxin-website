@@ -123,8 +123,19 @@ if (navLinks) navLinks.querySelectorAll('a').forEach(a => a.addEventListener('cl
 const y = document.getElementById('year');
 if (y) y.textContent = new Date().getFullYear();
 
+// Logo 图片（后台可上传，留空显示默认 JX）
+function applyLogo(logo) {
+  if (!logo) return;
+  document.querySelectorAll('.logo-mark').forEach(el => {
+    el.style.background = 'transparent';
+    el.style.width = 'auto';
+    el.style.height = '42px';
+    el.innerHTML = '<img src="' + esc(logo) + '" alt="logo" style="height:100%;width:auto;object-fit:contain;display:block;" />';
+  });
+}
+
 // 加载数据：优先 content.json，失败用内置默认
 fetch('content.json', { cache: 'no-cache' })
   .then(r => r.ok ? r.json() : Promise.reject())
-  .then(c => renderGallery(c.galleries))
+  .then(c => { applyLogo(c.company && c.company.logo); renderGallery(c.galleries); })
   .catch(() => renderGallery(DEFAULT_GALLERIES));
