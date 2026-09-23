@@ -28,7 +28,7 @@ collections:
             fields:
               - { name: name, label: "完整公司名", widget: string }
               - { name: short, label: "简称（导航/页脚用）", widget: string }
-              - { name: logo, label: "Logo 图片（可选，留空显示默认 JX 方块）", widget: image }
+              - { name: logo, label: "Logo 图片（可选，留空显示默认 JX 方块）", widget: image, required: false }
 
           - name: hero
             label: "首页"
@@ -66,7 +66,7 @@ collections:
                   - { name: value, label: "数值", widget: number }
                   - { name: suffix, label: "单位/后缀", widget: string }
                   - { name: label, label: "说明文字", widget: string }
-              - { name: image, label: "工厂图片（可选，留空则不显示）", widget: image }
+              - { name: image, label: "工厂图片（可选，留空则不显示）", widget: image, required: false }
 
           - name: products
             label: "产品"
@@ -80,7 +80,7 @@ collections:
                 fields:
                   - { name: title, label: "产品名", widget: string }
                   - { name: description, label: "描述", widget: text }
-                  - { name: image, label: "产品图片", widget: image }
+                  - { name: image, label: "产品图片（可选）", widget: image, required: false }
 
           - name: why
             label: "为什么选我们"
@@ -135,10 +135,10 @@ collections:
                   - { name: slug, label: "英文标识(如 team-building，勿含空格)", widget: string }
                   - { name: title, label: "分类名", widget: string }
                   - { name: subtitle, label: "副标题", widget: string }
-                  - { name: cover, label: "封面图", widget: image }
+                  - { name: cover, label: "封面图（可选）", widget: image, required: false }
                   - name: images
                     label: "图片（可增删，每张可写说明）"
                     widget: list
                     fields:
-                      - { name: src, label: "图片", widget: image }
-                      - { name: caption, label: "图片说明", widget: string }
+                      - { name: src, label: "图片", widget: image, required: false }
+                      - { name: caption, label: "图片说明", widget: string, required: false }
