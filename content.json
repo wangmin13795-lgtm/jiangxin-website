@@ -212,7 +212,15 @@
       "FSC® Available",
       "Export to 30+ Countries"
     ],
-    "images": [],
+    "images": [
+      {
+        "x": 15,
+        "y": -2,
+        "width": 1098,
+        "rotate": -6,
+        "src": "images/印刷厂印刷机工作.jpeg"
+      }
+    ],
     "title1": "Your Trusted Partner for",
     "lead": "From corrugated boxes to luxury gift packaging, we help global brands protect, present and ship their products — factory-direct from one of China's leading packaging hubs.",
     "panelColor": "#ebffc0"
