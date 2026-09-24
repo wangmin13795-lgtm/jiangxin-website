@@ -91,6 +91,16 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
 /* ===================== Hero ===================== */
 .hero { position: relative; background: linear-gradient(135deg, #eef6f6 0%, #fbf6ee 100%); padding: 70px 0 80px; overflow: hidden; }
 .hero-inner { position: relative; z-index: 2; display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; }
+/* 文字底色块：垫在文字后面的一块色板，颜色/不透明度由后台控制（inline style） */
+.hero-copy { position: relative; }
+.hero-panel {
+  position: absolute; inset: -30px -36px;
+  border-radius: 22px;
+  box-shadow: 0 10px 40px rgba(31, 61, 60, .12);
+  z-index: 0;
+}
+/* 色块之上的文字、按钮、背书保持在上层 */
+.hero-copy > *:not(.hero-panel) { position: relative; z-index: 1; }
 /* 有自由图片时，文字占左侧，右侧留白给图片层 */
 .hero-inner.has-floats { grid-template-columns: 1fr; }
 .hero-inner.has-floats .hero-copy { max-width: 640px; }
