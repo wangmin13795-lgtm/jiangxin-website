@@ -95,6 +95,16 @@ collections:
                 media_library:
                   config:
                     multiple: false
+              - name: gallery
+                label: "工厂照片墙（可加多张，点 Add 逐张添加；位置/旋转留空则用整齐网格）"
+                widget: list
+                required: false
+                fields:
+                  - { name: image, label: "照片", widget: image }
+                  - { name: x, label: "水平位置%(可选；填了就用自由排版)", widget: number, required: false }
+                  - { name: y, label: "垂直位置%(可选)", widget: number, required: false }
+                  - { name: width, label: "宽度px(可选)", widget: number, required: false }
+                  - { name: rotate, label: "旋转角度(可选，如 -5)", widget: number, required: false }
 
           - name: products
             label: "产品"

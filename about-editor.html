@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>工厂照片墙 可视化编辑器（所见即所得）</title>
+<style>
+  :root{ --teal:#155e63; --kraft:#d99a4e; --ink:#1c2733; --muted:#5b6b78; --line:#e3e9ea; --shadow:0 10px 30px rgba(15,71,75,.08); }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif; color:var(--ink); background:#f4f6f7; line-height:1.65; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:24px 20px 60px; }
+  h1{ font-size:22px; margin:0 0 4px; }
+  .sub{ color:var(--muted); font-size:13px; margin-bottom:18px; }
+  .panel{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:18px; }
+  .panel h2{ font-size:15px; margin:0 0 12px; }
+  .row{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+  .row + .row{ margin-top:10px; }
+  label{ font-size:13px; color:var(--muted); }
+  button{ cursor:pointer; border:1px solid var(--teal); background:var(--teal); color:#fff; padding:8px 14px; border-radius:9px; font-size:13px; }
+  button.ghost{ background:#fff; color:var(--teal); }
+  button.danger{ border-color:#d9534f; background:#fff; color:#d9534f; }
+  input[type=text]{ padding:8px 10px; border:1px solid var(--line); border-radius:9px; font-size:13px; min-width:220px; }
+  .hint{ font-size:12px; color:var(--muted); margin-top:6px; }
+  /* 舞台：照片墙定位容器 */
+  #stage{ position:relative; width:100%; height:560px; border-radius:16px; overflow:hidden;
+          background:linear-gradient(135deg,#eef6f6 0%,#fbf6ee 100%); box-shadow:inset 0 0 0 1px var(--line); }
+  .node{ position:absolute; transform-origin:center; cursor:grab; border-radius:14px; user-select:none; z-index:3; }
+  .node img{ width:100%; height:100%; object-fit:cover; border-radius:14px; box-shadow:var(--shadow); display:block; pointer-events:none; }
+  .node.selected{ outline:2px solid var(--teal); outline-offset:2px; }
+  .node .rh{ position:absolute; top:-26px; left:50%; transform:translateX(-50%); width:14px; height:14px; border-radius:50%; background:var(--teal); cursor:grab; }
+  .node .rs{ position:absolute; right:-7px; bottom:-7px; width:16px; height:16px; border-radius:4px; background:#fff; border:2px solid var(--teal); cursor:nwse-resize; }
+  .node .tag{ position:absolute; top:-22px; left:0; font-size:11px; background:var(--teal); color:#fff; padding:1px 6px; border-radius:6px; white-space:nowrap; }
+  .ctrl{ margin-top:14px; display:flex; flex-direction:column; gap:8px; }
+  .ctrl .citem{ display:flex; align-items:center; gap:10px; font-size:13px; background:#f8fafb; border:1px solid var(--line); border-radius:10px; padding:8px 10px; flex-wrap:wrap; }
+  .ctrl .citem input[type=number]{ width:80px; padding:6px 8px; border:1px solid var(--line); border-radius:8px; }
+  .ctrl .citem .grow{ flex:1; }
+  textarea{ width:100%; min-height:160px; border:1px solid var(--line); border-radius:10px; padding:12px; font-size:12px; font-family:ui-monospace,Menlo,Consolas,monospace; }
+  .step{ font-size:13px; line-height:1.7; color:var(--ink); }
+  .step code{ background:#eef3f4; padding:1px 6px; border-radius:6px; font-size:12px; }
+  .ok{ color:var(--teal); font-weight:600; }
+  /* 放大浮层 */
+  #viewer{ position:fixed; inset:0; background:rgba(12,43,46,.92); display:none; align-items:center; justify-content:center; z-index:300; padding:24px; flex-direction:column; }
+  #viewer.open{ display:flex; }
+  #viewer img{ max-width:90vw; max-height:80vh; border-radius:8px; }
+  #viewer .v-close{ position:absolute; top:18px; right:22px; width:44px; height:44px; border-radius:50%; border:0; background:rgba(255,255,255,.15); color:#fff; font-size:26px; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>工厂照片墙 可视化编辑器（所见即所得）</h1>
+  <div class="sub">下方舞台就是「关于我们」的照片墙区域：加多张图、拖到任意位置、旋转、缩放、调前后层级，点「放大」可预览大图。位置/旋转留空时，线上会自动排成整齐网格。</div>
+
+  <div class="panel">
+    <h2>① 线上站点地址（导入后用于加载已上传的照片）</h2>
+    <div class="row">
+      <input type="text" id="siteBase" style="min-width:340px;" value="https://jiangxin-website.pages.dev/" />
+      <button class="ghost" id="reloadBase">应用</button>
+    </div>
+    <div class="hint">导入 content.json 后，已上传的照片会自动从线上加载显示。</div>
+  </div>
+
+  <div class="panel">
+    <h2>② 添加照片（可一次选多张）</h2>
+    <div class="row">
+      <input type="file" id="imgFiles" accept="image/*" multiple />
+      <button class="ghost" id="importBtn">导入 content.json（加载现有照片墙）</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" />
+    </div>
+    <div class="hint">选本地图会立即出现在舞台；导入 content.json 会把已上传的图从线上加载进来。</div>
+  </div>
+
+  <div class="panel">
+    <h2>③ 可视化拖拽舞台（照片墙）</h2>
+    <div id="stage"></div>
+    <div class="ctrl" id="ctrl"></div>
+  </div>
+
+  <div class="panel">
+    <h2>④ 导出</h2>
+    <div class="row">
+      <button id="exportBtn">生成配置</button>
+      <button class="ghost" id="copyBtn">复制配置</button>
+      <button class="danger" id="resetBtn">清空</button>
+    </div>
+    <div class="hint" id="status"></div>
+    <textarea id="out" placeholder="点“生成配置”后这里会出现可直接填回后台的 gallery 数组"></textarea>
+  </div>
+
+  <div class="panel">
+    <h2>⑤ 怎么用</h2>
+    <div class="step">
+      <ol>
+        <li>把照片先上传到网站 <code>images/</code> 文件夹（后台 Media 或 GitHub，可一次拖多张）。</li>
+        <li>打开 <code>你的网址/admin/</code> → 全站内容 → 「关于我们」→ 找到「工厂照片墙」。</li>
+        <li>点「工厂照片墙 → Add」逐张添加，每张的 <b>照片</b> 选图，<b>水平/垂直位置、宽度、旋转</b> 按导出数字填（留空则用整齐网格）。</li>
+        <li><b>Publish</b> → 约 1 分钟后照片墙更新。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div id="viewer"><button class="v-close" aria-label="Close">×</button><img id="viewerImg" alt="预览"></div>
+
+<script>
+const stage = document.getElementById('stage');
+const ctrl = document.getElementById('ctrl');
+const out = document.getElementById('out');
+const statusEl = document.getElementById('status');
+const siteBase = document.getElementById('siteBase');
+
+let nodes = [];
+let seq = 0;
+let dnd = null;
+
+function base(){
+  let b = siteBase.value.trim();
+  if(b && !/\/$/.test(b)) b += '/';
+  return b || '';
+}
+function resolveSrc(p){
+  if(!p) return '';
+  if(/^(https?:|data:|blob:)/i.test(p)) return p;
+  return base() + p.replace(/^\//,'');
+}
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ---------- 添加节点 ---------- */
+document.getElementById('imgFiles').addEventListener('change', e=>{
+  [...e.target.files].forEach(f=> addNode('images/'+f.name.replace(/\s+/g,'-'), f.name, URL.createObjectURL(f)));
+  e.target.value='';
+});
+
+function addNode(src, name, previewUrl){
+  const id='n'+(++seq);
+  const el=document.createElement('div');
+  el.className='node';
+  el.innerHTML = `<div class="tag">${esc(name)}</div>
+    <div class="rh" title="拖动旋转"></div>
+    <img src="${previewUrl||resolveSrc(src)}" alt="" onerror="this.style.opacity=.25">
+    <div class="rs" title="拖动缩放"></div>`;
+  const x = 8 + (nodes.length%4)*22;
+  const y = 8 + (nodes.length%3)*26;
+  const data={ id, src, name, x, y, width:260, rotate:0, el, imgEl:el.querySelector('img') };
+  el.style.left=x+'%'; el.style.top=y+'%'; el.style.width=data.width+'px';
+  stage.appendChild(el);
+  nodes.push(data);
+  bindNode(data);
+  selectNode(data);
+  renderCtrl(); applyZ();
+  return data;
+}
+function addNodeRaw(src,name,x,y,width,rotate){
+  const d=addNode(src,name);
+  d.x=x!=null?x:50; d.y=y!=null?y:50; d.width=width||240; d.rotate=rotate||0;
+  d.el.style.left=d.x+'%'; d.el.style.top=d.y+'%'; d.el.style.width=d.width+'px';
+  d.el.style.transform=`rotate(${d.rotate}deg)`;
+  return d;
+}
+
+/* ---------- 选中 / 拖拽 ---------- */
+function selectNode(d){ nodes.forEach(n=>n.el.classList.toggle('selected', n===d)); }
+stage.addEventListener('pointerdown', e=>{
+  const n = e.target.closest('.node'); if(n){ const d=nodes.find(x=>x.el===n); if(d) selectNode(d); }
+});
+function bindNode(d){
+  const el=d.el, rh=el.querySelector('.rh'), rs=el.querySelector('.rs');
+  el.addEventListener('pointerdown', e=>{
+    if(e.target===rh||e.target===rs) return;
+    e.preventDefault();
+    const r=stage.getBoundingClientRect();
+    dnd={type:'move', r, ex:e.clientX, ey:e.clientY, startLeft:parseFloat(el.style.left), startTop:parseFloat(el.style.top)};
+    el.setPointerCapture(e.pointerId);
+  });
+  rh.addEventListener('pointerdown', e=>{ e.preventDefault(); e.stopPropagation(); dnd={type:'rot', el}; rh.setPointerCapture(e.pointerId); });
+  rs.addEventListener('pointerdown', e=>{ e.preventDefault(); e.stopPropagation(); dnd={type:'resize', el}; rs.setPointerCapture(e.pointerId); });
+  el.addEventListener('pointermove', e=>{
+    if(!dnd) return;
+    const r=stage.getBoundingClientRect();
+    if(dnd.type==='move'){
+      let nx=dnd.startLeft+(e.clientX-dnd.ex)/r.width*100;
+      let ny=dnd.startTop+(e.clientY-dnd.ey)/r.height*100;
+      nx=Math.max(-15,Math.min(115,nx)); ny=Math.max(-15,Math.min(115,ny));
+      el.style.left=nx+'%'; el.style.top=ny+'%'; d.x=nx; d.y=ny;
+    } else if(dnd.type==='rot'){
+      const c=el.getBoundingClientRect();
+      let ang=Math.atan2(e.clientY-(c.top+c.height/2), e.clientX-(c.left+c.width/2))*180/Math.PI+90;
+      el.style.transform=`rotate(${ang}deg)`; d.rotate=Math.round(ang); syncCtrl(d);
+    } else if(dnd.type==='resize'){
+      const c=el.getBoundingClientRect();
+      let w=Math.max(60, e.clientX-c.left); el.style.width=w+'px'; d.width=Math.round(w); syncCtrl(d);
+    }
+  });
+  const end=()=>{ dnd=null; renderCtrl(); };
+  el.addEventListener('pointerup', end);
+  el.addEventListener('pointercancel', end);
+}
+
+function renderCtrl(){
+  ctrl.innerHTML='';
+  if(!nodes.length){ ctrl.innerHTML='<div class="hint">还没有照片，用上方按钮添加，或导入 content.json。</div>'; return; }
+  nodes.forEach((d,i)=>{
+    const div=document.createElement('div');
+    div.className='citem';
+    div.innerHTML=`<span class="grow">图 ${i+1}：<b>${esc(d.name)}</b></span>
+      <label>X<input type="number" data-k="x" value="${Math.round(d.x)}"></label>
+      <label>Y<input type="number" data-k="y" value="${Math.round(d.y)}"></label>
+      <label>宽<input type="number" data-k="width" value="${d.width}"></label>
+      <label>旋<input type="number" data-k="rotate" value="${d.rotate}"></label>
+      <button class="ghost" data-view style="padding:5px 8px;">放大</button>
+      <button class="ghost" data-z="back" style="padding:5px 8px;">置底</button>
+      <button class="ghost" data-z="down" style="padding:5px 8px;">后移</button>
+      <button class="ghost" data-z="up" style="padding:5px 8px;">前移</button>
+      <button class="ghost" data-z="top" style="padding:5px 8px;">置顶</button>
+      <button class="danger" data-del>删</button>`;
+    div.querySelectorAll('input').forEach(inp=>{
+      inp.addEventListener('input', ()=>{
+        const k=inp.dataset.k, v=parseFloat(inp.value)||0; d[k]=v;
+        if(k==='x') d.el.style.left=v+'%';
+        if(k==='y') d.el.style.top=v+'%';
+        if(k==='width') d.el.style.width=v+'px';
+        if(k==='rotate') d.el.style.transform=`rotate(${v}deg)`;
+      });
+    });
+    div.querySelector('[data-view]').addEventListener('click', ()=> openViewer(d.imgEl.src));
+    div.querySelector('[data-del]').addEventListener('click', ()=>{ d.el.remove(); nodes=nodes.filter(n=>n!==d); renderCtrl(); applyZ(); });
+    div.querySelectorAll('[data-z]').forEach(b=> b.addEventListener('click', ()=>{
+      const z=b.dataset.z;
+      if(z==='back') toBottom(d); else if(z==='down') sendBackward(d);
+      else if(z==='up') bringForward(d); else if(z==='top') toTop(d);
+    }));
+    ctrl.appendChild(div);
+  });
+}
+function syncCtrl(d){
+  const items=ctrl.querySelectorAll('.citem'); const i=nodes.indexOf(d); if(i<0) return;
+  const item=items[i]; if(!item) return;
+  item.querySelector('[data-k="rotate"]').value=Math.round(d.rotate);
+  item.querySelector('[data-k="width"]').value=d.width;
+}
+function applyZ(){ nodes.forEach((n,i)=> n.el.style.zIndex = 3 + i); }
+function bringForward(d){ const i=nodes.indexOf(d); if(i>=0 && i<nodes.length-1){ nodes.splice(i,1); nodes.splice(i+1,0,d);} applyZ(); renderCtrl(); }
+function sendBackward(d){ const i=nodes.indexOf(d); if(i>0){ nodes.splice(i,1); nodes.splice(i-1,0,d);} applyZ(); renderCtrl(); }
+function toTop(d){ const i=nodes.indexOf(d); if(i>=0){ nodes.splice(i,1); nodes.push(d);} applyZ(); renderCtrl(); }
+function toBottom(d){ const i=nodes.indexOf(d); if(i>=0){ nodes.splice(i,1); nodes.unshift(d);} applyZ(); renderCtrl(); }
+
+/* ---------- 放大预览 ---------- */
+function openViewer(url){
+  const v=document.getElementById('viewer');
+  document.getElementById('viewerImg').src=url;
+  v.classList.add('open');
+}
+document.getElementById('viewer').querySelector('.v-close').addEventListener('click', ()=> document.getElementById('viewer').classList.remove('open'));
+document.getElementById('viewer').addEventListener('click', e=>{ if(e.target.id==='viewer') e.currentTarget.classList.remove('open'); });
+
+/* ---------- 导出 ---------- */
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  const gallery = nodes.map(d=>({
+    image:d.src, x:Math.round(d.x), y:Math.round(d.y), width:d.width, rotate:d.rotate
+  }));
+  out.value = JSON.stringify(gallery, null, 2)
+    + '\n\n/* 把上面这段作为「关于我们 → 工厂照片墙」的字段值粘贴进去即可（后台是 list，可整段替换） */';
+  statusEl.textContent='已生成 gallery 配置，可复制后填回后台。'; statusEl.className='hint ok';
+});
+document.getElementById('copyBtn').addEventListener('click', ()=>{
+  if(!out.value){ statusEl.textContent='请先点“生成配置”。'; return; }
+  navigator.clipboard.writeText(out.value).then(()=>{ statusEl.textContent='已复制。'; statusEl.className='hint ok'; })
+    .catch(()=>{ out.select(); document.execCommand('copy'); statusEl.textContent='已复制（选中状态）。'; });
+});
+
+/* ---------- 导入 ---------- */
+document.getElementById('importBtn').addEventListener('click', ()=> document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change', e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const data=JSON.parse(rd.result);
+      const g=(data.about && data.about.gallery) || [];
+      nodes.forEach(n=>n.el.remove()); nodes=[];
+      g.forEach(im=>{ if(im&&im.image) addNodeRaw(im.image, im.image.split('/').pop(), parseFloat(im.x), parseFloat(im.y), parseFloat(im.width)||240, parseFloat(im.rotate)||0); });
+      renderCtrl(); applyZ();
+      statusEl.textContent='已导入照片墙：'+(nodes.length||0)+' 张。'; statusEl.className='hint ok';
+    }catch(err){ statusEl.textContent='解析失败：'+err.message; }
+  };
+  rd.readAsText(f); e.target.value='';
+});
+
+/* ---------- 清空 ---------- */
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  nodes.forEach(n=>n.el.remove()); nodes=[]; renderCtrl(); applyZ();
+  out.value=''; statusEl.textContent='';
+});
+
+/* ---------- 初始化 ---------- */
+renderCtrl(); applyZ();
+</script>
+</body>
+</html>

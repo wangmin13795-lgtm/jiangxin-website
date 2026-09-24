@@ -175,7 +175,18 @@ function render(c) {
   const aboutImg = c.about.image
     ? (isVideo(c.about.image)
         ? `<video src="${esc(c.about.image)}" autoplay muted loop playsinline style="width:100%;border-radius:14px;margin-top:18px;display:block;"></video>`
-        : `<img src="${esc(c.about.image)}" alt="Our factory" style="width:100%;border-radius:14px;margin-top:18px;" />`)
+        : `<img src="${esc(c.about.image)}" alt="Our factory" data-full="${esc(c.about.image)}" style="width:100%;border-radius:14px;margin-top:18px;" />`)
+    : "";
+  const gallery = (c.about.gallery || []).filter(g => g && g.image);
+  const hasPos = gallery.some(g => g.x != null);
+  const aboutGallery = gallery.length
+    ? `<div class="about-gallery${hasPos ? ' about-gallery-free' : ''}">${gallery.map(g => {
+        const rot = g.rotate || 0, w = g.width || 260;
+        const style = hasPos
+          ? `position:absolute;left:${g.x!=null?g.x:50}%;top:${g.y!=null?g.y:20}%;width:${w}px;transform:rotate(${rot}deg);`
+          : `transform:rotate(${rot}deg);`;
+        return `<img src="${esc(g.image)}" alt="Our factory" loading="lazy" data-full="${esc(g.image)}" style="${style}" />`;
+      }).join('')}</div>`
     : "";
   html += `
   <section class="section" id="about">
@@ -192,6 +203,7 @@ function render(c) {
         </div>
         <div class="stats">${stats}</div>
       </div>
+      ${aboutGallery}
     </div>
   </section>`;
 
@@ -223,7 +235,7 @@ function render(c) {
     const style = it.image ? productImageStyle(it.image) : "";
     return `
     <article class="card">
-      <div class="card-img${ph}" style="${style}"></div>
+      <div class="card-img${ph}" data-full="${esc(it.image)}" style="${style}"></div>
       <h3>${esc(it.title)}</h3>
       <p>${esc(it.description)}</p>
     </article>`;
@@ -316,6 +328,40 @@ function render(c) {
   setupMusic(c);
 }
 
+// 点击图片放大查看（lightbox，支持同组左右切换）
+let lbList = [], lbIdx = 0;
+function ensureLightbox() {
+  if (document.getElementById('lightbox')) return;
+  const lb = document.createElement('div');
+  lb.id = 'lightbox';
+  lb.innerHTML = '<button class="lb-close" aria-label="Close">×</button>'
+    + '<div class="lb-img"></div><p class="lb-cap"></p>'
+    + '<button class="lb-prev" aria-label="上一张">‹</button>'
+    + '<button class="lb-next" aria-label="下一张">›</button>'
+    + '<div class="lb-count"></div>';
+  document.body.appendChild(lb);
+  lb.addEventListener('click', e => {
+    if (e.target === lb || e.target.classList.contains('lb-close')) lb.classList.remove('open');
+  });
+  lb.querySelector('.lb-prev').addEventListener('click', e => { e.stopPropagation(); lbIdx = (lbIdx - 1 + lbList.length) % lbList.length; showLightbox(); });
+  lb.querySelector('.lb-next').addEventListener('click', e => { e.stopPropagation(); lbIdx = (lbIdx + 1) % lbList.length; showLightbox(); });
+}
+function showLightbox() {
+  const it = lbList[lbIdx]; if (!it) return;
+  const box = document.querySelector('#lightbox .lb-img');
+  if (it.url) { box.style.backgroundImage = `url('${it.url}')`; box.textContent = ''; }
+  else { box.style.backgroundImage = 'none'; box.textContent = 'No image'; }
+  document.querySelector('#lightbox .lb-cap').textContent = it.cap || '';
+  document.querySelector('#lightbox .lb-count').textContent = lbList.length > 1 ? `${lbIdx + 1} / ${lbList.length}` : '';
+}
+function openLightbox(list, idx) {
+  ensureLightbox(); lbList = list; lbIdx = idx || 0; showLightbox();
+  document.getElementById('lightbox').classList.add('open');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { const lb = document.getElementById('lightbox'); if (lb) lb.classList.remove('open'); }
+});
+
 // 背景音乐：后台填了音频路径才会出现；右下角按钮可随时开关
 function setupMusic(c) {
   const src = c.music;
@@ -394,6 +440,18 @@ function afterRender() {
       note.hidden = false;
       form.reset();
     }
+  });
+
+  // 图片点击放大：同一 section 内的图片成一组，可左右切换
+  document.querySelectorAll('[data-full]').forEach(el => {
+    if (!el.dataset.full) return;
+    el.classList.add('zoomable');
+    el.addEventListener('click', () => {
+      const sec = el.closest('section');
+      const all = sec ? [...sec.querySelectorAll('[data-full]')].filter(x => x.dataset.full) : [el];
+      const list = all.map(x => ({ url: x.dataset.full, cap: x.dataset.cap || '' }));
+      openLightbox(list, all.indexOf(el));
+    });
   });
 }
 

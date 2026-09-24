@@ -57,7 +57,7 @@ function renderGallery(g) {
         </div>
       </section>`;
     app.querySelectorAll('.g-item').forEach(el =>
-      el.addEventListener('click', () => openLightbox(cat.images[+el.dataset.i])));
+      el.addEventListener('click', () => openLightbox(cat.images.filter(i => i && i.src), +el.dataset.i)));
   } else {
     // 概览：所有相册卡片，点击进入
     const cards = g.categories.map((c, i) => {
@@ -83,25 +83,41 @@ function renderGallery(g) {
   bindReveal();
 }
 
-// 点击图片放大查看
-function openLightbox(im) {
+// 点击图片放大查看（支持同相册左右切换）
+let lbList = [], lbIdx = 0;
+function openLightbox(list, idx) {
   let lb = document.getElementById('lightbox');
   if (!lb) {
     lb = document.createElement('div');
     lb.id = 'lightbox';
     lb.innerHTML = '<button class="lb-close" aria-label="Close">×</button>'
-      + '<div class="lb-img"></div><p class="lb-cap"></p>';
+      + '<div class="lb-img"></div><p class="lb-cap"></p>'
+      + '<button class="lb-prev" aria-label="上一张">‹</button>'
+      + '<button class="lb-next" aria-label="下一张">›</button>'
+      + '<div class="lb-count"></div>';
     document.body.appendChild(lb);
     lb.addEventListener('click', (e) => {
       if (e.target === lb || e.target.classList.contains('lb-close')) lb.classList.remove('open');
     });
+    lb.querySelector('.lb-prev').addEventListener('click', (e) => { e.stopPropagation(); lbIdx = (lbIdx - 1 + lbList.length) % lbList.length; showLb(); });
+    lb.querySelector('.lb-next').addEventListener('click', (e) => { e.stopPropagation(); lbIdx = (lbIdx + 1) % lbList.length; showLb(); });
   }
-  const img = lb.querySelector('.lb-img');
-  if (im && im.src) { img.style.backgroundImage = `url('${esc(im.src)}')`; img.textContent = ''; }
-  else { img.style.backgroundImage = 'none'; img.textContent = 'No image'; }
-  lb.querySelector('.lb-cap').textContent = (im && im.caption) ? im.caption : '';
+  lbList = (Array.isArray(list) ? list : [list]).map(im => ({ url: im && im.src, cap: im && im.caption }));
+  lbIdx = idx || 0;
+  showLb();
   lb.classList.add('open');
 }
+function showLb() {
+  const it = lbList[lbIdx]; if (!it) return;
+  const box = document.querySelector('#lightbox .lb-img');
+  if (it.url) { box.style.backgroundImage = `url('${esc(it.url)}')`; box.textContent = ''; }
+  else { box.style.backgroundImage = 'none'; box.textContent = 'No image'; }
+  document.querySelector('#lightbox .lb-cap').textContent = it.cap || '';
+  document.querySelector('#lightbox .lb-count').textContent = lbList.length > 1 ? `${lbIdx + 1} / ${lbList.length}` : '';
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { const lb = document.getElementById('lightbox'); if (lb) lb.classList.remove('open'); }
+});
 
 // 滚动入场动画
 function bindReveal() {

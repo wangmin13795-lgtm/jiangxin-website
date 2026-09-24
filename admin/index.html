@@ -29,6 +29,14 @@
         c.target = '_blank';
         c.style.cssText = baseCss + ';bottom:16px;background:#c9873c;';
         document.body.appendChild(c);
+
+        var d = document.createElement('a');
+        d.id = 'open-about-btn';
+        d.textContent = '🏭 照片墙编辑器';
+        d.href = window.location.origin + '/about-editor.html';
+        d.target = '_blank';
+        d.style.cssText = baseCss + ';bottom:112px;background:#0f474b;';
+        document.body.appendChild(d);
       }
       window.addEventListener('load', function () { setTimeout(addBtns, 800); });
       var t = setInterval(addBtns, 1000);

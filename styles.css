@@ -162,6 +162,11 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
 .stat .suffix { font-size: 24px; font-weight: 800; color: var(--teal); }
 .stat p { color: var(--muted); font-size: 14px; margin-top: 4px; }
 
+/* ===================== 关于我们：工厂照片墙 ===================== */
+.about-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 34px; }
+.about-gallery.about-gallery-free { display: block; position: relative; min-height: 560px; }
+.about-gallery img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); display: block; }
+
 /* ===================== 产品卡片 ===================== */
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .card { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: transform .2s; }
@@ -230,6 +235,7 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
   .nav-links a { padding: 12px 0; width: 100%; }
   .nav-toggle { display: flex; }
   .cards, .why-grid, .stats { grid-template-columns: 1fr; }
+  .about-gallery { grid-template-columns: 1fr 1fr; }
   .section { padding: 56px 0; }
 }
 
@@ -268,6 +274,12 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
 .lb-img { width: min(90vw, 900px); height: min(80vh, 640px); background-size: contain; background-repeat: no-repeat; background-position: center; border-radius: 8px; display: grid; place-items: center; color: #cfe0e0; }
 .lb-cap { color: #cfe0e0; margin-top: 14px; font-size: 15px; }
 .lb-close { position: absolute; top: 18px; right: 22px; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(255,255,255,.15); color: #fff; font-size: 26px; cursor: pointer; }
+.lb-prev, .lb-next { position: absolute; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; border-radius: 50%; border: 0; background: rgba(255,255,255,.16); color: #fff; font-size: 30px; line-height: 1; cursor: pointer; }
+.lb-prev { left: 18px; } .lb-next { right: 18px; }
+.lb-prev:hover, .lb-next:hover { background: rgba(255,255,255,.3); }
+.lb-count { position: absolute; top: 20px; left: 24px; color: #cfe0e0; font-size: 14px; }
+.zoomable { cursor: zoom-in; transition: transform .25s; }
+.zoomable:hover { transform: scale(1.02); }
 
 /* ===================== 背景音乐按钮 ===================== */
 .music-toggle {
