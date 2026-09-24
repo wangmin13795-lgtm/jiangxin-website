@@ -124,6 +124,12 @@ function render(c) {
   const maskOpacity = Math.min(100, Math.max(0, c.hero.bgMask != null ? Number(c.hero.bgMask) : 80)) / 100;
   const heroMask = heroBg ? `<div class="hero-bg-mask" style="opacity:${maskOpacity}"></div>` : '';
 
+  // 文字底色块：在标题文字区域后面垫一块可调颜色/透明度的色板，背景视频再花哨也不影响文字清晰
+  const panelOpacity = Math.min(100, Math.max(0, c.hero.panelOpacity != null ? Number(c.hero.panelOpacity) : 0));
+  const heroPanel = panelOpacity > 0 && c.hero.panelColor
+    ? `<div class="hero-panel" style="background:${esc(c.hero.panelColor)};opacity:${panelOpacity / 100}"></div>`
+    : '';
+
   // 全屏自由图层：每张图可单独设置位置/尺寸/旋转角度（坐标相对整个首屏区域）
   const heroFloats = (c.hero.images || [])
     .filter(im => im && im.src)
@@ -143,6 +149,7 @@ function render(c) {
     <div class="hero-stage" aria-hidden="true">${heroFloats}</div>
     <div class="container hero-inner${heroFloats ? ' has-floats' : ''}">
       <div class="hero-copy">
+        ${heroPanel}
         <p class="eyebrow">${esc(c.hero.eyebrow)}</p>
         <h1>${esc(c.hero.title1)}<br /><span class="accent">${esc(c.hero.titleAccent)}</span></h1>
         <p class="lead">${esc(c.hero.lead)}</p>
