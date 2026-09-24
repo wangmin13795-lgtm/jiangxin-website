@@ -54,6 +54,8 @@ collections:
                   config:
                     multiple: false
               - { name: bgMask, label: "遮罩强度 (0-100：0=背景最清晰，100=遮罩最重文字最清楚)", widget: number, required: false, min: 0, max: 100, default: 80 }
+              - { name: panelColor, label: "文字底色块颜色（点色块弹出取色器，随意选）", widget: color, required: false, default: "#ffffff" }
+              - { name: panelOpacity, label: "文字底色块深浅 (0-100：0=不显示色块，100=色块最实)", widget: number, required: false, min: 0, max: 100, default: 0 }
               - name: images
                 label: "自由图片（可加多张，位置相对整个首屏，可分别调尺寸/位置/旋转）"
                 widget: list
