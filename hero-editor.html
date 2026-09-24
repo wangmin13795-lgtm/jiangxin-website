@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Hero 可视化编辑器（本地工具）</title>
+<title>Hero 可视化编辑器（所见即所得）</title>
 <style>
-  :root{ --teal:#155e63; --kraft:#c9873c; --ink:#102a33; --muted:#5b6b72; --line:#e3e9ea; }
+  :root{ --teal:#155e63; --teal-dark:#0f474b; --kraft:#d99a4e; --kraft-light:#f0d9b8; --ink:#1c2733; --muted:#5b6b78; --line:#e3e9ea; --shadow:0 10px 30px rgba(15,71,75,.08); }
   *{ box-sizing:border-box; }
-  body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif; color:var(--ink); background:#f4f6f7; }
+  body{ margin:0; font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif; color:var(--ink); background:#f4f6f7; line-height:1.65; }
   .wrap{ max-width:1180px; margin:0 auto; padding:24px 20px 60px; }
   h1{ font-size:22px; margin:0 0 4px; }
   .sub{ color:var(--muted); font-size:13px; margin-bottom:18px; }
@@ -20,19 +20,38 @@
   button.ghost{ background:#fff; color:var(--teal); }
   button.danger{ border-color:#d9534f; background:#fff; color:#d9534f; }
   input[type=text]{ padding:8px 10px; border:1px solid var(--line); border-radius:9px; font-size:13px; min-width:220px; }
+  .txt{ padding:8px 10px; border:1px solid var(--line); border-radius:9px; font-size:13px; }
   .hint{ font-size:12px; color:var(--muted); margin-top:6px; }
-  /* 舞台 */
-  #stage{ position:relative; width:100%; height:520px; border-radius:16px; overflow:hidden;
+  /* ===== 舞台：真实渲染首页 hero 区 ===== */
+  #stage{ position:relative; width:100%; height:560px; border-radius:16px; overflow:hidden;
           background:linear-gradient(135deg,#eef6f6 0%,#fbf6ee 100%); box-shadow:inset 0 0 0 1px var(--line); }
-  #stage .bgmedia{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-  #stage .bgmask{ position:absolute; inset:0; background:linear-gradient(135deg,#eef6f6 0%,#fbf6ee 100%); opacity:.8; }
-  #stage .herotext{ position:absolute; left:6%; top:50%; transform:translateY(-50%); max-width:46%; z-index:2; }
-  #stage .herotext .t0{ font-size:11px; letter-spacing:2px; font-weight:700; color:var(--kraft); margin-bottom:8px; }
-  #stage .herotext .t1,#stage .herotext .t2{ font-size:26px; font-weight:800; color:var(--ink); line-height:1.25; }
-  #stage .herotext .t2{ color:var(--teal); }
-  #stage .herotext .heropanel{ position:absolute; inset:-16px -20px; border-radius:16px; z-index:-1; box-shadow:0 10px 40px rgba(31,61,60,.12); }
-  .node{ position:absolute; transform-origin:center; cursor:grab; border-radius:14px; user-select:none; }
-  .node img{ width:100%; height:100%; object-fit:cover; border-radius:14px; box-shadow:0 12px 30px rgba(16,42,51,.18); display:block; pointer-events:none; }
+  /* 以下样式复制自线上 styles.css，保证编辑器里的文字/按钮和真实网站一致 */
+  #stage .hero-bg{ position:absolute; inset:0; z-index:0; }
+  #stage .hero-bg-media{ width:100%; height:100%; object-fit:cover; display:block; }
+  #stage .hero-bg-mask{ position:absolute; inset:0;
+    background:linear-gradient(135deg, rgba(238,246,246,.85) 0%, rgba(251,246,238,.85) 100%); }
+  #stage .hero-inner{ position:relative; z-index:2; height:100%; display:grid; grid-template-columns:1.1fr .9fr; gap:40px; align-items:center;
+    max-width:1140px; margin:0 auto; padding:0 22px; }
+  #stage .hero-inner.has-floats{ grid-template-columns:1fr; }
+  #stage .hero-inner.has-floats .hero-copy{ max-width:640px; }
+  #stage .hero-copy{ position:relative; }
+  #stage .hero-panel{ position:absolute; inset:-30px -36px; border-radius:22px; box-shadow:0 10px 40px rgba(31,61,60,.12); }
+  #stage .hero-copy > *:not(.hero-panel){ position:relative; z-index:1; }
+  #stage .eyebrow{ text-transform:uppercase; letter-spacing:2px; font-size:13px; font-weight:700; color:var(--kraft); margin-bottom:10px; }
+  #stage .hero-copy h1{ font-size:clamp(30px,3.6vw,44px); line-height:1.2; font-weight:700; margin:0 0 18px; color:var(--ink); }
+  #stage .accent{ color:var(--teal); }
+  #stage .lead{ font-size:17px; color:var(--muted); margin:0 0 28px; max-width:520px; }
+  #stage .hero-actions{ display:flex; gap:14px; flex-wrap:wrap; }
+  #stage .btn{ display:inline-block; padding:13px 26px; border-radius:999px; font-weight:600; font-size:15px; cursor:default; border:2px solid transparent; }
+  #stage .btn-primary{ background:var(--teal); color:#fff; }
+  #stage .btn-ghost{ border-color:var(--teal); color:var(--teal); }
+  #stage .trust{ margin-top:34px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; color:var(--muted); font-size:14px; font-weight:600; }
+  #stage .trust .sep{ color:var(--teal); }
+  #stage .hero-art{ position:relative; min-height:340px; display:grid; place-items:center; }
+  #stage .box-illustration{ text-align:center; }
+  /* 自由图片节点 */
+  .node{ position:absolute; transform-origin:center; cursor:grab; border-radius:16px; user-select:none; z-index:3; }
+  .node img{ width:100%; height:100%; object-fit:cover; border-radius:16px; box-shadow:var(--shadow); display:block; pointer-events:none; }
   .node.selected{ outline:2px solid var(--teal); outline-offset:2px; }
   .node .rh{ position:absolute; top:-26px; left:50%; transform:translateX(-50%); width:14px; height:14px; border-radius:50%; background:var(--teal); cursor:grab; }
   .node .rs{ position:absolute; right:-7px; bottom:-7px; width:16px; height:16px; border-radius:4px; background:#fff; border:2px solid var(--teal); cursor:nwse-resize; }
@@ -49,56 +68,84 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Hero 可视化编辑器</h1>
-  <div class="sub">本地工具：双击打开即可用。拖动图片、拉右下角缩放、拖顶部圆点旋转，把喜欢的布局导出后填回后台即可。不影响线上网站，可反复试。</div>
+  <h1>Hero 可视化编辑器（所见即所得）</h1>
+  <div class="sub">舞台里渲染的就是真实首页：文字、按钮、遮罩、色块都在，拖图片时能直接看到它和文字的位置关系，不用再来回发布试了。</div>
 
   <div class="panel">
-    <h2>① 背景设置</h2>
+    <h2>① 线上站点地址（用于加载已上传的背景图/图片预览）</h2>
+    <div class="row">
+      <input type="text" id="siteBase" class="txt" style="min-width:340px;" value="https://jiangxin-website.pages.dev/" />
+      <button class="ghost" id="reloadBase">应用</button>
+    </div>
+    <div class="hint">导入 content.json 后，背景图和已上传的自由图片会自动从这个地址加载显示（相对路径 images/... 会自动拼到该网址）。</div>
+  </div>
+
+  <div class="panel">
+    <h2>② 文字内容（导入 content.json 自动填入，也可手动修改）</h2>
+    <div class="row"><label style="width:70px;">眉标题</label><input type="text" class="txt htxt" id="tEyebrow" style="flex:1;min-width:400px;" /></div>
+    <div class="row"><label style="width:70px;">标题①</label><input type="text" class="txt htxt" id="tTitle1" style="flex:1;min-width:400px;" /></div>
+    <div class="row"><label style="width:70px;">标题②</label><input type="text" class="txt htxt" id="tTitleAccent" style="flex:1;min-width:400px;" /></div>
+    <div class="row"><label style="width:70px;">副标题</label><textarea id="tLead" class="txt" rows="2" style="flex:1;min-width:400px;"></textarea></div>
+    <div class="row"><label style="width:70px;">按钮①</label><input type="text" class="txt htxt" id="tCta1" style="width:200px;" /><label>按钮②</label><input type="text" class="txt htxt" id="tCta2" style="width:200px;" /></div>
+    <div class="row"><label style="width:70px;">信任标</label><input type="text" class="txt htxt" id="tTrust" style="flex:1;min-width:400px;" placeholder="用逗号分隔，如：ISO 9001, FSC® Available, Export to 30+ Countries" /></div>
+  </div>
+
+  <div class="panel">
+    <h2>③ 背景与遮罩设置</h2>
     <div class="row">
       <label>背景图片（可选）：</label>
       <input type="file" id="bgFile" accept="image/*" />
       <input type="text" id="bgImage" placeholder="或填已上传图片的路径，如 images/hero-bg.jpg" />
     </div>
     <div class="row">
-      <label>背景视频链接（可选，填 .mp4 直链）：</label>
-      <input type="text" id="bgVideo" placeholder="https://.../bg.mp4（优先于背景图片）" />
+      <label>背景视频路径（可选，.mp4）：</label>
+      <input type="text" id="bgVideo" placeholder="images/bg.mp4 或 https://.../bg.mp4（优先于图片）" />
     </div>
     <div class="row">
       <label>遮罩强度：<input type="range" id="maskRange" min="0" max="100" value="80" style="vertical-align:middle;" /> <b id="maskVal">80</b>%</label>
-      <span class="hint" style="margin-top:0;">0=背景最清晰（文字可能不好读），100=遮罩最重（文字最清楚）</span>
+      <span class="hint" style="margin-top:0;">0=背景最清晰，100=遮罩最重（文字最清楚）</span>
     </div>
     <div class="row">
       <label>文字底色块颜色：<input type="color" id="panelColor" value="#ffffff" style="vertical-align:middle;width:44px;height:30px;padding:0;border:1px solid var(--line);border-radius:8px;background:none;" /></label>
       <label>色块深浅：<input type="range" id="panelRange" min="0" max="100" value="0" style="vertical-align:middle;" /> <b id="panelVal">0</b>%</label>
-      <span class="hint" style="margin-top:0;">给标题文字垫一块底色，背景视频再乱文字也清楚；0=不显示色块</span>
+      <span class="hint" style="margin-top:0;">给文字垫一块底色；0=不显示</span>
     </div>
-    <div class="hint">图片/视频只是预览。最终要在网站后台或图床里把文件上传到 <code>images/</code> 文件夹，路径一致才会显示。</div>
   </div>
 
   <div class="panel">
-    <h2>② 添加自由图片（可加 2–3 张，整个首屏随意摆放）</h2>
+    <h2>④ 添加自由图片（可加 2–3 张，整个首屏随意摆放）</h2>
     <div class="row">
       <input type="file" id="imgFiles" accept="image/*" multiple />
-      <button class="ghost" id="addSample">放一张示例图（便于先看效果）</button>
+      <button class="ghost" id="importBtn">导入 content.json（加载现有配置与图片）</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" />
     </div>
-    <div class="hint">选图后会出现在下方舞台里，直接拖到想要的位置。</div>
+    <div class="hint">选本地图会立即出现在舞台里；导入 content.json 会把已上传的图从线上加载进来。</div>
   </div>
 
   <div class="panel">
-    <h2>③ 可视化拖拽舞台</h2>
+    <h2>⑤ 可视化拖拽舞台（所见即所得）</h2>
     <div id="stage">
-      <div class="bgmask" id="bgMask"></div>
+      <div class="hero-bg" id="stageBg"></div>
+      <div class="hero-bg-mask" id="stageMask"></div>
+      <div class="hero-inner" id="stageInner">
+        <div class="hero-copy" id="stageCopy">
+          <div class="hero-panel" id="stagePanel" style="display:none;"></div>
+          <p class="eyebrow" id="vEyebrow"></p>
+          <h1 id="vTitle"></h1>
+          <p class="lead" id="vLead"></p>
+          <div class="hero-actions" id="vActions"></div>
+          <div class="trust" id="vTrust"></div>
+        </div>
+      </div>
     </div>
     <div class="ctrl" id="ctrl"></div>
   </div>
 
   <div class="panel">
-    <h2>④ 导出</h2>
+    <h2>⑥ 导出</h2>
     <div class="row">
       <button id="exportBtn">生成配置</button>
       <button class="ghost" id="copyBtn">复制配置</button>
-      <button class="ghost" id="importBtn">导入 content.json（可选）</button>
-      <input type="file" id="importFile" accept=".json" style="display:none" />
       <button class="danger" id="resetBtn">清空</button>
     </div>
     <div class="hint" id="status"></div>
@@ -106,31 +153,33 @@
   </div>
 
   <div class="panel">
-    <h2>⑤ 怎么用导出的内容（两种办法）</h2>
+    <h2>⑦ 怎么用导出的内容</h2>
     <div class="step">
-      <p><b>办法 A（推荐，用后台 Decap CMS）：</b></p>
       <ol>
-        <li>先把第 ① 步、第 ② 步用到的图片/视频文件，通过网站后台「<b>Media</b>」或 GitHub 上传到 <code>images/</code> 文件夹（文件名要和导出里的路径一致）。</li>
+        <li>把用到的图片/视频先上传到网站 <code>images/</code> 文件夹（后台 Media 或 GitHub）。</li>
         <li>打开 <code>你的网址/admin/</code> → 全站内容 → 「首页」区块。</li>
-        <li>把<b>背景图片</b>、<b>背景视频</b>、<b>遮罩强度</b>、<b>文字底色块颜色/深浅</b>填进去；点「自由图片 → Add」逐个添加，把每列对应的 <b>水平位置/垂直位置/宽度/旋转</b> 数字填进去（src 选那张图）。</li>
-        <li>右上角 <b>Publish</b> → 约 1 分钟后网站更新。</li>
+        <li>把<b>背景图片/背景视频</b>、<b>遮罩强度</b>、<b>文字底色块颜色/深浅</b>填进去；点「自由图片 → Add」逐个添加，把每张的 <b>水平位置/垂直位置/宽度/旋转</b> 数字填进去。</li>
+        <li>右上角 <b>Publish</b> → 约 1 分钟后网站更新。因为舞台和真实网站样式一致，这里看到的位置就是线上的位置。</li>
       </ol>
-      <p><b>办法 B（直接改文件）：</b>如果你愿意改 <code>content.json</code>，把导出结果里的 <code>images</code> 数组和 <code>bgImage / bgVideo</code> 整段替换到对应位置，上传即可。</p>
-      <p class="ok">提示：导出的「水平/垂直位置」是百分比，已按舞台自动换算，所以你在编辑器里看到的位置比例，到网站上基本一致。</p>
+      <p class="ok">提示：导出的「水平/垂直位置」是相对整个首屏的百分比，编辑器里看到哪里，线上就在哪里。</p>
     </div>
   </div>
 </div>
 
 <script>
 const stage = document.getElementById('stage');
-const bgMask = document.getElementById('bgMask');
+const stageBg = document.getElementById('stageBg');
+const stageMask = document.getElementById('stageMask');
+const stageInner = document.getElementById('stageInner');
+const stagePanel = document.getElementById('stagePanel');
 const ctrl = document.getElementById('ctrl');
 const out = document.getElementById('out');
 const statusEl = document.getElementById('status');
+const siteBase = document.getElementById('siteBase');
 
-let nodes = [];   // {id, src, name, x, y, width, rotate, el, imgEl}
+let nodes = [];
 let seq = 0;
-let dnd = null;   // 拖拽状态
+let dnd = null;
 
 const bgImageInput = document.getElementById('bgImage');
 const bgVideoInput = document.getElementById('bgVideo');
@@ -140,105 +189,136 @@ const panelColorInput = document.getElementById('panelColor');
 const panelRange = document.getElementById('panelRange');
 const panelVal = document.getElementById('panelVal');
 
-/* ---------- 遮罩强度 ---------- */
-function applyMask(){ bgMask.style.opacity = (Number(maskRange.value)/100).toFixed(2); maskVal.textContent = maskRange.value; }
+/* ---------- 文字字段 ---------- */
+const tEyebrow = document.getElementById('tEyebrow');
+const tTitle1 = document.getElementById('tTitle1');
+const tTitleAccent = document.getElementById('tTitleAccent');
+const tLead = document.getElementById('tLead');
+const tCta1 = document.getElementById('tCta1');
+const tCta2 = document.getElementById('tCta2');
+const tTrust = document.getElementById('tTrust');
+
+// 默认填当前线上真实文字（也可导入 content.json 覆盖）
+function setDefaultText(){
+  tEyebrow.value = 'Custom Packaging Manufacturer · Qingdao, China';
+  tTitle1.value = 'Your Trusted Partner for';
+  tTitleAccent.value = 'Premium Packaging';
+  tLead.value = "From corrugated boxes to luxury gift packaging, we help global brands protect, present and ship their products — factory-direct from one of China's leading packaging hubs.";
+  tCta1.value = 'Explore Products';
+  tCta2.value = 'Get a Quote';
+  tTrust.value = 'ISO 9001, FSC® Available, Export to 30+ Countries';
+}
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderHeroText(){
+  document.getElementById('vEyebrow').textContent = tEyebrow.value;
+  document.getElementById('vTitle').innerHTML = esc(tTitle1.value) + '<br/><span class="accent">' + esc(tTitleAccent.value) + '</span>';
+  document.getElementById('vLead').textContent = tLead.value;
+  document.getElementById('vActions').innerHTML =
+    '<span class="btn btn-primary">' + esc(tCta1.value) + '</span>' +
+    '<span class="btn btn-ghost">' + esc(tCta2.value) + '</span>';
+  const items = tTrust.value.split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+  document.getElementById('vTrust').innerHTML = items
+    .map((s,i)=> esc(s) + (i < items.length-1 ? ' <span class="sep">·</span> ' : ''))
+    .join(' ');
+}
+[...document.querySelectorAll('.htxt'), tLead].forEach(el=> el.addEventListener('input', renderHeroText));
+
+/* ---------- 相对路径 → 线上地址 ---------- */
+function base(){
+  let b = siteBase.value.trim();
+  if(b && !/\/$/.test(b)) b += '/';
+  return b || '';
+}
+function resolveSrc(p){
+  if(!p) return '';
+  if(/^(https?:|data:|blob:)/i.test(p)) return p;
+  return base() + p.replace(/^\//,'');
+}
+
+/* ---------- 遮罩 / 色块 ---------- */
+function applyMask(){ stageMask.style.opacity = (Number(maskRange.value)/100).toFixed(2); maskVal.textContent = maskRange.value; }
 maskRange.addEventListener('input', applyMask);
 
-/* ---------- 文字底色块（舞台内模拟标题 + 可调色板） ---------- */
-let heroTextEl = null, panelEl = null;
 function applyPanel(){
   panelVal.textContent = panelRange.value;
-  const op = Number(panelRange.value) / 100;
-  if(op <= 0){
-    if(panelEl){ panelEl.remove(); panelEl = null; }
-    if(heroTextEl){ heroTextEl.remove(); heroTextEl = null; }
-    return;
-  }
-  if(!heroTextEl){
-    heroTextEl = document.createElement('div');
-    heroTextEl.className = 'herotext';
-    heroTextEl.innerHTML = '<div class="t0">CUSTOM PACKAGING MANUFACTURER · QINGDAO, CHINA</div>'
-      + '<div class="t1">Your Trusted Partner for</div>'
-      + '<div class="t2">Premium Packaging</div>';
-    stage.appendChild(heroTextEl);
-  }
-  if(!panelEl){
-    panelEl = document.createElement('div');
-    panelEl.className = 'heropanel';
-    heroTextEl.insertBefore(panelEl, heroTextEl.firstChild);
-  }
-  panelEl.style.background = panelColorInput.value;
-  panelEl.style.opacity = op.toFixed(2);
+  const op = Number(panelRange.value)/100;
+  if(op <= 0){ stagePanel.style.display='none'; return; }
+  stagePanel.style.display='block';
+  stagePanel.style.background = panelColorInput.value;
+  stagePanel.style.opacity = op.toFixed(2);
 }
 panelRange.addEventListener('input', applyPanel);
 panelColorInput.addEventListener('input', applyPanel);
 
 /* ---------- 背景预览 ---------- */
 function refreshBg(){
-  // 移除旧 bg media
-  stage.querySelectorAll('.bgmedia').forEach(e=>e.remove());
+  stageBg.innerHTML='';
   const vid = bgVideoInput.value.trim();
   const img = bgImageInput.value.trim();
   if(vid){
     const v=document.createElement('video');
-    v.className='bgmedia'; v.src=vid; v.autoplay=true; v.muted=true; v.loop=true; v.playsInline=true;
-    stage.insertBefore(v, bgMask);
-    bgMask.style.display='block';
+    v.className='hero-bg-media'; v.src=resolveSrc(vid); v.autoplay=true; v.muted=true; v.loop=true; v.playsInline=true;
+    stageBg.appendChild(v);
   } else if(img){
     const i=document.createElement('img');
-    i.className='bgmedia'; i.src=img;
-    stage.insertBefore(i, bgMask);
-    bgMask.style.display='block';
-  } else {
-    bgMask.style.display='block';
+    i.className='hero-bg-media'; i.src=resolveSrc(img);
+    i.onerror=()=>{ i.remove(); };
+    stageBg.appendChild(i);
   }
 }
 bgImageInput.addEventListener('input', refreshBg);
 bgVideoInput.addEventListener('input', refreshBg);
+siteBase.addEventListener('change', ()=>{ refreshBg(); nodes.forEach(n=>{ n.imgEl.src = resolveSrc(n.src); }); });
+document.getElementById('reloadBase').addEventListener('click', ()=>{ refreshBg(); nodes.forEach(n=>{ n.imgEl.src = resolveSrc(n.src); }); });
 
 document.getElementById('bgFile').addEventListener('change', e=>{
   const f=e.target.files[0]; if(!f) return;
   const url=URL.createObjectURL(f);
   bgImageInput.value='images/'+f.name.replace(/\s+/g,'-');
   refreshBg();
-  // 同时把预览设为 objectURL 方便先看效果
-  stage.querySelectorAll('.bgmedia').forEach(el=>{ if(el.tagName==='IMG') el.src=url; });
+  stageBg.querySelectorAll('img').forEach(el=>{ el.src=url; el.onerror=null; });
 });
 
-/* ---------- 添加图片 ---------- */
+/* ---------- 添加图片节点 ---------- */
 document.getElementById('imgFiles').addEventListener('change', e=>{
   [...e.target.files].forEach(f=> addNode('images/'+f.name.replace(/\s+/g,'-'), f.name, URL.createObjectURL(f)));
   e.target.value='';
-});
-
-document.getElementById('addSample').addEventListener('click', ()=>{
-  addNode('images/sample.jpg','sample.jpg','data:image/svg+xml;utf8,'+encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="400" height="300" fill="#c9873c"/><text x="200" y="160" font-size="34" fill="#fff" text-anchor="middle" font-family="sans-serif">示例图</text></svg>'
-  ));
 });
 
 function addNode(src, name, previewUrl){
   const id='n'+(++seq);
   const el=document.createElement('div');
   el.className='node';
-  el.innerHTML = `<div class="tag">${name}</div>
+  el.innerHTML = `<div class="tag">${esc(name)}</div>
     <div class="rh" title="拖动旋转"></div>
-    <img src="${previewUrl||src}" alt="">
+    <img src="${previewUrl||resolveSrc(src)}" alt="" onerror="this.style.opacity=.25">
     <div class="rs" title="拖动缩放"></div>`;
-  // 初始位置：居中错开
-  const x = 30 + (nodes.length%3)*20;
-  const y = 25 + (nodes.length%2)*20;
-  const data={ id, src, name, x, y, width:240, rotate:0, el, imgEl:el.querySelector('img') };
+  const x = 55 + (nodes.length%3)*8;
+  const y = 18 + (nodes.length%2)*22;
+  const data={ id, src, name, x, y, width:280, rotate:0, el, imgEl:el.querySelector('img') };
   el.style.left=x+'%'; el.style.top=y+'%'; el.style.width=data.width+'px';
-  el.style.transform=`rotate(0deg)`;
   stage.appendChild(el);
   nodes.push(data);
   bindNode(data);
   selectNode(data);
   renderCtrl();
+  syncFloats();
+  applyZ();
+  return data;
 }
+function addNodeRaw(src,name,x,y,width,rotate){
+  const d=addNode(src,name);
+  d.x=x!=null?x:50; d.y=y!=null?y:50; d.width=width||240; d.rotate=rotate||0;
+  d.el.style.left=d.x+'%'; d.el.style.top=d.y+'%'; d.el.style.width=d.width+'px';
+  d.el.style.transform=`rotate(${d.rotate}deg)`;
+  return d;
+}
+/* 有自由图片时文字靠左（与线上 has-floats 行为一致） */
+function syncFloats(){ stageInner.classList.toggle('has-floats', nodes.length>0); }
 
-/* ---------- 选中与控件 ---------- */
+/* ---------- 选中 / 拖拽 ---------- */
 function selectNode(d){ nodes.forEach(n=>n.el.classList.toggle('selected', n===d)); }
 stage.addEventListener('pointerdown', e=>{
   const n = e.target.closest('.node'); if(n){ const d=nodes.find(x=>x.el===n); if(d) selectNode(d); }
@@ -246,33 +326,25 @@ stage.addEventListener('pointerdown', e=>{
 
 function bindNode(d){
   const el=d.el;
-  const img=el.querySelector('img');
   const rh=el.querySelector('.rh');
   const rs=el.querySelector('.rs');
-
-  // 移动
   el.addEventListener('pointerdown', e=>{
     if(e.target===rh||e.target===rs) return;
     e.preventDefault();
     const r=stage.getBoundingClientRect();
-    const ex=e.clientX, ey=e.clientY;
-    const startLeft=parseFloat(el.style.left), startTop=parseFloat(el.style.top);
-    dnd={type:'move', r, ex, ey, startLeft, startTop};
+    dnd={type:'move', r, ex:e.clientX, ey:e.clientY, startLeft:parseFloat(el.style.left), startTop:parseFloat(el.style.top)};
     el.setPointerCapture(e.pointerId);
   });
-  // 旋转手柄
   rh.addEventListener('pointerdown', e=>{
     e.preventDefault(); e.stopPropagation();
     dnd={type:'rot', el};
     rh.setPointerCapture(e.pointerId);
   });
-  // 缩放手柄
   rs.addEventListener('pointerdown', e=>{
     e.preventDefault(); e.stopPropagation();
     dnd={type:'resize', el};
     rs.setPointerCapture(e.pointerId);
   });
-
   el.addEventListener('pointermove', e=>{
     if(!dnd) return;
     const r=stage.getBoundingClientRect();
@@ -302,15 +374,19 @@ function bindNode(d){
 
 function renderCtrl(){
   ctrl.innerHTML='';
-  if(!nodes.length){ ctrl.innerHTML='<div class="hint">还没有图片，点上面“添加右侧图片”或“放一张示例图”。</div>'; return; }
+  if(!nodes.length){ ctrl.innerHTML='<div class="hint">还没有图片，用上面按钮添加，或导入 content.json 加载现有图片。</div>'; return; }
   nodes.forEach((d,i)=>{
     const div=document.createElement('div');
     div.className='citem';
-    div.innerHTML=`<span class="grow">图 ${i+1}：<b>${d.name}</b></span>
+    div.innerHTML=`<span class="grow">图 ${i+1}：<b>${esc(d.name)}</b></span>
       <label>位置X<input type="number" data-k="x" value="${Math.round(d.x)}"></label>
       <label>Y<input type="number" data-k="y" value="${Math.round(d.y)}"></label>
       <label>宽<input type="number" data-k="width" value="${d.width}"></label>
       <label>旋<input type="number" data-k="rotate" value="${d.rotate}"></label>
+      <button class="ghost" data-z="back" style="padding:5px 8px;">置底</button>
+      <button class="ghost" data-z="down" style="padding:5px 8px;">后移</button>
+      <button class="ghost" data-z="up" style="padding:5px 8px;">前移</button>
+      <button class="ghost" data-z="top" style="padding:5px 8px;">置顶</button>
       <button class="danger" data-del>删</button>`;
     div.querySelectorAll('input').forEach(inp=>{
       inp.addEventListener('input', ()=>{
@@ -323,8 +399,13 @@ function renderCtrl(){
       });
     });
     div.querySelector('[data-del]').addEventListener('click', ()=>{
-      d.el.remove(); nodes=nodes.filter(n=>n!==d); renderCtrl();
+      d.el.remove(); nodes=nodes.filter(n=>n!==d); renderCtrl(); syncFloats(); applyZ();
     });
+    div.querySelectorAll('[data-z]').forEach(b=> b.addEventListener('click', ()=>{
+      const z=b.dataset.z;
+      if(z==='back') toBottom(d); else if(z==='down') sendBackward(d);
+      else if(z==='up') bringForward(d); else if(z==='top') toTop(d);
+    }));
     ctrl.appendChild(div);
   });
 }
@@ -336,6 +417,14 @@ function syncCtrl(d){
   item.querySelector('[data-k="rotate"]').value=Math.round(d.rotate);
   item.querySelector('[data-k="width"]').value=d.width;
 }
+
+/* ---------- 图层顺序 ---------- */
+// 图片层级从 3 起（背景=0，文字 hero-inner=2），保证图片始终在文字之上
+function applyZ(){ nodes.forEach((n,i)=> n.el.style.zIndex = 3 + i); }
+function bringForward(d){ const i=nodes.indexOf(d); if(i>=0 && i<nodes.length-1){ nodes.splice(i,1); nodes.splice(i+1,0,d);} applyZ(); renderCtrl(); }
+function sendBackward(d){ const i=nodes.indexOf(d); if(i>0){ nodes.splice(i,1); nodes.splice(i-1,0,d);} applyZ(); renderCtrl(); }
+function toTop(d){ const i=nodes.indexOf(d); if(i>=0){ nodes.splice(i,1); nodes.push(d);} applyZ(); renderCtrl(); }
+function toBottom(d){ const i=nodes.indexOf(d); if(i>=0){ nodes.splice(i,1); nodes.unshift(d);} applyZ(); renderCtrl(); }
 
 /* ---------- 导出 ---------- */
 document.getElementById('exportBtn').addEventListener('click', ()=>{
@@ -351,8 +440,8 @@ document.getElementById('exportBtn').addEventListener('click', ()=>{
     images
   };
   out.value = JSON.stringify(result, null, 2)
-    + '\n\n/* 也可以直接把上面 images 数组复制到 content.json 的 hero.images，\n   并把 bgImage / bgVideo / bgMask / panelColor / panelOpacity 填到对应位置 */';
-  statusEl.textContent='已生成。可点“复制配置”，再按第⑤步填回后台。';
+    + '\n\n/* 把 bgImage / bgVideo / bgMask / panelColor / panelOpacity 填到后台「首页」对应框，\n   images 数组逐张 Add 并填 x/y/宽度/旋转（src 选同一张图） */';
+  statusEl.textContent='已生成。可点“复制配置”，再按第⑦步填回后台。';
   statusEl.className='hint ok';
 });
 
@@ -363,7 +452,7 @@ document.getElementById('copyBtn').addEventListener('click', ()=>{
   }).catch(()=>{ out.select(); document.execCommand('copy'); statusEl.textContent='已复制（选中状态）。'; });
 });
 
-/* ---------- 导入已有 content.json ---------- */
+/* ---------- 导入 content.json ---------- */
 document.getElementById('importBtn').addEventListener('click', ()=> document.getElementById('importFile').click());
 document.getElementById('importFile').addEventListener('change', e=>{
   const f=e.target.files[0]; if(!f) return;
@@ -372,45 +461,53 @@ document.getElementById('importFile').addEventListener('change', e=>{
     try{
       const data=JSON.parse(rd.result);
       const h=data.hero||{};
+      // 文字内容自动填入 → 舞台变成真实首页
+      if(h.eyebrow) tEyebrow.value=h.eyebrow;
+      if(h.title1) tTitle1.value=h.title1;
+      if(h.titleAccent) tTitleAccent.value=h.titleAccent;
+      if(h.lead) tLead.value=h.lead;
+      if(h.cta1) tCta1.value=h.cta1;
+      if(h.cta2) tCta2.value=h.cta2;
+      if(h.trust && h.trust.length) tTrust.value=h.trust.join(', ');
+      renderHeroText();
+      // 背景与遮罩
       bgImageInput.value=h.bgImage||''; bgVideoInput.value=h.bgVideo||'';
       maskRange.value = h.bgMask != null ? h.bgMask : 80; applyMask();
       panelColorInput.value = h.panelColor || '#ffffff';
       panelRange.value = h.panelOpacity != null ? h.panelOpacity : 0; applyPanel();
       refreshBg();
-      // 清空现有节点
+      // 图片
       nodes.forEach(n=>n.el.remove()); nodes=[];
       (h.images||[]).forEach(im=>{
-        if(im&&im.src){
-          const d=addNodeRaw(im.src, im.src.split('/').pop(), parseFloat(im.x), parseFloat(im.y), parseFloat(im.width)||240, parseFloat(im.rotate)||0);
-        }
+        if(im&&im.src) addNodeRaw(im.src, im.src.split('/').pop(), parseFloat(im.x), parseFloat(im.y), parseFloat(im.width)||240, parseFloat(im.rotate)||0);
       });
-      statusEl.textContent='已导入现有 hero 配置，可继续微调后重新导出。'; statusEl.className='hint ok';
+      syncFloats(); renderCtrl(); applyZ();
+      statusEl.textContent='已导入：文字、背景、遮罩、色块、图片都按 content.json 渲染，舞台就是当前线上首页的样子。';
+      statusEl.className='hint ok';
     }catch(err){ statusEl.textContent='解析失败：'+err.message; }
   };
   rd.readAsText(f);
   e.target.value='';
 });
-function addNodeRaw(src,name,x,y,width,rotate){
-  const id='n'+(++seq);
-  const el=document.createElement('div'); el.className='node';
-  el.innerHTML=`<div class="tag">${name}</div><div class="rh"></div><img src="${src}" alt=""><div class="rs"></div>`;
-  const data={id,src,name,x:x||50,y:y||50,width:width||240,rotate:rotate||0,el,imgEl:el.querySelector('img')};
-  el.style.left=data.x+'%'; el.style.top=data.y+'%'; el.style.width=data.width+'px'; el.style.transform=`rotate(${data.rotate}deg)`;
-  stage.appendChild(el); nodes.push(data); bindNode(data); renderCtrl(); return data;
-}
 
 /* ---------- 清空 ---------- */
 document.getElementById('resetBtn').addEventListener('click', ()=>{
-  nodes.forEach(n=>n.el.remove()); nodes=[]; renderCtrl();
+  nodes.forEach(n=>n.el.remove()); nodes=[]; renderCtrl(); syncFloats();
   bgImageInput.value=''; bgVideoInput.value=''; refreshBg(); maskRange.value=80; applyMask();
   panelColorInput.value='#ffffff'; panelRange.value=0; applyPanel();
+  setDefaultText(); renderHeroText();
   out.value=''; statusEl.textContent='';
 });
 
-renderCtrl();
-refreshBg();
+/* ---------- 初始化 ---------- */
+setDefaultText();
+renderHeroText();
 applyMask();
 applyPanel();
+refreshBg();
+renderCtrl();
+syncFloats();
+applyZ();
 </script>
 </body>
 </html>
