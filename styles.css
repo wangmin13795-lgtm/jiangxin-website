@@ -235,7 +235,7 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
   .nav-links a { padding: 12px 0; width: 100%; }
   .nav-toggle { display: flex; }
   .cards, .why-grid, .stats { grid-template-columns: 1fr; }
-  .about-gallery { grid-template-columns: 1fr 1fr; }
+  .about-gallery { grid-template-columns: 1fr 1fr !important; }
   .section { padding: 56px 0; }
 }
 

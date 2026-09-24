@@ -105,6 +105,7 @@ collections:
                   - { name: y, label: "垂直位置%(可选)", widget: number, required: false }
                   - { name: width, label: "宽度px(可选)", widget: number, required: false }
                   - { name: rotate, label: "旋转角度(可选，如 -5)", widget: number, required: false }
+              - { name: galleryColumns, label: "照片墙每行张数（2=两两成对，3=常规三列；手机上自动变单列）", widget: number, required: false, min: 1, max: 4, default: 3 }
 
           - name: products
             label: "产品"

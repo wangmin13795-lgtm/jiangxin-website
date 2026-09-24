@@ -179,8 +179,10 @@ function render(c) {
     : "";
   const gallery = (c.about.gallery || []).filter(g => g && g.image);
   const hasPos = gallery.some(g => g.x != null);
+  const cols = Math.min(Math.max(c.about.galleryColumns || 3, 1), 4);
+  const galleryStyle = hasPos ? '' : `grid-template-columns:repeat(${cols},1fr);`;
   const aboutGallery = gallery.length
-    ? `<div class="about-gallery${hasPos ? ' about-gallery-free' : ''}">${gallery.map(g => {
+    ? `<div class="about-gallery${hasPos ? ' about-gallery-free' : ''}" style="${galleryStyle}">${gallery.map(g => {
         const rot = g.rotate || 0, w = g.width || 260;
         const style = hasPos
           ? `position:absolute;left:${g.x!=null?g.x:50}%;top:${g.y!=null?g.y:20}%;width:${w}px;transform:rotate(${rot}deg);`
