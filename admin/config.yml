@@ -29,7 +29,7 @@ collections:
               - { name: name, label: "完整公司名", widget: string }
               - { name: short, label: "简称（导航/页脚用）", widget: string }
               - { name: logo, label: "Logo 图片（可选，留空显示默认 JX 方块）", widget: image, required: false }
-              - { name: music, label: "背景音乐（可选，填音频路径如 images/bgm.mp3，留空则无音乐）", widget: string, required: false }
+              - { name: music, label: "背景音乐（可选，点上传按钮选电脑里的 MP3，留空则无音乐）", widget: file, required: false }
 
           - name: hero
             label: "首页"
