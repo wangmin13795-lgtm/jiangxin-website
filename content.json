@@ -204,7 +204,7 @@
     "titleAccent": "Premium Packaging",
     "panelOpacity": 80,
     "eyebrow": "Custom Packaging Manufacturer · Qingdao, China",
-    "bgMask": 80,
+    "bgMask": 40,
     "bgImage": "images/印刷厂印刷机工作视频.jpeg",
     "bgVideo": "",
     "trust": [
@@ -215,7 +215,7 @@
     "images": [],
     "title1": "Your Trusted Partner for",
     "lead": "From corrugated boxes to luxury gift packaging, we help global brands protect, present and ship their products — factory-direct from one of China's leading packaging hubs.",
-    "panelColor": "#ffffc9"
+    "panelColor": "#ebffc0"
   },
   "company": {
     "name": "Qingdao Jiangxin Packaging Products Co., Ltd.",
