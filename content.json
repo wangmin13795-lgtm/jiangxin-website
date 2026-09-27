@@ -216,9 +216,9 @@
     ],
     "images": [
       {
-        "x": 54,
-        "y": 13,
-        "width": 497,
+        "x": 64,
+        "y": 0,
+        "width": 600,
         "rotate": 0,
         "src": "images/未标题-1.png"
       }
