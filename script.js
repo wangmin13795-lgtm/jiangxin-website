@@ -131,12 +131,29 @@ function render(c) {
     : '';
 
   // 全屏自由图层：每张图可单独设置位置/尺寸/旋转角度（坐标相对整个首屏区域）
+  // 宽度按百分比存（所见即所得，任何屏幕比例一致）；旧数据的 px 值（>50）自动按 1440px 基准换算成 %
+  const toPct = w => {
+    const n = Number(w);
+    if (w == null || isNaN(n)) return 20;
+    return n <= 50 ? n : Math.round(n / 1440 * 100 * 10) / 10;
+  };
   const heroFloats = (c.hero.images || [])
     .filter(im => im && im.src)
     .map(im => `
         <img class="hero-float" src="${esc(im.src)}" alt=""
-             style="left:${im.x != null ? im.x : 50}%;top:${im.y != null ? im.y : 50}%;width:${im.width != null ? im.width : 300}px;transform:rotate(${(im.rotate != null ? im.rotate : 0)}deg)" />`)
+             style="left:${im.x != null ? im.x : 50}%;top:${im.y != null ? im.y : 50}%;width:${toPct(im.width)}%;transform:rotate(${(im.rotate != null ? im.rotate : 0)}deg)" />`)
     .join('');
+
+  // 文字样式：整体位移、标题/正文颜色、字号缩放、字体（全部后台可调，留空/默认即原样）
+  const fs = Math.min(140, Math.max(70, c.hero.fontSize != null ? Number(c.hero.fontSize) : 100)) / 100;
+  const ff = c.hero.fontFamily ? `font-family:${c.hero.fontFamily};` : '';
+  const tx = c.hero.textOffsetX != null ? Number(c.hero.textOffsetX) : 0;
+  const ty = c.hero.textOffsetY != null ? Number(c.hero.textOffsetY) : 0;
+  const copyStyle = `${ff}transform:translate(${tx}px,${ty}px);`;
+  const titleStyle = `${c.hero.titleColor ? 'color:' + esc(c.hero.titleColor) + ';' : ''}font-size:calc(clamp(34px,5vw,54px)*${fs});`;
+  const leadStyle = `${c.hero.textColor ? 'color:' + esc(c.hero.textColor) + ';' : ''}font-size:calc(18px*${fs});`;
+  const eyebrowStyle = `${c.hero.titleColor ? 'color:' + esc(c.hero.titleColor) + ';' : ''}font-size:calc(13px*${fs});`;
+  const trustStyle = `${c.hero.textColor ? 'color:' + esc(c.hero.textColor) + ';' : ''}font-size:calc(14px*${fs});`;
 
   const boxFallback = `<div class="box-illustration">
       <div class="box-top"></div>
@@ -148,16 +165,16 @@ function render(c) {
     <div class="hero-bg" aria-hidden="true">${heroBg}${heroMask}</div>
     <div class="hero-stage" aria-hidden="true">${heroFloats}</div>
     <div class="container hero-inner${heroFloats ? ' has-floats' : ''}">
-      <div class="hero-copy">
+      <div class="hero-copy" style="${copyStyle}">
         ${heroPanel}
-        <p class="eyebrow">${esc(c.hero.eyebrow)}</p>
-        <h1>${esc(c.hero.title1)}<br /><span class="accent">${esc(c.hero.titleAccent)}</span></h1>
-        <p class="lead">${esc(c.hero.lead)}</p>
+        <p class="eyebrow" style="${eyebrowStyle}">${esc(c.hero.eyebrow)}</p>
+        <h1 style="${titleStyle}">${esc(c.hero.title1)}<br /><span class="accent">${esc(c.hero.titleAccent)}</span></h1>
+        <p class="lead" style="${leadStyle}">${esc(c.hero.lead)}</p>
         <div class="hero-actions">
           <a href="#products" class="btn btn-primary">${esc(c.hero.cta1)}</a>
           <a href="#contact" class="btn btn-ghost">${esc(c.hero.cta2)}</a>
         </div>
-        <div class="trust">${trust}</div>
+        <div class="trust" style="${trustStyle}">${trust}</div>
       </div>
       ${heroFloats ? '' : `<div class="hero-art">${boxFallback}</div>`}
     </div>

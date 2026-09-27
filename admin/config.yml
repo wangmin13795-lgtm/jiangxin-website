@@ -56,6 +56,24 @@ collections:
               - { name: bgMask, label: "遮罩强度 (0-100：0=背景最清晰，100=遮罩最重文字最清楚)", widget: number, required: false, min: 0, max: 100, default: 80 }
               - { name: panelColor, label: "文字底色块颜色（点色块弹出取色器，随意选）", widget: color, required: false, default: "#ffffff" }
               - { name: panelOpacity, label: "文字底色块深浅 (0-100：0=不显示色块，100=色块最实)", widget: number, required: false, min: 0, max: 100, default: 0 }
+              - { name: textOffsetX, label: "文字整体水平移动 px（正=右移，负=左移）", widget: number, required: false, min: -300, max: 300, default: 0 }
+              - { name: textOffsetY, label: "文字整体垂直移动 px（正=下移，负=上移）", widget: number, required: false, min: -300, max: 300, default: 0 }
+              - { name: titleColor, label: "标题/眉标题颜色（留空用默认深色）", widget: string, required: false, hint: "可填 #155e63 这类色值，或用编辑器取色" }
+              - { name: textColor, label: "正文/信任标颜色（留空用默认灰色）", widget: string, required: false, hint: "可填 #5b6b78 这类色值" }
+              - name: fontFamily
+                label: "全站字体（首屏文字生效）"
+                widget: select
+                required: false
+                default: ""
+                options:
+                  - { label: "默认（Segoe UI 现代无衬线）", value: "" }
+                  - { label: "Arial 经典无衬线", value: "Arial, sans-serif" }
+                  - { label: "Georgia 优雅衬线", value: "Georgia, 'Times New Roman', serif" }
+                  - { label: "Verdana 清晰宽体", value: "Verdana, Geneva, sans-serif" }
+                  - { label: "Trebuchet MS 圆润", value: "'Trebuchet MS', sans-serif" }
+                  - { label: "Tahoma 紧凑", value: "Tahoma, sans-serif" }
+                  - { label: "Palatino 书卷衬线", value: "'Palatino Linotype', 'Book Antiqua', serif" }
+              - { name: fontSize, label: "字号缩放 %（100=原大小，80=缩小两成，120=放大两成）", widget: number, required: false, min: 70, max: 140, default: 100 }
               - name: images
                 label: "自由图片（可加多张，位置相对整个首屏，可分别调尺寸/位置/旋转）"
                 widget: list
@@ -64,7 +82,7 @@ collections:
                   - { name: src, label: "图片", widget: image, required: false }
                   - { name: x, label: "水平位置 (0-100, 百分比)", widget: number, default: 50, required: false }
                   - { name: y, label: "垂直位置 (0-100, 百分比)", widget: number, default: 50, required: false }
-                  - { name: width, label: "宽度 (px)", widget: number, default: 300, required: false }
+                  - { name: width, label: "宽度 (占首屏宽度百分比, 建议 10-45)", widget: number, default: 20, required: false }
                   - { name: rotate, label: "旋转角度 (度, 可正可负)", widget: number, default: 0, required: false }
 
           - name: about

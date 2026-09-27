@@ -38,7 +38,7 @@
   #stage .hero-panel{ position:absolute; inset:-30px -36px; border-radius:22px; box-shadow:0 10px 40px rgba(31,61,60,.12); }
   #stage .hero-copy > *:not(.hero-panel){ position:relative; z-index:1; }
   #stage .eyebrow{ text-transform:uppercase; letter-spacing:2px; font-size:13px; font-weight:700; color:var(--kraft); margin-bottom:10px; }
-  #stage .hero-copy h1{ font-size:clamp(30px,3.6vw,44px); line-height:1.2; font-weight:700; margin:0 0 18px; color:var(--ink); }
+  #stage .hero-copy h1{ font-size:clamp(34px,4.7vw,54px); line-height:1.2; font-weight:700; margin:0 0 18px; color:var(--ink); }
   #stage .accent{ color:var(--teal); }
   #stage .lead{ font-size:17px; color:var(--muted); margin:0 0 28px; max-width:520px; }
   #stage .hero-actions{ display:flex; gap:14px; flex-wrap:wrap; }
@@ -111,6 +111,27 @@
       <label>色块深浅：<input type="range" id="panelRange" min="0" max="100" value="0" style="vertical-align:middle;" /> <b id="panelVal">0</b>%</label>
       <span class="hint" style="margin-top:0;">给文字垫一块底色；0=不显示</span>
     </div>
+    <div class="row">
+      <label>文字水平移动：<input type="range" id="txRange" min="-200" max="200" value="0" style="vertical-align:middle;width:130px;" /> <b id="txVal">0</b>px</label>
+      <label>垂直移动：<input type="range" id="tyRange" min="-200" max="200" value="0" style="vertical-align:middle;width:130px;" /> <b id="tyVal">0</b>px</label>
+      <label>字号缩放：<input type="range" id="fsRange" min="70" max="140" value="100" style="vertical-align:middle;width:120px;" /> <b id="fsVal">100</b>%</label>
+    </div>
+    <div class="row">
+      <label>标题颜色：<input type="color" id="titleColor" value="#1c2733" style="vertical-align:middle;width:44px;height:30px;padding:0;border:1px solid var(--line);border-radius:8px;background:none;" /></label>
+      <label>正文颜色：<input type="color" id="textColor" value="#5b6b78" style="vertical-align:middle;width:44px;height:30px;padding:0;border:1px solid var(--line);border-radius:8px;background:none;" /></label>
+      <label>字体：
+        <select id="fontSel" class="txt">
+          <option value="">默认（Segoe UI）</option>
+          <option value="Arial, sans-serif">Arial 经典无衬线</option>
+          <option value="Georgia, 'Times New Roman', serif">Georgia 优雅衬线</option>
+          <option value="Verdana, Geneva, sans-serif">Verdana 清晰宽体</option>
+          <option value="'Trebuchet MS', sans-serif">Trebuchet MS 圆润</option>
+          <option value="Tahoma, sans-serif">Tahoma 紧凑</option>
+          <option value="'Palatino Linotype', 'Book Antiqua', serif">Palatino 书卷衬线</option>
+        </select>
+      </label>
+      <span class="hint" style="margin-top:0;">以上文字样式都会同步预览，导出后填回后台「首页」对应框</span>
+    </div>
   </div>
 
   <div class="panel">
@@ -159,7 +180,7 @@
       <ol>
         <li>把用到的图片/视频先上传到网站 <code>images/</code> 文件夹（后台 Media 或 GitHub）。</li>
         <li>打开 <code>你的网址/admin/</code> → 全站内容 → 「首页」区块。</li>
-        <li>把<b>背景图片/背景视频</b>、<b>遮罩强度</b>、<b>文字底色块颜色/深浅</b>填进去；点「自由图片 → Add」逐个添加，把每张的 <b>水平位置/垂直位置/宽度/旋转</b> 数字填进去。</li>
+        <li>把<b>背景图片/背景视频</b>、<b>遮罩强度</b>、<b>文字底色块</b>、<b>文字移动/颜色/字体/字号</b>填进去；点「自由图片 → Add」逐个添加，把每张的 <b>水平位置/垂直位置/宽度(%)/旋转</b> 数字填进去。</li>
         <li>右上角 <b>Publish</b> → 约 1 分钟后网站更新。因为舞台和真实网站样式一致，这里看到的位置就是线上的位置。</li>
       </ol>
       <p class="ok">提示：导出的「水平/垂直位置」是相对整个首屏的百分比，编辑器里看到哪里，线上就在哪里。</p>
@@ -189,6 +210,12 @@ const maskVal = document.getElementById('maskVal');
 const panelColorInput = document.getElementById('panelColor');
 const panelRange = document.getElementById('panelRange');
 const panelVal = document.getElementById('panelVal');
+const txRange = document.getElementById('txRange'), tyRange = document.getElementById('tyRange');
+const txVal = document.getElementById('txVal'), tyVal = document.getElementById('tyVal');
+const fsRange = document.getElementById('fsRange'), fsVal = document.getElementById('fsVal');
+const titleColorInput = document.getElementById('titleColor');
+const textColorInput = document.getElementById('textColor');
+const fontSel = document.getElementById('fontSel');
 
 /* ---------- 文字字段 ---------- */
 const tEyebrow = document.getElementById('tEyebrow');
@@ -253,6 +280,24 @@ function applyPanel(){
 panelRange.addEventListener('input', applyPanel);
 panelColorInput.addEventListener('input', applyPanel);
 
+/* ---------- 文字样式：位移/字号/颜色/字体 ---------- */
+function applyTextStyle(){
+  txVal.textContent = txRange.value; tyVal.textContent = tyRange.value; fsVal.textContent = fsRange.value;
+  const sc = document.getElementById('stageCopy');
+  sc.style.transform = `translate(${txRange.value}px,${tyRange.value}px)`;
+  sc.style.fontFamily = fontSel.value || '';
+  const fs = Number(fsRange.value)/100;
+  sc.querySelector('h1').style.color = titleColorInput.value;
+  sc.querySelector('h1').style.fontSize = `calc(clamp(34px,4.7vw,54px)*${fs})`;
+  sc.querySelector('.eyebrow').style.color = titleColorInput.value;
+  sc.querySelector('.eyebrow').style.fontSize = `calc(13px*${fs})`;
+  sc.querySelector('.lead').style.color = textColorInput.value;
+  sc.querySelector('.lead').style.fontSize = `calc(18px*${fs})`;
+  sc.querySelector('.trust').style.color = textColorInput.value;
+  sc.querySelector('.trust').style.fontSize = `calc(14px*${fs})`;
+}
+[txRange, tyRange, fsRange, titleColorInput, textColorInput, fontSel].forEach(el=> el.addEventListener('input', applyTextStyle));
+
 /* ---------- 背景预览 ---------- */
 function refreshBg(){
   stageBg.innerHTML='';
@@ -298,8 +343,8 @@ function addNode(src, name, previewUrl){
     <div class="rs" title="拖动缩放"></div>`;
   const x = 55 + (nodes.length%3)*8;
   const y = 18 + (nodes.length%2)*22;
-  const data={ id, src, name, x, y, width:280, rotate:0, el, imgEl:el.querySelector('img') };
-  el.style.left=x+'%'; el.style.top=y+'%'; el.style.width=data.width+'px';
+  const data={ id, src, name, x, y, width:20, rotate:0, el, imgEl:el.querySelector('img') };
+  el.style.left=x+'%'; el.style.top=y+'%'; el.style.width=data.width+'%';
   stage.appendChild(el);
   nodes.push(data);
   bindNode(data);
@@ -311,8 +356,10 @@ function addNode(src, name, previewUrl){
 }
 function addNodeRaw(src,name,x,y,width,rotate){
   const d=addNode(src,name);
-  d.x=x!=null?x:50; d.y=y!=null?y:50; d.width=width||240; d.rotate=rotate||0;
-  d.el.style.left=d.x+'%'; d.el.style.top=d.y+'%'; d.el.style.width=d.width+'px';
+  // 兼容旧 px 数据：>50 视为像素，按 1440px 基准换算成百分比
+  const w = width!=null ? (width<=50 ? width : Math.round(width/1440*1000)/10) : 20;
+  d.x=x!=null?x:50; d.y=y!=null?y:50; d.width=w; d.rotate=rotate||0;
+  d.el.style.left=d.x+'%'; d.el.style.top=d.y+'%'; d.el.style.width=d.width+'%';
   d.el.style.transform=`rotate(${d.rotate}deg)`;
   return d;
 }
@@ -352,7 +399,7 @@ function bindNode(d){
     if(dnd.type==='move'){
       let nx=dnd.startLeft + (e.clientX-dnd.ex)/r.width*100;
       let ny=dnd.startTop + (e.clientY-dnd.ey)/r.height*100;
-      nx=Math.max(-15,Math.min(115,nx)); ny=Math.max(-15,Math.min(115,ny));
+      nx=Math.max(0,Math.min(100,nx)); ny=Math.max(0,Math.min(100,ny));
       el.style.left=nx+'%'; el.style.top=ny+'%';
       d.x=nx; d.y=ny;
     } else if(dnd.type==='rot'){
@@ -363,8 +410,8 @@ function bindNode(d){
       syncCtrl(d);
     } else if(dnd.type==='resize'){
       const c=el.getBoundingClientRect();
-      let w=Math.max(60, e.clientX-c.left);
-      el.style.width=w+'px'; d.width=Math.round(w);
+      let w=Math.max(2, (e.clientX-c.left)/r.width*100);
+      el.style.width=w+'%'; d.width=Math.round(w*10)/10;
       syncCtrl(d);
     }
   });
@@ -382,7 +429,7 @@ function renderCtrl(){
     div.innerHTML=`<span class="grow">图 ${i+1}：<b>${esc(d.name)}</b></span>
       <label>位置X<input type="number" data-k="x" value="${Math.round(d.x)}"></label>
       <label>Y<input type="number" data-k="y" value="${Math.round(d.y)}"></label>
-      <label>宽<input type="number" data-k="width" value="${d.width}"></label>
+      <label>宽%<input type="number" data-k="width" value="${d.width}" step="0.5"></label>
       <label>旋<input type="number" data-k="rotate" value="${d.rotate}"></label>
       <button class="ghost" data-z="back" style="padding:5px 8px;">置底</button>
       <button class="ghost" data-z="down" style="padding:5px 8px;">后移</button>
@@ -395,7 +442,7 @@ function renderCtrl(){
         d[k]=v;
         if(k==='x') d.el.style.left=v+'%';
         if(k==='y') d.el.style.top=v+'%';
-        if(k==='width') d.el.style.width=v+'px';
+        if(k==='width') d.el.style.width=v+'%';
         if(k==='rotate') d.el.style.transform=`rotate(${v}deg)`;
       });
     });
@@ -438,10 +485,16 @@ document.getElementById('exportBtn').addEventListener('click', ()=>{
     bgMask: Number(maskRange.value),
     panelColor: panelColorInput.value,
     panelOpacity: Number(panelRange.value),
+    textOffsetX: Number(txRange.value),
+    textOffsetY: Number(tyRange.value),
+    titleColor: titleColorInput.value,
+    textColor: textColorInput.value,
+    fontFamily: fontSel.value,
+    fontSize: Number(fsRange.value),
     images
   };
   out.value = JSON.stringify(result, null, 2)
-    + '\n\n/* 把 bgImage / bgVideo / bgMask / panelColor / panelOpacity 填到后台「首页」对应框，\n   images 数组逐张 Add 并填 x/y/宽度/旋转（src 选同一张图） */';
+    + '\n\n/* 填回后台「首页」对应框：bgImage/bgVideo/bgMask/文字底色块颜色·深浅/文字水平·垂直移动/标题颜色/正文颜色/字体/字号缩放，\n   images 数组逐张 Add 并填 x/y/宽度(%)/旋转（src 选同一张图）。宽度现在是百分比，编辑器里多宽线上就多宽 */';
   statusEl.textContent='已生成。可点“复制配置”，再按第⑦步填回后台。';
   statusEl.className='hint ok';
 });
@@ -476,6 +529,13 @@ document.getElementById('importFile').addEventListener('change', e=>{
       maskRange.value = h.bgMask != null ? h.bgMask : 80; applyMask();
       panelColorInput.value = h.panelColor || '#ffffff';
       panelRange.value = h.panelOpacity != null ? h.panelOpacity : 0; applyPanel();
+      txRange.value = h.textOffsetX != null ? h.textOffsetX : 0;
+      tyRange.value = h.textOffsetY != null ? h.textOffsetY : 0;
+      fsRange.value = h.fontSize != null ? h.fontSize : 100;
+      titleColorInput.value = h.titleColor || '#1c2733';
+      textColorInput.value = h.textColor || '#5b6b78';
+      fontSel.value = h.fontFamily || '';
+      applyTextStyle();
       refreshBg();
       // 图片
       nodes.forEach(n=>n.el.remove()); nodes=[];
@@ -496,6 +556,9 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{
   nodes.forEach(n=>n.el.remove()); nodes=[]; renderCtrl(); syncFloats();
   bgImageInput.value=''; bgVideoInput.value=''; refreshBg(); maskRange.value=80; applyMask();
   panelColorInput.value='#ffffff'; panelRange.value=0; applyPanel();
+  txRange.value=0; tyRange.value=0; fsRange.value=100;
+  titleColorInput.value='#1c2733'; textColorInput.value='#5b6b78'; fontSel.value='';
+  applyTextStyle();
   setDefaultText(); renderHeroText();
   out.value=''; statusEl.textContent='';
 });
@@ -505,6 +568,7 @@ setDefaultText();
 renderHeroText();
 applyMask();
 applyPanel();
+applyTextStyle();
 refreshBg();
 renderCtrl();
 syncFloats();
