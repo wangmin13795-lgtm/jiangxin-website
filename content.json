@@ -236,32 +236,32 @@
     ],
     "images": [
       {
-        "x": 55,
-        "y": 7,
-        "width": 29,
+        "x": 57,
+        "y": 0,
+        "width": 32,
         "rotate": 0,
         "src": "images/印刷厂印刷机工作视频-1-.png"
       },
       {
-        "x": 55,
-        "y": 7,
-        "width": 29,
-        "rotate": 0,
-        "src": "images/印刷厂印刷机工作视频-2-.png"
-      },
-      {
-        "x": 55,
-        "y": 7,
-        "width": 29,
+        "x": 57,
+        "y": 1,
+        "width": 31,
         "rotate": 0,
         "src": "images/印刷厂印刷机工作视频-3-.png"
       },
       {
-        "x": 55,
-        "y": 7,
-        "width": 29,
+        "x": 57,
+        "y": 3,
+        "width": 32,
         "rotate": 0,
         "src": "images/印刷厂印刷机工作视频-4-.png"
+      },
+      {
+        "x": 57,
+        "y": 0,
+        "width": 33,
+        "rotate": 0,
+        "src": "images/印刷厂印刷机工作视频-2-.png"
       }
     ],
     "textOffsetY": 0,
