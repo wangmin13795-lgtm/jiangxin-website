@@ -216,32 +216,11 @@
     ],
     "images": [
       {
-        "x": 51,
-        "y": 14,
-        "width": 221,
+        "x": 54,
+        "y": 13,
+        "width": 497,
         "rotate": 0,
-        "src": "images/印刷厂印刷机工作视频-1-.png"
-      },
-      {
-        "x": 74,
-        "y": 55,
-        "width": 213,
-        "rotate": 0,
-        "src": "images/印刷厂印刷机工作视频-2-.png"
-      },
-      {
-        "x": 73,
-        "y": 14,
-        "width": 216,
-        "rotate": 0,
-        "src": "images/印刷厂印刷机工作视频-3-.png"
-      },
-      {
-        "x": 52,
-        "y": 55,
-        "width": 221,
-        "rotate": 0,
-        "src": "images/印刷厂印刷机工作视频-4-.png"
+        "src": "images/未标题-1.png"
       }
     ],
     "title1": "Your Trusted Partner for",
