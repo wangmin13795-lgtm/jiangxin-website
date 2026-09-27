@@ -138,10 +138,14 @@ function render(c) {
     if (w == null || isNaN(n)) return 20;
     return n <= 50 ? n : Math.round(n / 1440 * 100 * 10) / 10;
   };
-  const heroFloats = (c.hero.images || [])
-    .filter(im => im && im.src)
+  // 轮播模式：开启后多张图不再同时显示，而是逐张淡入淡出循环播放（每张保留各自位置/大小/旋转）
+  const slideImgs = (c.hero.images || []).filter(im => im && im.src);
+  const slideshowOn = !!c.hero.slideshow && slideImgs.length > 1;
+  const slideSec = Math.min(15, Math.max(1, c.hero.slideSeconds != null ? Number(c.hero.slideSeconds) : 3));
+
+  const heroFloats = slideImgs
     .map((im, i) => `
-        <img class="hero-float" src="${esc(im.src)}" alt=""
+        <img class="hero-float${slideshowOn && i === 0 ? ' is-active' : ''}" src="${esc(im.src)}" alt=""
              style="z-index:${3 + i};left:${im.x != null ? im.x : 50}%;top:${im.y != null ? im.y : 50}%;width:${toPct(im.width)}%;transform:rotate(${(im.rotate != null ? im.rotate : 0)}deg)" />`)
     .join('');
 
@@ -164,7 +168,7 @@ function render(c) {
   let html = `
   <section class="hero" id="home">
     <div class="hero-bg" aria-hidden="true">${heroBg}${heroMask}</div>
-    <div class="hero-stage" aria-hidden="true">${heroFloats}</div>
+    <div class="hero-stage${slideshowOn ? ' slideshow' : ''}" aria-hidden="true">${heroFloats}</div>
     <div class="container hero-inner${heroFloats ? ' has-floats' : ''}">
       <div class="hero-copy" style="${copyStyle}">
         ${heroPanel}
@@ -344,7 +348,7 @@ function render(c) {
   </section>`;
 
   app.innerHTML = html;
-  afterRender();
+  afterRender(c);
   setupMusic(c);
 }
 
@@ -418,7 +422,7 @@ function setupMusic(c) {
 }
 
 // 渲染后初始化交互
-function afterRender() {
+function afterRender(c) {
   // 年份
   document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -473,6 +477,21 @@ function afterRender() {
       openLightbox(list, all.indexOf(el));
     });
   });
+
+  // 首页自由图片轮播：多张图逐张淡入淡出循环播放（后台「轮播开关」开启时生效）
+  const slideStage = document.querySelector('.hero-stage.slideshow');
+  if (slideStage) {
+    const slides = [...slideStage.querySelectorAll('.hero-float')];
+    if (slides.length > 1) {
+      const sec = Math.min(15, Math.max(1, c.hero.slideSeconds != null ? Number(c.hero.slideSeconds) : 3));
+      let si = 0;
+      setInterval(() => {
+        slides[si].classList.remove('is-active');
+        si = (si + 1) % slides.length;
+        slides[si].classList.add('is-active');
+      }, sec * 1000);
+    }
+  }
 }
 
 // 移动端菜单

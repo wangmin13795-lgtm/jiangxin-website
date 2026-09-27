@@ -119,11 +119,32 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
   background: linear-gradient(135deg, rgba(238,246,246,.85) 0%, rgba(251,246,238,.85) 100%);
 }
 
-/* 全屏自由图层：铺满整个首屏（不挡文字点击）；每张图自带 inline z-index(3起)，可盖在文字(z=2)上方，与可视化编辑器一致 */
+/* 窄窗口（吸边半屏/小屏）：自由图片改为文字下方整齐横排，
+   不再按百分比悬浮，避免压住文字；全屏宽度下不受影响，仍是所摆的位置 */
+
 .hero-stage { position: absolute; inset: 0; pointer-events: none; }
 .hero-float {
   position: absolute; transform-origin: center; pointer-events: none;
   border-radius: 16px; box-shadow: var(--shadow);
+}
+/* 轮播模式：隐藏非当前张，淡入淡出切换（.is-active 为当前显示的图） */
+.hero-stage.slideshow .hero-float { opacity: 0; transition: opacity .8s ease; }
+.hero-stage.slideshow .hero-float.is-active { opacity: 1; }
+
+/* 窄窗口（吸边半屏/小屏）：自由图片改为整齐横排一行，
+   不再按百分比悬浮，避免压住文字；全屏宽度下不受影响，仍是所摆的位置。
+   注意：必须放在上方基础规则之后，否则 position:absolute 会把它覆盖 */
+@media (max-width: 1000px) {
+  .hero-stage {
+    position: static;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    gap: 14px; padding: 8px 22px 24px;
+  }
+  .hero-stage .hero-float {
+    position: static !important;
+    width: clamp(150px, 28%, 300px) !important;
+    transform: rotate(0deg) !important;
+  }
 }
 .hero-art { position: relative; min-height: 340px; display: grid; place-items: center; }
 .box-illustration {

@@ -60,6 +60,8 @@ collections:
               - { name: textOffsetY, label: "文字整体垂直移动 px（正=下移，负=上移）", widget: number, required: false, min: -300, max: 300, default: 0 }
               - { name: titleColor, label: "标题/眉标题颜色（留空用默认深色）", widget: string, required: false, hint: "可填 #155e63 这类色值，或用编辑器取色" }
               - { name: textColor, label: "正文/信任标颜色（留空用默认灰色）", widget: string, required: false, hint: "可填 #5b6b78 这类色值" }
+              - { name: slideshow, label: "图片轮播开关（开=多张图逐张淡入淡出循环播放；关=全部同时显示。需放2张以上才轮播）", widget: boolean, required: false, default: false }
+              - { name: slideSeconds, label: "轮播每张停留秒数（1-15秒）", widget: number, required: false, min: 1, max: 15, default: 3 }
               - name: fontFamily
                 label: "全站字体（首屏文字生效）"
                 widget: select
