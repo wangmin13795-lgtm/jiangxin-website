@@ -200,11 +200,32 @@
         "slug": "factory",
         "title": "Factory & Production",
         "subtitle": "Workshop, machines and workflow",
-        "cover": "",
+        "cover": "images/3-3-crop.png",
         "images": [
           {
             "src": "",
             "caption": "Production line"
+          },
+          {
+            "src": "images/3-3-crop.png"
+          },
+          {
+            "src": "images/3-1-crop.png"
+          },
+          {
+            "src": "images/3-8-crop.png"
+          },
+          {
+            "src": "images/3-9-crop.png"
+          },
+          {
+            "src": "images/3-6-crop.png"
+          },
+          {
+            "src": "images/3-4-crop.png"
+          },
+          {
+            "src": "images/3-7-crop.png"
           }
         ]
       },
