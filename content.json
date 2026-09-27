@@ -206,7 +206,7 @@
     "titleAccent": "Premium Packaging",
     "panelOpacity": 50,
     "eyebrow": "Custom Packaging Manufacturer · Qingdao, China",
-    "bgMask": 430,
+    "bgMask": 27,
     "bgImage": "",
     "bgVideo": "images/印刷厂印刷机工作视频.mp4",
     "trust": [
@@ -214,7 +214,36 @@
       "FSC® Available",
       "Export to 30+ Countries"
     ],
-    "images": [],
+    "images": [
+      {
+        "x": 51,
+        "y": 14,
+        "width": 221,
+        "rotate": 0,
+        "src": "images/印刷厂印刷机工作视频-1-.png"
+      },
+      {
+        "x": 74,
+        "y": 55,
+        "width": 213,
+        "rotate": 0,
+        "src": "images/印刷厂印刷机工作视频-2-.png"
+      },
+      {
+        "x": 73,
+        "y": 14,
+        "width": 216,
+        "rotate": 0,
+        "src": "images/印刷厂印刷机工作视频-3-.png"
+      },
+      {
+        "x": 52,
+        "y": 55,
+        "width": 221,
+        "rotate": 0,
+        "src": "images/印刷厂印刷机工作视频-4-.png"
+      }
+    ],
     "title1": "Your Trusted Partner for",
     "lead": "From corrugated boxes to luxury gift packaging, we help global brands protect, present and ship their products — factory-direct from one of China's leading packaging hubs.",
     "panelColor": "#cdfff7"
