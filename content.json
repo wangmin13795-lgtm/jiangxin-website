@@ -233,11 +233,29 @@
         "slug": "office",
         "title": "Office & Team",
         "subtitle": "The people behind your orders",
-        "cover": "",
+        "cover": "images/4-3-crop.png",
         "images": [
           {
-            "src": "",
+            "src": "images/4-3-crop.png",
             "caption": "Our team"
+          },
+          {
+            "src": "images/4-2-crop.png"
+          },
+          {
+            "src": "images/4-4-crop.png"
+          },
+          {
+            "src": "images/4-1-crop.png"
+          },
+          {
+            "src": "images/4-5-crop.png"
+          },
+          {
+            "src": "images/4-6-crop-1-.png"
+          },
+          {
+            "src": "images/4-7-crop.png"
           }
         ]
       },
@@ -245,11 +263,23 @@
         "slug": "certificates",
         "title": "Certificates & Events",
         "subtitle": "Awards, trade fairs and certifications",
-        "cover": "",
+        "cover": "images/1-1-crop.png",
         "images": [
           {
-            "src": "",
+            "src": "images/1-1-crop.png",
             "caption": "Certificate / event"
+          },
+          {
+            "src": "images/1-3-crop.png"
+          },
+          {
+            "src": "images/1-2-crop.png"
+          },
+          {
+            "src": "images/1-5-crop.png"
+          },
+          {
+            "src": "images/1-4-crop.png"
           }
         ]
       }
