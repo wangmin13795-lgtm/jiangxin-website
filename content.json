@@ -71,8 +71,21 @@
     ]
   },
   "about": {
-    "gallery": [],
-    "galleryColumns": 3,
+    "gallery": [
+      {
+        "image": "images/印刷厂印刷机工作视频-3-crop.png"
+      },
+      {
+        "image": "images/印刷厂印刷机工作视频-1-crop.png"
+      },
+      {
+        "image": "images/印刷厂印刷机工作视频-2-crop.png"
+      },
+      {
+        "image": "images/印刷厂印刷机工作视频-4-crop.png"
+      }
+    ],
+    "galleryColumns": 2,
     "eyebrow": "About Us",
     "title": "Decades of packaging expertise, built for export",
     "paragraphs": [
@@ -213,7 +226,7 @@
     "bgImage": "",
     "textColor": "",
     "bgVideo": "images/印刷厂印刷机工作视频.mp4",
-    "textOffsetX": 0,
+    "textOffsetX": -55,
     "trust": [
       "ISO 9001",
       "FSC® Available",
