@@ -167,11 +167,32 @@
         "slug": "team-building",
         "title": "Team Building",
         "subtitle": "Our annual outings and activities",
-        "cover": "",
+        "cover": "images/2-7-crop.png",
         "images": [
           {
-            "src": "",
+            "src": "images/2-7-crop.png",
             "caption": "Team building day"
+          },
+          {
+            "src": "images/2-2-crop.png"
+          },
+          {
+            "src": "images/2-3-crop.png"
+          },
+          {
+            "src": "images/2-4-crop.png"
+          },
+          {
+            "src": "images/2-5-crop.png"
+          },
+          {
+            "src": "images/2-6-crop.png"
+          },
+          {
+            "src": "images/2-8-crop.png"
+          },
+          {
+            "src": "images/2-1-crop.png"
           }
         ]
       },
