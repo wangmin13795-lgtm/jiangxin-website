@@ -119,8 +119,8 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
   background: linear-gradient(135deg, rgba(238,246,246,.85) 0%, rgba(251,246,238,.85) 100%);
 }
 
-/* 全屏自由图层：铺满整个首屏，图片可在任意位置摆放（不挡文字点击） */
-.hero-stage { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+/* 全屏自由图层：铺满整个首屏（不挡文字点击）；每张图自带 inline z-index(3起)，可盖在文字(z=2)上方，与可视化编辑器一致 */
+.hero-stage { position: absolute; inset: 0; pointer-events: none; }
 .hero-float {
   position: absolute; transform-origin: center; pointer-events: none;
   border-radius: 16px; box-shadow: var(--shadow);

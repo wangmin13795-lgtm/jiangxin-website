@@ -22,15 +22,18 @@
   input[type=text]{ padding:8px 10px; border:1px solid var(--line); border-radius:9px; font-size:13px; min-width:220px; }
   .txt{ padding:8px 10px; border:1px solid var(--line); border-radius:9px; font-size:13px; }
   .hint{ font-size:12px; color:var(--muted); margin-top:6px; }
-  /* ===== 舞台：真实渲染首页 hero 区 ===== */
-  #stage{ position:relative; width:100%; height:560px; border-radius:16px; overflow:hidden;
-          background:linear-gradient(135deg,#eef6f6 0%,#fbf6ee 100%); box-shadow:inset 0 0 0 1px var(--line); }
+  /* ===== 舞台：按浏览器真实宽度 1:1 复刻线上首屏，再整体缩放显示（真正所见即所得） ===== */
+  #stageOuter{ position:relative; width:100%; border-radius:16px; overflow:hidden;
+               box-shadow:inset 0 0 0 1px var(--line); }
+  #stage{ position:absolute; top:0; left:0; transform-origin:0 0;
+          background:linear-gradient(135deg,#eef6f6 0%,#fbf6ee 100%);
+          padding:70px 0 80px; } /* 与线上 .hero 完全一致 */
   /* 以下样式复制自线上 styles.css，保证编辑器里的文字/按钮和真实网站一致 */
   #stage .hero-bg{ position:absolute; inset:0; z-index:0; }
   #stage .hero-bg-media{ width:100%; height:100%; object-fit:cover; display:block; }
   #stage .hero-bg-mask{ position:absolute; inset:0;
     background:linear-gradient(135deg, rgba(238,246,246,.85) 0%, rgba(251,246,238,.85) 100%); }
-  #stage .hero-inner{ position:relative; z-index:2; height:100%; display:grid; grid-template-columns:1.1fr .9fr; gap:40px; align-items:center;
+  #stage .hero-inner{ position:relative; z-index:2; display:grid; grid-template-columns:1.1fr .9fr; gap:40px; align-items:center;
     max-width:1140px; margin:0 auto; padding:0 22px; }
   #stage .hero-inner.has-floats{ grid-template-columns:1fr; }
   #stage .hero-inner.has-floats .hero-copy{ max-width:640px; }
@@ -38,9 +41,9 @@
   #stage .hero-panel{ position:absolute; inset:-30px -36px; border-radius:22px; box-shadow:0 10px 40px rgba(31,61,60,.12); }
   #stage .hero-copy > *:not(.hero-panel){ position:relative; z-index:1; }
   #stage .eyebrow{ text-transform:uppercase; letter-spacing:2px; font-size:13px; font-weight:700; color:var(--kraft); margin-bottom:10px; }
-  #stage .hero-copy h1{ font-size:clamp(34px,4.7vw,54px); line-height:1.2; font-weight:700; margin:0 0 18px; color:var(--ink); }
+  #stage .hero-copy h1{ font-size:clamp(34px,5vw,54px); line-height:1.2; font-weight:700; margin:0 0 18px; color:var(--ink); }
   #stage .accent{ color:var(--teal); }
-  #stage .lead{ font-size:17px; color:var(--muted); margin:0 0 28px; max-width:520px; }
+  #stage .lead{ font-size:18px; color:var(--muted); margin:0 0 28px; max-width:520px; }
   #stage .hero-actions{ display:flex; gap:14px; flex-wrap:wrap; }
   #stage .btn{ display:inline-block; padding:13px 26px; border-radius:999px; font-weight:600; font-size:15px; cursor:default; border:2px solid transparent; }
   #stage .btn-primary{ background:var(--teal); color:#fff; }
@@ -146,6 +149,8 @@
 
   <div class="panel">
     <h2>⑤ 可视化拖拽舞台（所见即所得）</h2>
+    <div class="hint" style="margin:0 0 10px;">舞台按你当前浏览器窗口的宽度 1:1 复刻线上首屏，再整体缩小显示 —— 这里图片在哪、多大，线上就在哪、多大。建议用与平时看网站相同的窗口大小打开本编辑器。</div>
+    <div id="stageOuter">
     <div id="stage">
       <div class="hero-bg" id="stageBg"></div>
       <div class="hero-bg-mask" id="stageMask"></div>
@@ -159,6 +164,7 @@
           <div class="trust" id="vTrust"></div>
         </div>
       </div>
+    </div>
     </div>
     <div class="ctrl" id="ctrl"></div>
   </div>
@@ -198,6 +204,23 @@ const ctrl = document.getElementById('ctrl');
 const out = document.getElementById('out');
 const statusEl = document.getElementById('status');
 const siteBase = document.getElementById('siteBase');
+const stageOuter = document.getElementById('stageOuter');
+
+/* ---------- 舞台几何：按浏览器真实宽度复刻线上首屏，再整体缩放显示 ----------
+   线上 hero 宽度=整个浏览器窗口、高度=内容自适应；舞台先按同宽渲染出真实高度，
+   再 scale 缩到编辑器面板内。这样百分比坐标/图片大小/vw 字号与线上完全一致。 */
+function layoutStage(){
+  const refW = Math.round(window.innerWidth);   // 与你看网站时的窗口同宽
+  stage.style.transform = 'none';
+  stage.style.width = refW + 'px';
+  const h = stage.offsetHeight;                 // 首屏真实高度（内容自适应，浮动图片不影响）
+  const k = stageOuter.clientWidth / refW;
+  stage.style.transform = 'scale(' + k + ')';
+  stageOuter.style.height = Math.round(h * k) + 'px';
+}
+window.addEventListener('resize', layoutStage);
+// 文字增删、字号缩放等会改变首屏高度，自动重算
+new ResizeObserver(layoutStage).observe(stage);
 
 let nodes = [];
 let seq = 0;
@@ -288,7 +311,7 @@ function applyTextStyle(){
   sc.style.fontFamily = fontSel.value || '';
   const fs = Number(fsRange.value)/100;
   sc.querySelector('h1').style.color = titleColorInput.value;
-  sc.querySelector('h1').style.fontSize = `calc(clamp(34px,4.7vw,54px)*${fs})`;
+  sc.querySelector('h1').style.fontSize = `calc(clamp(34px,5vw,54px)*${fs})`;
   sc.querySelector('.eyebrow').style.color = titleColorInput.value;
   sc.querySelector('.eyebrow').style.fontSize = `calc(13px*${fs})`;
   sc.querySelector('.lead').style.color = textColorInput.value;
@@ -564,6 +587,7 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{
 });
 
 /* ---------- 初始化 ---------- */
+layoutStage();
 setDefaultText();
 renderHeroText();
 applyMask();

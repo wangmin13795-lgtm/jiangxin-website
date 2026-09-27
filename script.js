@@ -132,6 +132,7 @@ function render(c) {
 
   // 全屏自由图层：每张图可单独设置位置/尺寸/旋转角度（坐标相对整个首屏区域）
   // 宽度按百分比存（所见即所得，任何屏幕比例一致）；旧数据的 px 值（>50）自动按 1440px 基准换算成 %
+  // z-index 从 3 起（背景=0，文字=2），每张图可盖在文字上方，层级与可视化编辑器一致
   const toPct = w => {
     const n = Number(w);
     if (w == null || isNaN(n)) return 20;
@@ -139,9 +140,9 @@ function render(c) {
   };
   const heroFloats = (c.hero.images || [])
     .filter(im => im && im.src)
-    .map(im => `
+    .map((im, i) => `
         <img class="hero-float" src="${esc(im.src)}" alt=""
-             style="left:${im.x != null ? im.x : 50}%;top:${im.y != null ? im.y : 50}%;width:${toPct(im.width)}%;transform:rotate(${(im.rotate != null ? im.rotate : 0)}deg)" />`)
+             style="z-index:${3 + i};left:${im.x != null ? im.x : 50}%;top:${im.y != null ? im.y : 50}%;width:${toPct(im.width)}%;transform:rotate(${(im.rotate != null ? im.rotate : 0)}deg)" />`)
     .join('');
 
   // 文字样式：整体位移、标题/正文颜色、字号缩放、字体（全部后台可调，留空/默认即原样）
