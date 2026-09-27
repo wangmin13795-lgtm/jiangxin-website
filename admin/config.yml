@@ -165,7 +165,7 @@ collections:
               - { name: address, label: "地址", widget: string }
 
           - name: process
-            label: "生产流程（首页展示）"
+            label: "生产流程（= 首页 HOW WE WORK 六步流程）"
             widget: object
             fields:
               - { name: eyebrow, label: "小标题", widget: string }
