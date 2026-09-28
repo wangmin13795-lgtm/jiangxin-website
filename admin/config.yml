@@ -31,6 +31,13 @@ collections:
               - { name: logo, label: "Logo 图片（可选，留空显示默认 JX 方块）", widget: image, required: false, media_folder: "images/logo" }
               - { name: music, label: "背景音乐（可选，点上传按钮选电脑里的 MP3，留空则无音乐）", widget: file, required: false, media_folder: "images/music" }
 
+          - name: theme
+            label: "外观 / 配色"
+            widget: object
+            fields:
+              - { name: bgColor, label: "页面主背景色（留空=默认白底；选色后整站生效）", widget: color, required: false, allow_input: true }
+              - { name: bgAlt, label: "浅色区块底色（产品/关于等交替区块；留空=默认浅灰）", widget: color, required: false, allow_input: true }
+
           - name: hero
             label: "首页"
             widget: object
