@@ -82,7 +82,11 @@
     ],
     "photos": [
       {
-        "src": "images/why/示例图1.jpg"
+        "src": "images/why/示例图1.png"
+      },
+      {
+        "fit": "contain",
+        "src": "images/why/示例图2.png"
       }
     ]
   },
