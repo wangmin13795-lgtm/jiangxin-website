@@ -282,6 +282,12 @@ function render(c) {
       <h3>${esc(it.title)}</h3>
       <p>${esc(it.description)}</p>
     </div>`).join("");
+  // 「为什么选我们」下方的两张配图（后台可上传，留空不显示；点击可放大）
+  const whyPhotos = (c.why.photos || []).filter(p => p && p.src)
+    .map(p => `<img class="why-photo" src="${esc(p.src)}" alt="" data-full="${esc(p.src)}" />`)
+    .join('');
+  const whyPhotosHtml = whyPhotos
+    ? `<div class="why-photos">${whyPhotos}</div>` : '';
   html += `
   <section class="section" id="why">
     <div class="container">
@@ -290,6 +296,7 @@ function render(c) {
         <h2>${esc(c.why.title)}</h2>
       </div>
       <div class="why-grid">${whys}</div>
+      ${whyPhotosHtml}
     </div>
   </section>`;
 
