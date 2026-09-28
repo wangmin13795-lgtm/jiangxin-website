@@ -218,28 +218,57 @@
     "cta1": "Explore Products",
     "cta2": "Get a Quote",
     "titleAccent": "Premium Packaging",
-    "panelOpacity": 0,
+    "panelOpacity": 70,
     "eyebrow": "Custom Packaging Manufacturer · Qingdao, China",
     "titleColor": "",
-    "slideshow": false,
-    "slideSeconds": 3,
+    "slideshow": true,
+    "slideSeconds": 4,
     "fontSize": 100,
-    "bgMask": 80,
+    "bgMask": 30,
     "fontFamily": "",
     "bgImage": "",
     "textColor": "",
-    "bgVideo": "",
-    "textOffsetX": 0,
+    "bgVideo": "images/hero/首图视频.mp4",
+    "textOffsetX": -50,
     "trust": [
       "ISO 9001",
       "FSC® Available",
       "Export to 30+ Countries"
     ],
-    "images": [],
+    "images": [
+      {
+        "x": 56,
+        "y": 0,
+        "width": 32,
+        "rotate": 0,
+        "src": "images/hero/首图1.png"
+      },
+      {
+        "x": 56,
+        "y": 0,
+        "width": 32,
+        "rotate": 0,
+        "src": "images/hero/首图2.png"
+      },
+      {
+        "x": 56,
+        "y": 2,
+        "width": 32,
+        "rotate": 0,
+        "src": "images/hero/首图3.png"
+      },
+      {
+        "x": 56,
+        "y": 0,
+        "width": 33,
+        "rotate": 0,
+        "src": "images/hero/首图4.png"
+      }
+    ],
     "textOffsetY": 0,
     "title1": "Your Trusted Partner for",
     "lead": "From corrugated boxes to luxury gift packaging, we help global brands protect, present and ship their products — factory-direct from one of China's leading packaging hubs.",
-    "panelColor": "#ffffff"
+    "panelColor": "#a0ffde"
   },
   "company": {
     "name": "Qingdao Jiangxin Packaging Products Co., Ltd.",
