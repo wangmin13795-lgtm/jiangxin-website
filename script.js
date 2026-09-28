@@ -334,7 +334,21 @@ function render(c) {
   </section>`;
   }
 
-  // Contact
+  // Contact + 社媒图标：填了链接→白色圆钮可点击（新窗口打开）；没填→半透明灰图标不可点击
+  const socSvg = {
+    facebook: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21.9v-8h2.7l.4-3.1h-3.1V8.8c0-.9.25-1.5 1.55-1.5h1.65V4.5c-.3-.04-1.3-.13-2.4-.13-2.4 0-4 1.5-4 4.1v2.4H7.6v3.1h2.7v8h3.2z"/></svg>',
+    tiktok: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12V9.77a5.76 5.76 0 0 0-.78-.05 5.66 5.66 0 1 0 5.66 5.66V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.28 4.28 0 0 1-3.22-1.48z"/></svg>',
+    instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.3" cy="6.7" r="1.2" fill="currentColor" stroke="none"/></svg>',
+    youtube: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 7.2a2.8 2.8 0 0 0-2-2C17.9 4.8 12 4.8 12 4.8s-5.9 0-7.6.4a2.8 2.8 0 0 0-2 2A29 29 0 0 0 2 12a29 29 0 0 0 .4 4.8 2.8 2.8 0 0 0 2 2c1.7.4 7.6.4 7.6.4s5.9 0 7.6-.4a2.8 2.8 0 0 0 2-2A29 29 0 0 0 22 12a29 29 0 0 0-.4-4.8zM9.8 15.3V8.7l6 3.3-6 3.3z"/></svg>'
+  };
+  const socialHtml = ['facebook', 'tiktok', 'instagram', 'youtube'].map(k => {
+    const url = ((c.contact.social || {})[k] || '').trim();
+    const svg = socSvg[k];
+    return url
+      ? `<a class="soc" href="${esc(url)}" target="_blank" rel="noopener" title="${k}">${svg}</a>`
+      : `<span class="soc soc-off" title="${k}（未设置链接）">${svg}</span>`;
+  }).join('');
+
   html += `
   <section class="section section-contact" id="contact">
     <div class="container contact-grid">
@@ -347,6 +361,7 @@ function render(c) {
           <li><span class="ci-label">Phone / WhatsApp</span><a href="tel:${esc(c.contact.phone)}">${esc(c.contact.phone)}</a></li>
           <li><span class="ci-label">Address</span><span>${esc(c.contact.address)}</span></li>
         </ul>
+        <div class="contact-social">${socialHtml}</div>
       </div>
       <form class="contact-form" id="contactForm" action="https://formspree.io/f/your-form-id" method="POST">
         <div class="field"><label for="name">Name *</label><input type="text" id="name" name="name" required /></div>

@@ -180,6 +180,15 @@ collections:
               - { name: email, label: "邮箱", widget: string }
               - { name: phone, label: "电话 / WhatsApp", widget: string }
               - { name: address, label: "地址", widget: string }
+              - name: social
+                label: "社媒链接（填了=图标可点击跳转；留空=灰色图标不可点）"
+                widget: object
+                required: false
+                fields:
+                  - { name: facebook, label: "Facebook 主页链接", widget: string, required: false }
+                  - { name: tiktok, label: "TikTok 主页链接", widget: string, required: false }
+                  - { name: instagram, label: "Instagram 主页链接", widget: string, required: false }
+                  - { name: youtube, label: "YouTube 频道链接", widget: string, required: false }
 
           - name: process
             label: "生产流程（= 首页 HOW WE WORK 六步流程）"

@@ -241,6 +241,18 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
 .contact-list a, .contact-list span:last-child { font-size: 17px; font-weight: 600; color: #fff; }
 .contact-list a:hover { color: var(--kraft-light); }
 
+/* 联系板块社媒图标：填了链接=白色圆钮可点击跳转；没填=半透明灰、不可点击 */
+.contact-social { display: flex; gap: 12px; margin-top: 24px; }
+.soc {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.14); color: #fff;
+  transition: background .2s, color .2s, transform .2s;
+}
+.soc svg { width: 22px; height: 22px; display: block; }
+a.soc:hover { background: #fff; color: var(--teal); transform: translateY(-2px); }
+.soc-off { opacity: .4; cursor: default; }
+
 .contact-form { background: #fff; border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); }
 .field { margin-bottom: 16px; }
 .field label { display: block; font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
