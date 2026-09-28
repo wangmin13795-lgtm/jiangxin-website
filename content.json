@@ -14,37 +14,37 @@
       {
         "title": "Corrugated Boxes",
         "description": "Single & double-wall shipping boxes in any size — strong, lightweight and export-ready.",
-        "image": "",
+        "image": "images/products/产品6.jpeg",
         "photos": []
       },
       {
         "title": "Mailer & Carton Boxes",
         "description": "Self-locking mailer boxes and retail cartons with clean, print-friendly surfaces.",
-        "image": "",
+        "image": "images/products/产品5.jpeg",
         "photos": []
       },
       {
         "title": "Custom Printed Packaging",
         "description": "CMYK & Pantone printing, embossing, foil and lamination to match your brand.",
-        "image": "",
+        "image": "images/products/产品4.jpeg",
         "photos": []
       },
       {
         "title": "Gift & Luxury Boxes",
         "description": "Magnetic, drawer and rigid boxes for premium gifting and high-end retail.",
-        "image": "",
+        "image": "images/products/产品1.jpeg",
         "photos": []
       },
       {
         "title": "Eco-Friendly Packaging",
         "description": "Recycled kraft, FSC®-certified and biodegradable options for sustainable brands.",
-        "image": "",
+        "image": "images/products/产品2.jpeg",
         "photos": []
       },
       {
         "title": "OEM & Export Service",
         "description": "Full support from sampling to sea freight, with documentation for global trade.",
-        "image": "",
+        "image": "images/products/产品3.jpeg",
         "photos": []
       }
     ]
@@ -237,7 +237,7 @@
     "slideshow": true,
     "slideSeconds": 4,
     "fontSize": 100,
-    "bgMask": 30,
+    "bgMask": 50,
     "fontFamily": "",
     "bgImage": "",
     "textColor": "",
