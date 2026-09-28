@@ -85,8 +85,21 @@
     ]
   },
   "about": {
-    "gallery": [],
-    "galleryColumns": 3,
+    "gallery": [
+      {
+        "image": "images/about/关3.png"
+      },
+      {
+        "image": "images/about/关1.png"
+      },
+      {
+        "image": "images/about/关2.png"
+      },
+      {
+        "image": "images/about/关4.png"
+      }
+    ],
+    "galleryColumns": 2,
     "eyebrow": "About Us",
     "title": "Decades of packaging expertise, built for export",
     "paragraphs": [
