@@ -1,75 +1,11 @@
 {
-  "company": {
-    "name": "Qingdao Jiangxin Packaging Products Co., Ltd.",
-    "short": "Qingdao Jiangxin Packaging",
-    "logo": ""
-  },
-  "music": "",
-  "hero": {
-    "eyebrow": "Custom Packaging Manufacturer · Qingdao, China",
-    "title1": "Your Trusted Partner for",
-    "titleAccent": "Premium Packaging",
-    "lead": "From corrugated boxes to luxury gift packaging, we help global brands protect, present and ship their products — factory-direct from one of China's leading packaging hubs.",
-    "cta1": "Explore Products",
-    "cta2": "Get a Quote",
-    "trust": [
-      "ISO 9001",
-      "FSC® Available",
-      "Export to 30+ Countries"
-    ],
-    "bgImage": "",
-    "bgVideo": "",
-    "bgMask": 80,
-    "panelColor": "#ffffff",
-    "panelOpacity": 0,
-    "textOffsetX": 0,
-    "textOffsetY": 0,
-    "titleColor": "",
-    "textColor": "",
-    "fontFamily": "",
-    "fontSize": 100,
-    "images": [],
-    "slideshow": false,
-    "slideSeconds": 3
-  },
-  "about": {
-    "gallery": [],
-    "galleryColumns": 3,
-    "eyebrow": "About Us",
-    "title": "Decades of packaging expertise, built for export",
-    "paragraphs": [
-      "Qingdao Jiangxin Packaging Products Co., Ltd. is a professional packaging manufacturer based in Qingdao, Shandong — a major port city that makes worldwide shipping fast and cost-effective.",
-      "We specialize in custom paper-based packaging: corrugated boxes, mailer cartons, color boxes, gift boxes and sustainable packaging. With integrated production from design to delivery, we serve retailers, e-commerce brands and distributors across Europe, North America, Australia and beyond."
-    ],
-    "checklist": [
-      "Factory-direct pricing with no middlemen",
-      "Flexible OEM & ODM, low MOQ options",
-      "Strict QC and on-time export delivery",
-      "Eco-friendly materials and recyclable solutions"
-    ],
-    "stats": [
-      {
-        "value": 15,
-        "suffix": "+",
-        "label": "Years Experience"
-      },
-      {
-        "value": 30,
-        "suffix": "+",
-        "label": "Export Countries"
-      },
-      {
-        "value": 20000,
-        "suffix": "m²",
-        "label": "Factory Area"
-      },
-      {
-        "value": 500,
-        "suffix": "+",
-        "label": "Customers Served"
-      }
-    ],
-    "image": ""
+  "contact": {
+    "eyebrow": "Contact Us",
+    "title": "Let's build your packaging together",
+    "lead": "Send us your requirements — size, material, quantity and artwork — and we'll reply with a quote within 24 hours.",
+    "email": "sales@jiangxinpack.com",
+    "phone": "+86 532 8888 8888",
+    "address": "Qingdao, Shandong Province, China"
   },
   "products": {
     "eyebrow": "Our Products",
@@ -113,6 +49,7 @@
       }
     ]
   },
+  "music": "",
   "why": {
     "eyebrow": "Why Choose Us",
     "title": "What makes Jiangxin different",
@@ -147,13 +84,44 @@
       }
     ]
   },
-  "contact": {
-    "eyebrow": "Contact Us",
-    "title": "Let's build your packaging together",
-    "lead": "Send us your requirements — size, material, quantity and artwork — and we'll reply with a quote within 24 hours.",
-    "email": "sales@jiangxinpack.com",
-    "phone": "+86 532 8888 8888",
-    "address": "Qingdao, Shandong Province, China"
+  "about": {
+    "gallery": [],
+    "galleryColumns": 3,
+    "eyebrow": "About Us",
+    "title": "Decades of packaging expertise, built for export",
+    "paragraphs": [
+      "Qingdao Jiangxin Packaging Products Co., Ltd. is a professional packaging manufacturer based in Qingdao, Shandong — a major port city that makes worldwide shipping fast and cost-effective.",
+      "We specialize in custom paper-based packaging: corrugated boxes, mailer cartons, color boxes, gift boxes and sustainable packaging. With integrated production from design to delivery, we serve retailers, e-commerce brands and distributors across Europe, North America, Australia and beyond."
+    ],
+    "checklist": [
+      "Factory-direct pricing with no middlemen",
+      "Flexible OEM & ODM, low MOQ options",
+      "Strict QC and on-time export delivery",
+      "Eco-friendly materials and recyclable solutions"
+    ],
+    "stats": [
+      {
+        "value": 15,
+        "suffix": "+",
+        "label": "Years Experience"
+      },
+      {
+        "value": 30,
+        "suffix": "+",
+        "label": "Export Countries"
+      },
+      {
+        "value": 20000,
+        "suffix": "m²",
+        "label": "Factory Area"
+      },
+      {
+        "value": 500,
+        "suffix": "+",
+        "label": "Customers Served"
+      }
+    ],
+    "image": ""
   },
   "process": {
     "eyebrow": "How We Work",
@@ -245,5 +213,37 @@
         ]
       }
     ]
+  },
+  "hero": {
+    "cta1": "Explore Products",
+    "cta2": "Get a Quote",
+    "titleAccent": "Premium Packaging",
+    "panelOpacity": 0,
+    "eyebrow": "Custom Packaging Manufacturer · Qingdao, China",
+    "titleColor": "",
+    "slideshow": false,
+    "slideSeconds": 3,
+    "fontSize": 100,
+    "bgMask": 80,
+    "fontFamily": "",
+    "bgImage": "",
+    "textColor": "",
+    "bgVideo": "",
+    "textOffsetX": 0,
+    "trust": [
+      "ISO 9001",
+      "FSC® Available",
+      "Export to 30+ Countries"
+    ],
+    "images": [],
+    "textOffsetY": 0,
+    "title1": "Your Trusted Partner for",
+    "lead": "From corrugated boxes to luxury gift packaging, we help global brands protect, present and ship their products — factory-direct from one of China's leading packaging hubs.",
+    "panelColor": "#ffffff"
+  },
+  "company": {
+    "name": "Qingdao Jiangxin Packaging Products Co., Ltd.",
+    "short": "Qingdao Jiangxin Packaging",
+    "logo": "images/logo/江鑫标志.png"
   }
 }
