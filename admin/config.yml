@@ -154,6 +154,12 @@ collections:
                   - { name: num, label: "编号(如 01)", widget: string }
                   - { name: title, label: "标题", widget: string }
                   - { name: description, label: "描述", widget: text }
+              - name: photos
+                label: "板块下方配图（建议放2张，并排显示；点击可放大，留空不显示）"
+                widget: list
+                required: false
+                fields:
+                  - { name: src, label: "图片", widget: image, required: false }
 
           - name: contact
             label: "联系方式"
