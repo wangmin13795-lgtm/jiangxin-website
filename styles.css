@@ -209,6 +209,16 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
 .why-item h3 { font-size: 18px; margin: 10px 0 8px; }
 .why-item p { color: var(--muted); font-size: 14.5px; }
 
+/* 「为什么选我们」下方配图：1张居中显示，2张分居两侧；手机自动上下排列 */
+.why-photos { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 26px; }
+.why-photo {
+  flex: 1 1 320px; max-width: 560px; height: 320px; object-fit: cover;
+  border-radius: var(--radius); box-shadow: var(--shadow); cursor: zoom-in;
+}
+@media (max-width: 640px) {
+  .why-photo { flex-basis: 100%; height: 220px; }
+}
+
 /* ===================== 联系 ===================== */
 .section-contact { background: linear-gradient(135deg, var(--teal-dark), var(--teal)); color: #fff; }
 .section-contact .eyebrow { color: var(--kraft-light); }
