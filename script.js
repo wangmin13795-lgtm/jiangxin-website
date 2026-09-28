@@ -289,8 +289,16 @@ function render(c) {
     </div>`).join("");
   // 「为什么选我们」下方的两张配图（后台可上传，留空不显示；点击可放大）
   const whyPhotos = (c.why.photos || []).filter(p => p && p.src)
-    .map(p => `<img class="why-photo" src="${esc(p.src)}" alt="" data-full="${esc(p.src)}" />`)
-    .join('');
+    .map(p => {
+      // 显示窗口自己定：height/width 留空=完整显示长图不裁剪；fit=contain 完整显示，cover 填满裁剪
+      const h = parseInt(p.height, 10), w = parseInt(p.width, 10);
+      const fit = p.fit === 'cover' ? 'cover' : 'contain';
+      const vars = [];
+      if (h > 0) vars.push(`--ph:${h}px`);
+      if (w > 0) vars.push(`--pw:${w}px`);
+      vars.push(`--pf:${fit}`);
+      return `<img class="why-photo" src="${esc(p.src)}" alt="" data-full="${esc(p.src)}" style="${vars.join(';')}" />`;
+    }).join('');
   const whyPhotosHtml = whyPhotos
     ? `<div class="why-photos">${whyPhotos}</div>` : '';
   html += `
