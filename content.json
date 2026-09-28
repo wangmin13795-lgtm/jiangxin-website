@@ -1,91 +1,40 @@
 {
-  "contact": {
-    "eyebrow": "Contact Us",
-    "title": "Let's build your packaging together",
-    "lead": "Send us your requirements — size, material, quantity and artwork — and we'll reply with a quote within 24 hours.",
-    "email": "sales@jiangxinpack.com",
-    "phone": "+86 532 8888 8888",
-    "address": "Qingdao, Shandong Province, China"
-  },
-  "products": {
-    "eyebrow": "Our Products",
-    "title": "Packaging solutions for every need",
-    "items": [
-      {
-        "title": "Corrugated Boxes",
-        "description": "Single & double-wall shipping boxes in any size — strong, lightweight and export-ready.",
-        "image": "images/6-.jpeg"
-      },
-      {
-        "title": "Mailer & Carton Boxes",
-        "description": "Self-locking mailer boxes and retail cartons with clean, print-friendly surfaces.",
-        "image": "images/5.jpeg"
-      },
-      {
-        "title": "Custom Printed Packaging",
-        "description": "CMYK & Pantone printing, embossing, foil and lamination to match your brand.",
-        "image": "images/印刷厂印刷机工作.jpeg"
-      },
-      {
-        "title": "Gift & Luxury Boxes",
-        "description": "Magnetic, drawer and rigid boxes for premium gifting and high-end retail.",
-        "image": "images/1.jpeg"
-      },
-      {
-        "title": "Eco-Friendly Packaging",
-        "description": "Recycled kraft, FSC®-certified and biodegradable options for sustainable brands.",
-        "image": "images/2.jpeg"
-      },
-      {
-        "title": "OEM & Export Service",
-        "description": "Full support from sampling to sea freight, with documentation for global trade.",
-        "image": "images/3.jpeg"
-      }
-    ]
+  "company": {
+    "name": "Qingdao Jiangxin Packaging Products Co., Ltd.",
+    "short": "Qingdao Jiangxin Packaging",
+    "logo": ""
   },
   "music": "",
-  "why": {
-    "eyebrow": "Why Choose Us",
-    "title": "What makes Jiangxin different",
-    "items": [
-      {
-        "num": "01",
-        "title": "Port Advantage",
-        "description": "Qingdao port access means lower logistics cost and faster global delivery."
-      },
-      {
-        "num": "02",
-        "title": "One-Stop Production",
-        "description": "Design, printing, die-cutting and packing under one roof for consistent quality."
-      },
-      {
-        "num": "03",
-        "title": "Custom Flexibility",
-        "description": "Small or large runs, fully tailored specs, materials and finishing."
-      },
-      {
-        "num": "04",
-        "title": "Quality Assurance",
-        "description": "Incoming material checks, in-line QC and pre-shipment inspection."
-      }
-    ]
+  "hero": {
+    "eyebrow": "Custom Packaging Manufacturer · Qingdao, China",
+    "title1": "Your Trusted Partner for",
+    "titleAccent": "Premium Packaging",
+    "lead": "From corrugated boxes to luxury gift packaging, we help global brands protect, present and ship their products — factory-direct from one of China's leading packaging hubs.",
+    "cta1": "Explore Products",
+    "cta2": "Get a Quote",
+    "trust": [
+      "ISO 9001",
+      "FSC® Available",
+      "Export to 30+ Countries"
+    ],
+    "bgImage": "",
+    "bgVideo": "",
+    "bgMask": 80,
+    "panelColor": "#ffffff",
+    "panelOpacity": 0,
+    "textOffsetX": 0,
+    "textOffsetY": 0,
+    "titleColor": "",
+    "textColor": "",
+    "fontFamily": "",
+    "fontSize": 100,
+    "images": [],
+    "slideshow": false,
+    "slideSeconds": 3
   },
   "about": {
-    "gallery": [
-      {
-        "image": "images/印刷厂印刷机工作视频-3-crop.png"
-      },
-      {
-        "image": "images/印刷厂印刷机工作视频-1-crop.png"
-      },
-      {
-        "image": "images/印刷厂印刷机工作视频-2-crop.png"
-      },
-      {
-        "image": "images/印刷厂印刷机工作视频-4-crop.png"
-      }
-    ],
-    "galleryColumns": 2,
+    "gallery": [],
+    "galleryColumns": 3,
     "eyebrow": "About Us",
     "title": "Decades of packaging expertise, built for export",
     "paragraphs": [
@@ -110,7 +59,7 @@
         "label": "Export Countries"
       },
       {
-        "value": 5000,
+        "value": 20000,
         "suffix": "m²",
         "label": "Factory Area"
       },
@@ -121,6 +70,84 @@
       }
     ],
     "image": ""
+  },
+  "products": {
+    "eyebrow": "Our Products",
+    "title": "Packaging solutions for every need",
+    "items": [
+      {
+        "title": "Corrugated Boxes",
+        "description": "Single & double-wall shipping boxes in any size — strong, lightweight and export-ready.",
+        "image": ""
+      },
+      {
+        "title": "Mailer & Carton Boxes",
+        "description": "Self-locking mailer boxes and retail cartons with clean, print-friendly surfaces.",
+        "image": ""
+      },
+      {
+        "title": "Custom Printed Packaging",
+        "description": "CMYK & Pantone printing, embossing, foil and lamination to match your brand.",
+        "image": ""
+      },
+      {
+        "title": "Gift & Luxury Boxes",
+        "description": "Magnetic, drawer and rigid boxes for premium gifting and high-end retail.",
+        "image": ""
+      },
+      {
+        "title": "Eco-Friendly Packaging",
+        "description": "Recycled kraft, FSC®-certified and biodegradable options for sustainable brands.",
+        "image": ""
+      },
+      {
+        "title": "OEM & Export Service",
+        "description": "Full support from sampling to sea freight, with documentation for global trade.",
+        "image": ""
+      }
+    ]
+  },
+  "why": {
+    "eyebrow": "Why Choose Us",
+    "title": "What makes Jiangxin different",
+    "items": [
+      {
+        "num": "01",
+        "title": "Port Advantage",
+        "description": "Qingdao port access means lower logistics cost and faster global delivery."
+      },
+      {
+        "num": "02",
+        "title": "One-Stop Production",
+        "description": "Design, printing, die-cutting and packing under one roof for consistent quality."
+      },
+      {
+        "num": "03",
+        "title": "Custom Flexibility",
+        "description": "Small or large runs, fully tailored specs, materials and finishing."
+      },
+      {
+        "num": "04",
+        "title": "Quality Assurance",
+        "description": "Incoming material checks, in-line QC and pre-shipment inspection."
+      }
+    ],
+    "photos": [
+      {
+        "src": ""
+      },
+      {
+        "src": ""
+      }
+    ]
+  },
+  "contact": {
+    "eyebrow": "Contact Us",
+    "title": "Let's build your packaging together",
+    "lead": "Send us your requirements — size, material, quantity and artwork — and we'll reply with a quote within 24 hours.",
+    "email": "sales@jiangxinpack.com",
+    "phone": "+86 532 8888 8888",
+    "address": "Qingdao, Shandong Province, China"
   },
   "process": {
     "eyebrow": "How We Work",
@@ -167,32 +194,11 @@
         "slug": "team-building",
         "title": "Team Building",
         "subtitle": "Our annual outings and activities",
-        "cover": "images/2-7-crop.png",
+        "cover": "",
         "images": [
           {
-            "src": "images/2-7-crop.png",
+            "src": "",
             "caption": "Team building day"
-          },
-          {
-            "src": "images/2-2-crop.png"
-          },
-          {
-            "src": "images/2-3-crop.png"
-          },
-          {
-            "src": "images/2-4-crop.png"
-          },
-          {
-            "src": "images/2-5-crop.png"
-          },
-          {
-            "src": "images/2-6-crop.png"
-          },
-          {
-            "src": "images/2-8-crop.png"
-          },
-          {
-            "src": "images/2-1-crop.png"
           }
         ]
       },
@@ -200,32 +206,11 @@
         "slug": "factory",
         "title": "Factory & Production",
         "subtitle": "Workshop, machines and workflow",
-        "cover": "images/3-3-crop.png",
+        "cover": "",
         "images": [
           {
             "src": "",
             "caption": "Production line"
-          },
-          {
-            "src": "images/3-3-crop.png"
-          },
-          {
-            "src": "images/3-1-crop.png"
-          },
-          {
-            "src": "images/3-8-crop.png"
-          },
-          {
-            "src": "images/3-9-crop.png"
-          },
-          {
-            "src": "images/3-6-crop.png"
-          },
-          {
-            "src": "images/3-4-crop.png"
-          },
-          {
-            "src": "images/3-7-crop.png"
           }
         ]
       },
@@ -233,29 +218,11 @@
         "slug": "office",
         "title": "Office & Team",
         "subtitle": "The people behind your orders",
-        "cover": "images/4-3-crop.png",
+        "cover": "",
         "images": [
           {
-            "src": "images/4-3-crop.png",
+            "src": "",
             "caption": "Our team"
-          },
-          {
-            "src": "images/4-2-crop.png"
-          },
-          {
-            "src": "images/4-4-crop.png"
-          },
-          {
-            "src": "images/4-1-crop.png"
-          },
-          {
-            "src": "images/4-5-crop.png"
-          },
-          {
-            "src": "images/4-6-crop-1-.png"
-          },
-          {
-            "src": "images/4-7-crop.png"
           }
         ]
       },
@@ -263,87 +230,14 @@
         "slug": "certificates",
         "title": "Certificates & Events",
         "subtitle": "Awards, trade fairs and certifications",
-        "cover": "images/1-1-crop.png",
+        "cover": "",
         "images": [
           {
-            "src": "images/1-1-crop.png",
+            "src": "",
             "caption": "Certificate / event"
-          },
-          {
-            "src": "images/1-3-crop.png"
-          },
-          {
-            "src": "images/1-2-crop.png"
-          },
-          {
-            "src": "images/1-5-crop.png"
-          },
-          {
-            "src": "images/1-4-crop.png"
           }
         ]
       }
     ]
-  },
-  "hero": {
-    "cta1": "Explore Products",
-    "cta2": "Get a Quote",
-    "titleAccent": "Premium Packaging",
-    "panelOpacity": 60,
-    "eyebrow": "Custom Packaging Manufacturer · Qingdao, China",
-    "titleColor": "",
-    "slideshow": true,
-    "slideSeconds": 4,
-    "fontSize": 100,
-    "bgMask": 40,
-    "fontFamily": "",
-    "bgImage": "",
-    "textColor": "",
-    "bgVideo": "images/印刷厂印刷机工作视频.mp4",
-    "textOffsetX": -50,
-    "trust": [
-      "ISO 9001",
-      "FSC® Available",
-      "Export to 30+ Countries"
-    ],
-    "images": [
-      {
-        "x": 57,
-        "y": 0,
-        "width": 32,
-        "rotate": 0,
-        "src": "images/印刷厂印刷机工作视频-1-.png"
-      },
-      {
-        "x": 57,
-        "y": 1,
-        "width": 31,
-        "rotate": 0,
-        "src": "images/印刷厂印刷机工作视频-3-.png"
-      },
-      {
-        "x": 57,
-        "y": 3,
-        "width": 32,
-        "rotate": 0,
-        "src": "images/印刷厂印刷机工作视频-4-.png"
-      },
-      {
-        "x": 57,
-        "y": 0,
-        "width": 33,
-        "rotate": 0,
-        "src": "images/印刷厂印刷机工作视频-2-.png"
-      }
-    ],
-    "textOffsetY": 0,
-    "title1": "Your Trusted Partner for",
-    "lead": "From corrugated boxes to luxury gift packaging, we help global brands protect, present and ship their products — factory-direct from one of China's leading packaging hubs.",
-    "panelColor": "#b4ffe7"
-  },
-  "company": {
-    "name": "Qingdao Jiangxin Packaging Products Co., Ltd.",
-    "short": "Qingdao Jiangxin Packaging",
-    "logo": "images/江鑫标志.png"
   }
 }
