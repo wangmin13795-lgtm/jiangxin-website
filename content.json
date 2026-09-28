@@ -90,6 +90,9 @@
       }
     ]
   },
+  "theme": {
+    "bgColor": "#e1ffdb"
+  },
   "about": {
     "gallery": [
       {
