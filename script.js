@@ -257,11 +257,16 @@ function render(c) {
   const cards = c.products.items.map((it, i) => {
     const ph = it.image ? "" : ` ph-${(i % 6) + 1}`;
     const style = it.image ? productImageStyle(it.image) : "";
+    // 产品相册：传了图片才显示「View Photos」按钮，点击进入该产品的图片二级页
+    const hasPhotos = (it.photos || []).some(p => p && p.src);
+    const photoBtn = hasPhotos
+      ? `<a class="card-btn" href="gallery.html?product=${i}">View Photos <span class="arrow">→</span></a>` : '';
     return `
     <article class="card">
       <div class="card-img${ph}" data-full="${esc(it.image)}" style="${style}"></div>
       <h3>${esc(it.title)}</h3>
       <p>${esc(it.description)}</p>
+      ${photoBtn}
     </article>`;
   }).join("");
   html += `

@@ -83,6 +83,35 @@ function renderGallery(g) {
   bindReveal();
 }
 
+// 产品相册二级页：gallery.html?product=序号 → 渲染该产品的图片墙（复用相册样式与放大查看）
+function renderProductAlbum(c, idx) {
+  const app = document.getElementById('gallery-app');
+  const p = c.products.items[idx];
+  const imgs = (p.photos || []).filter(im => im && im.src);
+  document.title = p.title + ' | ' + (c.company ? c.company.short || 'Qingdao Jiangxin Packaging' : 'Qingdao Jiangxin Packaging');
+  const grid = imgs.map((im, i) => {
+    const ph = im.src ? "" : ` ph-${(i % 6) + 1}`;
+    const style = im.src ? `style="background-image:url('${esc(im.src)}');background-size:cover;background-position:center;"` : "";
+    return `<figure class="g-item" data-i="${i}"><div class="g-thumb${ph}" ${style}></div>`
+      + `<figcaption>${esc(im.caption || '')}</figcaption></figure>`;
+  }).join("");
+  app.innerHTML = `
+    <section class="section">
+      <div class="container">
+        <a class="back-link" href="index.html#products">← Back to Products</a>
+        <div class="section-head" style="text-align:left;margin:18px 0 30px;">
+          <p class="eyebrow">${esc(c.products.eyebrow)}</p>
+          <h2>${esc(p.title)}</h2>
+          <p class="lead">${esc(p.description)}</p>
+        </div>
+        <div class="g-grid">${grid}</div>
+      </div>
+    </section>`;
+  app.querySelectorAll('.g-item').forEach(el =>
+    el.addEventListener('click', () => openLightbox(imgs, +el.dataset.i)));
+  bindReveal();
+}
+
 // 点击图片放大查看（支持同相册左右切换）
 let lbList = [], lbIdx = 0;
 function openLightbox(list, idx) {
@@ -150,9 +179,19 @@ function applyLogo(logo) {
 }
 
 // 加载数据：优先 content.json，失败用内置默认
+// 带 ?product=序号 参数时进入产品相册二级页，否则按公司场景图库渲染
 fetch('content.json', { cache: 'no-cache' })
   .then(r => r.ok ? r.json() : Promise.reject())
-  .then(c => { applyLogo(c.company && c.company.logo); renderGallery(c.galleries); setupMusic(c); })
+  .then(c => {
+    applyLogo(c.company && c.company.logo);
+    const pParam = new URLSearchParams(location.search).get('product');
+    if (pParam != null && c.products && c.products.items && c.products.items[+pParam]) {
+      renderProductAlbum(c, +pParam);
+    } else {
+      renderGallery(c.galleries);
+    }
+    setupMusic(c);
+  })
   .catch(() => renderGallery(DEFAULT_GALLERIES));
 
 // 背景音乐：后台填了音频路径才会出现；右下角按钮可随时开关

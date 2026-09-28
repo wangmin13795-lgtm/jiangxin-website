@@ -28,8 +28,8 @@ collections:
             fields:
               - { name: name, label: "完整公司名", widget: string }
               - { name: short, label: "简称（导航/页脚用）", widget: string }
-              - { name: logo, label: "Logo 图片（可选，留空显示默认 JX 方块）", widget: image, required: false }
-              - { name: music, label: "背景音乐（可选，点上传按钮选电脑里的 MP3，留空则无音乐）", widget: file, required: false }
+              - { name: logo, label: "Logo 图片（可选，留空显示默认 JX 方块）", widget: image, required: false, media_folder: "images/logo" }
+              - { name: music, label: "背景音乐（可选，点上传按钮选电脑里的 MP3，留空则无音乐）", widget: file, required: false, media_folder: "images/music" }
 
           - name: hero
             label: "首页"
@@ -45,11 +45,12 @@ collections:
                 label: "信任背书（可增删）"
                 widget: list
                 field: { name: item, label: "条目", widget: string }
-              - { name: bgImage, label: "背景图片（可选，覆盖淡绿色背景）", widget: image, required: false }
+              - { name: bgImage, label: "背景图片（可选，覆盖淡绿色背景）", widget: image, required: false, media_folder: "images/hero" }
               - name: bgVideo
                 label: "背景视频（可选：点上传按钮选电脑里的 mp4，或填外链网址；优先于背景图片）"
                 widget: file
                 required: false
+                media_folder: "images/hero"
                 media_library:
                   config:
                     multiple: false
@@ -81,7 +82,7 @@ collections:
                 widget: list
                 summary: "{{fields.src}}"
                 fields:
-                  - { name: src, label: "图片", widget: image, required: false }
+                  - { name: src, label: "图片", widget: image, required: false, media_folder: "images/hero" }
                   - { name: x, label: "水平位置 (0-100, 百分比)", widget: number, default: 50, required: false }
                   - { name: y, label: "垂直位置 (0-100, 百分比)", widget: number, default: 50, required: false }
                   - { name: width, label: "宽度 (占首屏宽度百分比, 建议 10-45)", widget: number, default: 20, required: false }
@@ -112,6 +113,7 @@ collections:
                 label: "工厂图片或视频（可选，点上传按钮选电脑里的 mp4 或图片；留空则不显示）"
                 widget: file
                 required: false
+                media_folder: "images/about"
                 media_library:
                   config:
                     multiple: false
@@ -120,7 +122,7 @@ collections:
                 widget: list
                 required: false
                 fields:
-                  - { name: image, label: "照片", widget: image }
+                  - { name: image, label: "照片", widget: image, media_folder: "images/about" }
                   - { name: x, label: "水平位置%(可选；填了就用自由排版)", widget: number, required: false }
                   - { name: y, label: "垂直位置%(可选)", widget: number, required: false }
                   - { name: width, label: "宽度px(可选)", widget: number, required: false }
@@ -139,7 +141,14 @@ collections:
                 fields:
                   - { name: title, label: "产品名", widget: string }
                   - { name: description, label: "描述", widget: text }
-                  - { name: image, label: "产品图片（可选）", widget: image, required: false }
+                  - { name: image, label: "产品图片（可选）", widget: image, required: false, media_folder: "images/products" }
+                  - name: photos
+                    label: "产品相册（可选：传了图片，产品卡上才会出现 View Photos 按钮进入图片页）"
+                    widget: list
+                    required: false
+                    fields:
+                      - { name: src, label: "图片", widget: image, required: false, media_folder: "images/products" }
+                      - { name: caption, label: "图片说明（可选）", widget: string, required: false }
 
           - name: why
             label: "为什么选我们"
@@ -159,7 +168,7 @@ collections:
                 widget: list
                 required: false
                 fields:
-                  - { name: src, label: "图片", widget: image, required: false }
+                  - { name: src, label: "图片", widget: image, required: false, media_folder: "images/why" }
 
           - name: contact
             label: "联系方式"
@@ -200,10 +209,10 @@ collections:
                   - { name: slug, label: "英文标识(如 team-building，勿含空格)", widget: string }
                   - { name: title, label: "分类名", widget: string }
                   - { name: subtitle, label: "副标题", widget: string }
-                  - { name: cover, label: "封面图（可选）", widget: image, required: false }
+                  - { name: cover, label: "封面图（可选）", widget: image, required: false, media_folder: "images/scenes" }
                   - name: images
                     label: "图片（可增删，每张可写说明）"
                     widget: list
                     fields:
-                      - { name: src, label: "图片", widget: image, required: false }
+                      - { name: src, label: "图片", widget: image, required: false, media_folder: "images/scenes" }
                       - { name: caption, label: "图片说明", widget: string, required: false }
