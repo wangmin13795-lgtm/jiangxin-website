@@ -373,6 +373,11 @@
     "lead": "From corrugated boxes to luxury gift packaging, we help global brands protect, present and ship their products — factory-direct from one of China's leading packaging hubs.",
     "panelColor": "#a0ffde"
   },
+  "branding": {
+    "logoSize": 20,
+    "logoColor": "#fffffa",
+    "navColor": "#ffff26"
+  },
   "company": {
     "name": "Qingdao Jiangxin Packaging Products Co., Ltd.",
     "short": "Qingdao Jiangxin Packaging",
