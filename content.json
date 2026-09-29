@@ -91,11 +91,24 @@
     ]
   },
   "theme": {
-    "bgColor": "#2ba283",
+    "bgColor": "#006f6b",
     "bgAlt": "#b8ffed",
-    "headerColor": "#d6ffba"
+    "headerColor": "#006f6b"
   },
   "about": {
+    "paragraphs": [
+      "Qingdao Jiangxin Packaging Products Co., Ltd. is a professional packaging manufacturer based in Qingdao, Shandong — a major port city that makes worldwide shipping fast and cost-effective.",
+      "We specialize in custom paper-based packaging: corrugated boxes, mailer cartons, color boxes, gift boxes and sustainable packaging. With integrated production from design to delivery, we serve retailers, e-commerce brands and distributors across Europe, North America, Australia and beyond."
+    ],
+    "checklist": [
+      "Factory-direct pricing with no middlemen",
+      "Flexible OEM & ODM, low MOQ options",
+      "Strict QC and on-time export delivery",
+      "Eco-friendly materials and recyclable solutions"
+    ],
+    "panelOpacity": 90,
+    "eyebrow": "About Us",
+    "galleryColumns": 2,
     "gallery": [
       {
         "image": "images/about/关3.png"
@@ -110,19 +123,8 @@
         "image": "images/about/关4.png"
       }
     ],
-    "galleryColumns": 2,
-    "eyebrow": "About Us",
     "title": "Decades of packaging expertise, built for export",
-    "paragraphs": [
-      "Qingdao Jiangxin Packaging Products Co., Ltd. is a professional packaging manufacturer based in Qingdao, Shandong — a major port city that makes worldwide shipping fast and cost-effective.",
-      "We specialize in custom paper-based packaging: corrugated boxes, mailer cartons, color boxes, gift boxes and sustainable packaging. With integrated production from design to delivery, we serve retailers, e-commerce brands and distributors across Europe, North America, Australia and beyond."
-    ],
-    "checklist": [
-      "Factory-direct pricing with no middlemen",
-      "Flexible OEM & ODM, low MOQ options",
-      "Strict QC and on-time export delivery",
-      "Eco-friendly materials and recyclable solutions"
-    ],
+    "image": "",
     "stats": [
       {
         "value": 15,
@@ -145,7 +147,7 @@
         "label": "Customers Served"
       }
     ],
-    "image": ""
+    "panelColor": "#fffcf4"
   },
   "typography": {
     "fontSize": 110,
