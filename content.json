@@ -91,7 +91,8 @@
     ]
   },
   "theme": {
-    "bgColor": "#e1ffdb"
+    "bgColor": "#64aa8b",
+    "bgAlt": "#bdf0ee"
   },
   "about": {
     "gallery": [
@@ -312,12 +313,12 @@
     "cta1": "Explore Products",
     "cta2": "Get a Quote",
     "titleAccent": "Premium Packaging",
-    "panelOpacity": 7,
+    "panelOpacity": 70,
     "eyebrow": "Custom Packaging Manufacturer · Qingdao, China",
     "titleColor": "",
     "slideshow": true,
     "slideSeconds": 4,
-    "fontSize": 100,
+    "fontSize": 101,
     "bgMask": 50,
     "fontFamily": "",
     "bgImage": "",
