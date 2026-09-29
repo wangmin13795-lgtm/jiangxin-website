@@ -7,7 +7,7 @@
 // 内置默认内容（与 content.json 一致，仅作离线兜底）
 const DEFAULT_CONTENT = {
   company: { name: "Qingdao Jiangxin Packaging Products Co., Ltd.", short: "Qingdao Jiangxin Packaging", logo: "" },
-  typography: { font: "", fontSize: 100, headingColor: "", textColor: "", mutedColor: "", cardBg: "", cardInk: "", cardMuted: "" },
+  branding: { logoColor: "", logoFont: "", logoSize: 16, logoBlockColor: "", logoBlockOpacity: 0, navColor: "" },
   hero: {
     eyebrow: "Custom Packaging Manufacturer · Qingdao, China",
     title1: "Your Trusted Partner for",
@@ -18,6 +18,7 @@ const DEFAULT_CONTENT = {
   },
   about: {
     eyebrow: "About Us", title: "Decades of packaging expertise, built for export",
+    font: "", headingColor: "", subColor: "",
     paragraphs: [
       "Qingdao Jiangxin Packaging Products Co., Ltd. is a professional packaging manufacturer based in Qingdao, Shandong — a major port city that makes worldwide shipping fast and cost-effective.",
       "We specialize in custom paper-based packaging: corrugated boxes, mailer cartons, color boxes, gift boxes and sustainable packaging. With integrated production from design to delivery, we serve retailers, e-commerce brands and distributors across Europe, North America, Australia and beyond."
@@ -38,6 +39,7 @@ const DEFAULT_CONTENT = {
   },
   products: {
     eyebrow: "Our Products", title: "Packaging solutions for every need",
+    style: { font: "", fontSize: 100, headingColor: "", subColor: "", textColor: "", cardTitleColor: "", cardTextColor: "", panelColor: "", panelOpacity: 0 },
     items: [
       { title: "Corrugated Boxes", description: "Single & double-wall shipping boxes in any size — strong, lightweight and export-ready.", image: "" },
       { title: "Mailer & Carton Boxes", description: "Self-locking mailer boxes and retail cartons with clean, print-friendly surfaces.", image: "" },
@@ -49,6 +51,7 @@ const DEFAULT_CONTENT = {
   },
   why: {
     eyebrow: "Why Choose Us", title: "What makes Jiangxin different",
+    style: { font: "", fontSize: 100, headingColor: "", subColor: "", textColor: "", panelColor: "", panelOpacity: 0 },
     items: [
       { num: "01", title: "Port Advantage", description: "Qingdao port access means lower logistics cost and faster global delivery." },
       { num: "02", title: "One-Stop Production", description: "Design, printing, die-cutting and packing under one roof for consistent quality." },
@@ -59,11 +62,13 @@ const DEFAULT_CONTENT = {
   contact: {
     eyebrow: "Contact Us", title: "Let's build your packaging together",
     lead: "Send us your requirements — size, material, quantity and artwork — and we'll reply with a quote within 24 hours.",
-    email: "sales@jiangxinpack.com", phone: "+86 532 8888 8888", address: "Qingdao, Shandong Province, China"
+    email: "sales@jiangxinpack.com", phone: "+86 532 8888 8888", address: "Qingdao, Shandong Province, China",
+    style: { font: "", fontSize: 100, headingColor: "", subColor: "", textColor: "", cardTitleColor: "", cardTextColor: "", panelColor: "", panelOpacity: 0 }
   },
   process: {
     eyebrow: "How We Work",
     title: "From inquiry to delivery in 6 steps",
+    style: { font: "", fontSize: 100, headingColor: "", subColor: "", textColor: "", cardTitleColor: "", cardTextColor: "", panelColor: "", panelOpacity: 0 },
     steps: [
       { num: "01", title: "Consultation", desc: "Tell us your size, material, quantity and artwork. We reply within 24 hours." },
       { num: "02", title: "Design & Quote", desc: "We provide dieline, 3D mockup and a competitive factory-direct quote." },
@@ -77,6 +82,7 @@ const DEFAULT_CONTENT = {
     eyebrow: "Company Life",
     title: "Inside Jiangxin — team, factory & beyond",
     intro: "More than products — meet the people and the place behind every order.",
+    style: { font: "", fontSize: 100, headingColor: "", subColor: "", textColor: "", cardTitleColor: "", cardTextColor: "", panelColor: "", panelOpacity: 0 },
     categories: [
       { slug: "team-building", title: "Team Building", subtitle: "Our annual outings and activities", cover: "", images: [ { src: "", caption: "Team building day" } ] },
       { slug: "factory", title: "Factory & Production", subtitle: "Workshop, machines and workflow", cover: "", images: [ { src: "", caption: "Production line" } ] },
@@ -93,6 +99,42 @@ const esc = (s) => String(s == null ? "" : s)
 function productImageStyle(img, i) {
   if (img) return `background-image:url('${esc(img)}');background-size:cover;background-position:center;`;
   return ""; // 无图时回退到 CSS 渐变占位（ph 类）
+}
+
+// 区块独立文字样式：把该区块的字体/字号/颜色变量写到 <section> 上，
+// 区块内所有用这些变量的文字自动跟随，其他区块不受影响（CSS 变量继承特性）
+function secStyle(o) {
+  o = o || {};
+  const v = [];
+  if (o.font) v.push(`--font-base:${o.font}`);
+  const fs = Number(o.fontSize);
+  if (fs && fs !== 100) v.push(`--fs-scale:${Math.min(200, Math.max(50, fs)) / 100}`);
+  if (o.headingColor) v.push(`--heading-color:${o.headingColor}`);
+  if (o.subColor) v.push(`--s-sub:${o.subColor}`);
+  if (o.textColor) v.push(`--muted:${o.textColor}`);
+  if (o.cardTitleColor) v.push(`--card-ink:${o.cardTitleColor}`);
+  if (o.cardTextColor) v.push(`--card-muted:${o.cardTextColor}`);
+  return v.length ? ` style="${v.join(';')}"` : '';
+}
+
+// 区块文字底色块：仅当设置了底色且不透明度>0 才注入（垫在该区块 .container 内容后面）
+function secPanel(o) {
+  o = o || {};
+  const op = parseFloat(o.panelOpacity);
+  if (o.panelColor && op > 0) {
+    return `<div class="sec-panel" style="background:${esc(o.panelColor)};opacity:${Math.min(100, op) / 100}"></div>`;
+  }
+  return '';
+}
+
+// 把 #RRGGBB + 不透明度% 转成 rgba()，用于 Logo 底色块（rgba 才能让文字保持清晰）
+function hexToRgba(hex, a) {
+  hex = (hex || '').trim();
+  if (!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(hex)) return hex;
+  let h = hex.slice(1);
+  if (h.length === 3) h = h.split('').map(x => x + x).join('');
+  const r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${a})`;
 }
 
 function render(c) {
@@ -213,24 +255,28 @@ function render(c) {
         return `<img src="${esc(g.image)}" alt="Our factory" loading="lazy" data-full="${esc(g.image)}" style="${style}" />`;
       }).join('')}</div>`
     : "";
-  // 关于我们区外观：文字底色块 / 文字颜色 / 字号（后台可调，留空=默认样式）
+  // 关于我们区外观：字体 / 标题色 / 小标题色 / 文字色 / 字号 / 文字底色块（后台可调，留空=默认样式）
+  // 这些变量作用到整个 #about 区块，区内的标题、小标题、段落自动跟随，不影响其他区块
   const abFs = parseInt(c.about.fontSize, 10);
   const abOp = parseFloat(c.about.panelOpacity);
-  const abVars = [];
-  if (abFs > 0) abVars.push(`--about-fs:${Math.min(200, Math.max(60, abFs))}%`);
-  if (c.about.textColor) abVars.push(`--about-p-color:${c.about.textColor}`, `--about-text-color:${c.about.textColor}`);
-  const abStyle = abVars.length ? ` style="${abVars.join(';')}"` : '';
+  const abSecVars = [];
+  if (abFs > 0) abSecVars.push(`--about-fs:${Math.min(200, Math.max(60, abFs))}%`);
+  if (c.about.textColor) abSecVars.push(`--about-p-color:${c.about.textColor}`, `--about-text-color:${c.about.textColor}`);
+  if (c.about.font) abSecVars.push(`--font-base:${c.about.font}`);
+  if (c.about.headingColor) abSecVars.push(`--heading-color:${c.about.headingColor}`);
+  if (c.about.subColor) abSecVars.push(`--s-sub:${c.about.subColor}`);
+  const abSecStyle = abSecVars.length ? ` style="${abSecVars.join(';')}"` : '';
   const aboutPanel = (c.about.panelColor && abOp > 0)
     ? `<div class="about-panel" style="background:${esc(c.about.panelColor)};opacity:${Math.min(100, abOp) / 100}"></div>` : '';
   html += `
-  <section class="section" id="about">
+  <section class="section" id="about"${abSecStyle}>
     <div class="container">
       <div class="section-head">
         <p class="eyebrow">${esc(c.about.eyebrow)}</p>
         <h2>${esc(c.about.title)}</h2>
       </div>
       <div class="about-grid">
-        <div class="about-text"${abStyle}>${aboutPanel}
+        <div class="about-text">${aboutPanel}
           ${paras}
           <ul class="checklist">${checks}</ul>
           ${aboutImg}
@@ -252,8 +298,9 @@ function render(c) {
         </div>
       </div>`).join("");
     html += `
-  <section class="section" id="process">
+  <section class="section" id="process"${secStyle(c.process.style)}>
     <div class="container">
+      ${secPanel(c.process.style)}
       <div class="section-head">
         <p class="eyebrow">${esc(c.process.eyebrow)}</p>
         <h2>${esc(c.process.title)}</h2>
@@ -280,8 +327,9 @@ function render(c) {
     </article>`;
   }).join("");
   html += `
-  <section class="section section-alt" id="products">
+  <section class="section section-alt" id="products"${secStyle(c.products.style)}>
     <div class="container">
+      ${secPanel(c.products.style)}
       <div class="section-head">
         <p class="eyebrow">${esc(c.products.eyebrow)}</p>
         <h2>${esc(c.products.title)}</h2>
@@ -312,8 +360,9 @@ function render(c) {
   const whyPhotosHtml = whyPhotos
     ? `<div class="why-photos">${whyPhotos}</div>` : '';
   html += `
-  <section class="section" id="why">
+  <section class="section" id="why"${secStyle(c.why.style)}>
     <div class="container">
+      ${secPanel(c.why.style)}
       <div class="section-head">
         <p class="eyebrow">${esc(c.why.eyebrow)}</p>
         <h2>${esc(c.why.title)}</h2>
@@ -340,8 +389,9 @@ function render(c) {
       </a>`;
     }).join("");
     html += `
-  <section class="section section-alt" id="life">
+  <section class="section section-alt" id="life"${secStyle(g.style)}>
     <div class="container">
+      ${secPanel(g.style)}
       <div class="section-head">
         <p class="eyebrow">${esc(g.eyebrow)}</p>
         <h2>${esc(g.title)}</h2>
@@ -368,8 +418,9 @@ function render(c) {
   }).join('');
 
   html += `
-  <section class="section section-contact" id="contact">
+  <section class="section section-contact" id="contact"${secStyle(c.contact.style)}>
     <div class="container contact-grid">
+      ${secPanel(c.contact.style)}
       <div class="contact-info">
         <p class="eyebrow">${esc(c.contact.eyebrow)}</p>
         <h2>${esc(c.contact.title)}</h2>
@@ -396,28 +447,35 @@ function render(c) {
   afterRender(c);
   setupMusic(c);
   applyTheme(c);
+  applyBranding(c);
 }
 
-// 外观 / 配色 + 全站文字样式：后台选了就覆盖 CSS 变量；留空则沿用默认
+// 外观 / 配色：仅页面背景、区块底色、导航栏背景为全站级（这些本来就适合统一调）
 function applyTheme(c) {
   const root = document.documentElement;
   const t = c.theme || {};
   if (t.bgColor) root.style.setProperty('--bg', t.bgColor);
   if (t.bgAlt) root.style.setProperty('--bg-alt', t.bgAlt);
   if (t.headerColor) root.style.setProperty('--header-bg', t.headerColor);
-  // 全站文字样式（后台「文字样式」区块）：一次性覆盖整站字体/字号/颜色
-  const ty = c.typography || {};
-  if (ty.font) root.style.setProperty('--font-base', ty.font);
-  if (ty.fontSize != null && ty.fontSize !== '') {
-    const s = Math.min(130, Math.max(80, Number(ty.fontSize))) / 100;
-    if (s !== 1) root.style.setProperty('--fs-scale', s);
+}
+
+// 顶部导航栏 / Logo（网站标题）：字体、字号、颜色、底色块、导航文字颜色，各自可调
+function applyBranding(c) {
+  const b = c.branding || {};
+  const header = document.querySelector('.header');
+  if (header && b.navColor) header.style.setProperty('--nav-color', b.navColor);
+  const lt = document.getElementById('logoText');
+  if (lt) {
+    if (b.logoColor) lt.style.color = b.logoColor;
+    if (b.logoFont) lt.style.fontFamily = b.logoFont;
+    if (b.logoSize) lt.style.fontSize = b.logoSize + 'px';
   }
-  if (ty.headingColor) root.style.setProperty('--heading-color', ty.headingColor);
-  if (ty.textColor) root.style.setProperty('--ink', ty.textColor);
-  if (ty.mutedColor) root.style.setProperty('--muted', ty.mutedColor);
-  if (ty.cardBg) root.style.setProperty('--card-bg', ty.cardBg);
-  if (ty.cardInk) root.style.setProperty('--card-ink', ty.cardInk);
-  if (ty.cardMuted) root.style.setProperty('--card-muted', ty.cardMuted);
+  const logo = document.querySelector('.logo');
+  if (logo && b.logoBlockColor && Number(b.logoBlockOpacity) > 0) {
+    logo.style.background = hexToRgba(b.logoBlockColor, Math.min(100, Math.max(0, Number(b.logoBlockOpacity))) / 100);
+    logo.style.padding = '6px 12px';
+    logo.style.borderRadius = '10px';
+  }
 }
 
 // 点击图片放大查看（lightbox，支持同组左右切换）

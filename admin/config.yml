@@ -39,30 +39,28 @@ collections:
               - { name: bgAlt, label: "浅色区块底色（产品/关于等交替区块；留空=默认浅灰）", widget: color, required: false, allow_input: true }
               - { name: headerColor, label: "顶部导航栏背景色（留空=默认半透明白）", widget: color, required: false, allow_input: true }
 
-          - name: typography
-            label: "文字样式（全站通用）"
+          - name: branding
+            label: "顶部导航栏 / Logo（网站标题）"
             widget: object
             fields:
-              - name: font
-                label: "全站正文字体（一次性改全站；首屏若单独设过字体则优先首屏）"
+              - { name: logoColor, label: "Logo 文字颜色（顶部网站名；留空=默认深色）", widget: color, required: false, allow_input: true }
+              - name: logoFont
+                label: "Logo 文字字体"
                 widget: select
                 required: false
                 default: ""
                 options:
-                  - { label: "默认（Segoe UI 现代无衬线）", value: "" }
+                  - { label: "默认（与正文同款）", value: "" }
                   - { label: "Arial 经典无衬线", value: "Arial, sans-serif" }
                   - { label: "Georgia 优雅衬线", value: "Georgia, 'Times New Roman', serif" }
                   - { label: "Verdana 清晰宽体", value: "Verdana, Geneva, sans-serif" }
                   - { label: "Trebuchet MS 圆润", value: "'Trebuchet MS', sans-serif" }
                   - { label: "Tahoma 紧凑", value: "Tahoma, sans-serif" }
                   - { label: "Palatino 书卷衬线", value: "'Palatino Linotype', 'Book Antiqua', serif" }
-              - { name: fontSize, label: "全局字号缩放 %（100=原大小，80=缩小、120=放大；一次性改全站）", widget: number, required: false, min: 80, max: 130, value_type: int, default: 100 }
-              - { name: headingColor, label: "标题文字颜色（各区块大标题；留空=默认深色）", widget: color, required: false, allow_input: true }
-              - { name: textColor, label: "正文文字颜色（区块里的段落、导航文字；留空=默认深灰）", widget: color, required: false, allow_input: true }
-              - { name: mutedColor, label: "次要文字颜色（小标题、引导语、页面底上的说明文字；留空=默认灰）", widget: color, required: false, allow_input: true }
-              - { name: cardBg, label: "卡片底色（产品卡/数据卡/步骤卡/场景卡/留言表单的背景；留空=白色）", widget: color, required: false, allow_input: true }
-              - { name: cardInk, label: "卡片标题颜色（卡片里的产品名/步骤名等；留空=默认深色）", widget: color, required: false, allow_input: true }
-              - { name: cardMuted, label: "卡片正文颜色（卡片里的描述文字；留空=默认灰）", widget: color, required: false, allow_input: true }
+              - { name: logoSize, label: "Logo 字号 px（默认 16；填 20=放大、14=缩小）", widget: number, required: false, min: 10, max: 40, value_type: int, default: 16 }
+              - { name: logoBlockColor, label: "Logo 文字底色块颜色（垫在 Logo 后面的色板）", widget: color, required: false, allow_input: true }
+              - { name: logoBlockOpacity, label: "Logo 底色块不透明度 %（0=不显示，建议 60-90）", widget: number, required: false, min: 0, max: 100, value_type: int, default: 0 }
+              - { name: navColor, label: "导航菜单文字颜色（留空=默认深色）", widget: color, required: false, allow_input: true }
 
           - name: hero
             label: "首页"
@@ -165,6 +163,9 @@ collections:
               - { name: fontSize, label: "字号缩放%（100=默认大小，可填 110 放大 / 90 缩小）", widget: number, required: false, min: 60, max: 200, value_type: int, default: 100 }
               - { name: panelColor, label: "文字底色块颜色（垫在文字后面的一块色板，配合下方不透明度一起用）", widget: color, required: false, allow_input: true }
               - { name: panelOpacity, label: "文字底色块不透明度%（0=不显示底色块，建议 60-90）", widget: number, required: false, min: 0, max: 100, value_type: int, default: 0 }
+              - { name: font, label: "字体（本区块独立，不影响其他区块；留空=默认）", widget: select, required: false, default: "", options: [{ label: "默认（Segoe UI 现代无衬线）", value: "" }, { label: "Arial 经典无衬线", value: "Arial, sans-serif" }, { label: "Georgia 优雅衬线", value: "Georgia, 'Times New Roman', serif" }, { label: "Verdana 清晰宽体", value: "Verdana, Geneva, sans-serif" }, { label: "Trebuchet MS 圆润", value: "'Trebuchet MS', sans-serif" }, { label: "Tahoma 紧凑", value: "Tahoma, sans-serif" }, { label: "Palatino 书卷衬线", value: "'Palatino Linotype', 'Book Antiqua', serif" }] }
+              - { name: headingColor, label: "大标题颜色（本区块 h2 大标题；留空=默认）", widget: color, required: false, allow_input: true }
+              - { name: subColor, label: "小标题颜色（区块上方小标签/eyebrow；留空=默认）", widget: color, required: false, allow_input: true }
 
           - name: products
             label: "产品"
@@ -186,6 +187,34 @@ collections:
                     fields:
                       - { name: src, label: "图片", widget: image, required: false, media_folder: "images/products" }
                       - { name: caption, label: "图片说明（可选）", widget: string, required: false }
+              - name: style
+                label: "文字样式（本区块独立，不影响其他区块）"
+                widget: object
+                required: false
+                fields:
+                  - { name: font, label: "字体（留空=默认）", widget: select, required: false, default: "", options: [{ label: "默认（Segoe UI 现代无衬线）", value: "" }, { label: "Arial 经典无衬线", value: "Arial, sans-serif" }, { label: "Georgia 优雅衬线", value: "Georgia, 'Times New Roman', serif" }, { label: "Verdana 清晰宽体", value: "Verdana, Geneva, sans-serif" }, { label: "Trebuchet MS 圆润", value: "'Trebuchet MS', sans-serif" }, { label: "Tahoma 紧凑", value: "Tahoma, sans-serif" }, { label: "Palatino 书卷衬线", value: "'Palatino Linotype', 'Book Antiqua', serif" }] }
+                  - { name: fontSize, label: "字号缩放 %（100=原大小，可填 110 放大 / 90 缩小）", widget: number, required: false, min: 60, max: 200, value_type: int, default: 100 }
+                  - { name: headingColor, label: "大标题颜色（本区块 h2 大标题）", widget: color, required: false, allow_input: true }
+                  - { name: subColor, label: "小标题颜色（区块上方小标签）", widget: color, required: false, allow_input: true }
+                  - { name: textColor, label: "正文颜色（引导语/描述文字）", widget: color, required: false, allow_input: true }
+                  - { name: cardTitleColor, label: "卡片标题颜色（场景卡里的标题）", widget: color, required: false, allow_input: true }
+                  - { name: cardTextColor, label: "卡片正文颜色（卡片里的描述文字）", widget: color, required: false, allow_input: true }
+                  - { name: panelColor, label: "文字底色块颜色（垫在本区块文字后面的一块色板）", widget: color, required: false, allow_input: true }
+                  - { name: panelOpacity, label: "文字底色块不透明度 %（0=不显示，建议 60-90）", widget: number, required: false, min: 0, max: 100, value_type: int, default: 0 }
+              - name: style
+                label: "文字样式（本区块独立，不影响其他区块）"
+                widget: object
+                required: false
+                fields:
+                  - { name: font, label: "字体（留空=默认）", widget: select, required: false, default: "", options: [{ label: "默认（Segoe UI 现代无衬线）", value: "" }, { label: "Arial 经典无衬线", value: "Arial, sans-serif" }, { label: "Georgia 优雅衬线", value: "Georgia, 'Times New Roman', serif" }, { label: "Verdana 清晰宽体", value: "Verdana, Geneva, sans-serif" }, { label: "Trebuchet MS 圆润", value: "'Trebuchet MS', sans-serif" }, { label: "Tahoma 紧凑", value: "Tahoma, sans-serif" }, { label: "Palatino 书卷衬线", value: "'Palatino Linotype', 'Book Antiqua', serif" }] }
+                  - { name: fontSize, label: "字号缩放 %（100=原大小，可填 110 放大 / 90 缩小）", widget: number, required: false, min: 60, max: 200, value_type: int, default: 100 }
+                  - { name: headingColor, label: "大标题颜色（本区块 h2 大标题）", widget: color, required: false, allow_input: true }
+                  - { name: subColor, label: "小标题颜色（区块上方小标签）", widget: color, required: false, allow_input: true }
+                  - { name: textColor, label: "正文颜色（段落/描述文字）", widget: color, required: false, allow_input: true }
+                  - { name: cardTitleColor, label: "卡片标题颜色（产品卡里的标题）", widget: color, required: false, allow_input: true }
+                  - { name: cardTextColor, label: "卡片正文颜色（卡片里的描述文字）", widget: color, required: false, allow_input: true }
+                  - { name: panelColor, label: "文字底色块颜色（垫在本区块文字后面的一块色板）", widget: color, required: false, allow_input: true }
+                  - { name: panelOpacity, label: "文字底色块不透明度 %（0=不显示，建议 60-90）", widget: number, required: false, min: 0, max: 100, value_type: int, default: 0 }
 
           - name: why
             label: "为什么选我们"
@@ -209,6 +238,18 @@ collections:
                   - { name: height, label: "显示窗口高度 px（留空=完整显示长图、不裁剪，如 420）", widget: number, required: false, min: 100, max: 2000, value_type: int }
                   - { name: width, label: "显示窗口宽度 px（留空=自动均分、最宽640，长图可加大如 800）", widget: number, required: false, min: 200, max: 1200, value_type: int }
                   - { name: fit, label: "设了高度后，图片超出窗口时", widget: select, required: false, default: "contain", options: [{ label: "完整显示（留白不裁剪）", value: "contain" }, { label: "填满窗口（裁掉超出部分）", value: "cover" }] }
+              - name: style
+                label: "文字样式（本区块独立，不影响其他区块）"
+                widget: object
+                required: false
+                fields:
+                  - { name: font, label: "字体（留空=默认）", widget: select, required: false, default: "", options: [{ label: "默认（Segoe UI 现代无衬线）", value: "" }, { label: "Arial 经典无衬线", value: "Arial, sans-serif" }, { label: "Georgia 优雅衬线", value: "Georgia, 'Times New Roman', serif" }, { label: "Verdana 清晰宽体", value: "Verdana, Geneva, sans-serif" }, { label: "Trebuchet MS 圆润", value: "'Trebuchet MS', sans-serif" }, { label: "Tahoma 紧凑", value: "Tahoma, sans-serif" }, { label: "Palatino 书卷衬线", value: "'Palatino Linotype', 'Book Antiqua', serif" }] }
+                  - { name: fontSize, label: "字号缩放 %（100=原大小，可填 110 放大 / 90 缩小）", widget: number, required: false, min: 60, max: 200, value_type: int, default: 100 }
+                  - { name: headingColor, label: "大标题颜色（本区块 h2 大标题）", widget: color, required: false, allow_input: true }
+                  - { name: subColor, label: "小标题颜色（区块上方小标签）", widget: color, required: false, allow_input: true }
+                  - { name: textColor, label: "正文颜色（段落/描述文字）", widget: color, required: false, allow_input: true }
+                  - { name: panelColor, label: "文字底色块颜色（垫在本区块文字后面的一块色板）", widget: color, required: false, allow_input: true }
+                  - { name: panelOpacity, label: "文字底色块不透明度 %（0=不显示，建议 60-90）", widget: number, required: false, min: 0, max: 100, value_type: int, default: 0 }
 
           - name: contact
             label: "联系方式"
@@ -229,6 +270,20 @@ collections:
                   - { name: tiktok, label: "TikTok 主页链接", widget: string, required: false }
                   - { name: instagram, label: "Instagram 主页链接", widget: string, required: false }
                   - { name: youtube, label: "YouTube 频道链接", widget: string, required: false }
+              - name: style
+                label: "文字样式（本区块独立，不影响其他区块）"
+                widget: object
+                required: false
+                fields:
+                  - { name: font, label: "字体（留空=默认）", widget: select, required: false, default: "", options: [{ label: "默认（Segoe UI 现代无衬线）", value: "" }, { label: "Arial 经典无衬线", value: "Arial, sans-serif" }, { label: "Georgia 优雅衬线", value: "Georgia, 'Times New Roman', serif" }, { label: "Verdana 清晰宽体", value: "Verdana, Geneva, sans-serif" }, { label: "Trebuchet MS 圆润", value: "'Trebuchet MS', sans-serif" }, { label: "Tahoma 紧凑", value: "Tahoma, sans-serif" }, { label: "Palatino 书卷衬线", value: "'Palatino Linotype', 'Book Antiqua', serif" }] }
+                  - { name: fontSize, label: "字号缩放 %（100=原大小，可填 110 放大 / 90 缩小）", widget: number, required: false, min: 60, max: 200, value_type: int, default: 100 }
+                  - { name: headingColor, label: "大标题颜色（本区块 h2 大标题）", widget: color, required: false, allow_input: true }
+                  - { name: subColor, label: "小标题颜色（区块上方小标签）", widget: color, required: false, allow_input: true }
+                  - { name: textColor, label: "正文颜色（引导语等）", widget: color, required: false, allow_input: true }
+                  - { name: cardTitleColor, label: "表单标签颜色", widget: color, required: false, allow_input: true }
+                  - { name: cardTextColor, label: "表单输入文字颜色", widget: color, required: false, allow_input: true }
+                  - { name: panelColor, label: "文字底色块颜色（垫在本区块文字后面的一块色板）", widget: color, required: false, allow_input: true }
+                  - { name: panelOpacity, label: "文字底色块不透明度 %（0=不显示，建议 60-90）", widget: number, required: false, min: 0, max: 100, value_type: int, default: 0 }
 
           - name: process
             label: "生产流程（= 首页 HOW WE WORK 六步流程）"
@@ -243,6 +298,20 @@ collections:
                   - { name: num, label: "编号(如 01)", widget: string }
                   - { name: title, label: "标题", widget: string }
                   - { name: desc, label: "描述", widget: text }
+              - name: style
+                label: "文字样式（本区块独立，不影响其他区块）"
+                widget: object
+                required: false
+                fields:
+                  - { name: font, label: "字体（留空=默认）", widget: select, required: false, default: "", options: [{ label: "默认（Segoe UI 现代无衬线）", value: "" }, { label: "Arial 经典无衬线", value: "Arial, sans-serif" }, { label: "Georgia 优雅衬线", value: "Georgia, 'Times New Roman', serif" }, { label: "Verdana 清晰宽体", value: "Verdana, Geneva, sans-serif" }, { label: "Trebuchet MS 圆润", value: "'Trebuchet MS', sans-serif" }, { label: "Tahoma 紧凑", value: "Tahoma, sans-serif" }, { label: "Palatino 书卷衬线", value: "'Palatino Linotype', 'Book Antiqua', serif" }] }
+                  - { name: fontSize, label: "字号缩放 %（100=原大小，可填 110 放大 / 90 缩小）", widget: number, required: false, min: 60, max: 200, value_type: int, default: 100 }
+                  - { name: headingColor, label: "大标题颜色（本区块 h2 大标题）", widget: color, required: false, allow_input: true }
+                  - { name: subColor, label: "小标题颜色（区块上方小标签）", widget: color, required: false, allow_input: true }
+                  - { name: textColor, label: "正文颜色（段落/描述文字）", widget: color, required: false, allow_input: true }
+                  - { name: cardTitleColor, label: "卡片标题颜色（步骤卡里的标题）", widget: color, required: false, allow_input: true }
+                  - { name: cardTextColor, label: "卡片正文颜色（卡片里的描述文字）", widget: color, required: false, allow_input: true }
+                  - { name: panelColor, label: "文字底色块颜色（垫在本区块文字后面的一块色板）", widget: color, required: false, allow_input: true }
+                  - { name: panelOpacity, label: "文字底色块不透明度 %（0=不显示，建议 60-90）", widget: number, required: false, min: 0, max: 100, value_type: int, default: 0 }
 
           - name: galleries
             label: "公司场景图库（首页卡片 + 二级页）"

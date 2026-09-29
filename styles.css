@@ -42,13 +42,13 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; color: var(--heading-color); }
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 2px;
-  font-size: 13px;
+  font-size: calc(13px * var(--fs-scale, 1));
   font-weight: 700;
-  color: var(--kraft);
+  color: var(--s-sub, var(--kraft));
   margin-bottom: 10px;
 }
 
-.lead { font-size: 18px; color: var(--muted); }
+.lead { font-size: calc(18px * var(--fs-scale, 1)); color: var(--muted); }
 
 .accent { color: var(--teal); }
 
@@ -91,7 +91,7 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; color: var(--heading-color); }
 .logo-mark.has-img img { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: 8px; }
 .logo-text { font-size: 16px; color: var(--ink); }
 .nav-links { display: flex; align-items: center; gap: 26px; }
-.nav-links a { font-weight: 500; color: var(--ink); transition: color .2s; }
+.nav-links a { font-weight: 500; color: var(--nav-color, var(--ink)); transition: color .2s; }
 .nav-links a:hover { color: var(--teal); }
 .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: 0; cursor: pointer; }
 .nav-toggle span { width: 26px; height: 3px; background: var(--ink); border-radius: 3px; transition: .3s; }
@@ -173,7 +173,7 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; color: var(--heading-color); }
 .section { padding: 80px 0; }
 .section-alt { background: var(--bg-alt); }
 .section-head { text-align: center; max-width: 720px; margin: 0 auto 50px; }
-.section-head h2 { font-size: clamp(26px, 3.5vw, 38px); }
+.section-head h2 { font-size: calc(clamp(26px, 3.5vw, 38px) * var(--fs-scale, 1)); }
 
 /* ===================== 关于 ===================== */
 .about-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 50px; align-items: center; }
@@ -247,7 +247,7 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; color: var(--heading-color); }
 
 /* ===================== 联系 ===================== */
 .section-contact { background: linear-gradient(135deg, var(--teal-dark), var(--teal)); color: #fff; }
-.section-contact .eyebrow { color: var(--kraft-light); }
+.section-contact .eyebrow { color: var(--s-sub, var(--kraft-light)); }
 .section-contact .lead { color: #d6e6e6; }
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start; }
 .contact-list { list-style: none; margin-top: 26px; }
@@ -376,3 +376,43 @@ a.soc:hover { background: #fff; color: var(--teal); transform: translateY(-2px);
 @media (max-width: 640px) {
   .process-steps, .life-cards, .g-grid { grid-template-columns: 1fr; }
 }
+
+/* =========================================================
+   区块独立文字样式（后台逐区可调，互不干扰）
+   原理：CSS 变量会继承，把 --ink / --muted / --heading-color /
+   --font-base / --fs-scale / --card-* / --s-sub 设到某个 <section>
+   上，该区块内所有用这些变量的文字就自动跟随，其他区块不受影响。
+   ========================================================= */
+
+/* 各区块重声明 font-family，让子元素继承“本区块自己的” --font-base */
+#about, #products, #why, #process, #life, #contact { font-family: var(--font-base); }
+
+/* 区块文字底色块：仅当后台为该区块设置了底色时由脚本注入 .sec-panel；默认不显示 */
+.section .container { position: relative; }
+.sec-panel {
+  position: absolute; inset: 0; border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(31, 61, 60, .08);
+  z-index: 0; pointer-events: none;
+}
+.section .container > :not(.sec-panel) { position: relative; z-index: 1; }
+
+/* 以下文字元素乘以本区块的 --fs-scale（默认 1 = 不改大小），实现区块级字号缩放。
+   放在文件末尾，确保覆盖上面的默认字号规则。 */
+.why-num { font-size: calc(30px * var(--fs-scale, 1)); }
+.why-item h3 { font-size: calc(18px * var(--fs-scale, 1)); }
+.why-item p { font-size: calc(14.5px * var(--fs-scale, 1)); }
+.card h3 { font-size: calc(19px * var(--fs-scale, 1)); }
+.card p { font-size: calc(14.5px * var(--fs-scale, 1)); }
+.stat .num { font-size: calc(38px * var(--fs-scale, 1)); }
+.stat .suffix { font-size: calc(24px * var(--fs-scale, 1)); }
+.stat p { font-size: calc(14px * var(--fs-scale, 1)); }
+.step-num { font-size: calc(18px * var(--fs-scale, 1)); }
+.step-body h3 { font-size: calc(17px * var(--fs-scale, 1)); }
+.step-body p { font-size: calc(14.5px * var(--fs-scale, 1)); }
+.life-meta h3 { font-size: calc(18px * var(--fs-scale, 1)); }
+.life-meta p { font-size: calc(14px * var(--fs-scale, 1)); }
+.life-cta { font-size: calc(14px * var(--fs-scale, 1)); }
+.contact-list a, .contact-list span:last-child { font-size: calc(17px * var(--fs-scale, 1)); }
+.ci-label { font-size: calc(12px * var(--fs-scale, 1)); }
+.field label { font-size: calc(13px * var(--fs-scale, 1)); }
+.field input, .field textarea { font-size: calc(15px * var(--fs-scale, 1)); }
