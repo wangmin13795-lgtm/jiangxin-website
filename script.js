@@ -394,6 +394,7 @@ function applyTheme(c) {
   const root = document.documentElement;
   if (t.bgColor) root.style.setProperty('--bg', t.bgColor);
   if (t.bgAlt) root.style.setProperty('--bg-alt', t.bgAlt);
+  if (t.headerColor) root.style.setProperty('--header-bg', t.headerColor);
 }
 
 // 点击图片放大查看（lightbox，支持同组左右切换）

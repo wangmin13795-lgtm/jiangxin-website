@@ -37,6 +37,7 @@ collections:
             fields:
               - { name: bgColor, label: "页面主背景色（留空=默认白底；选色后整站生效）", widget: color, required: false, allow_input: true }
               - { name: bgAlt, label: "浅色区块底色（产品/关于等交替区块；留空=默认浅灰）", widget: color, required: false, allow_input: true }
+              - { name: headerColor, label: "顶部导航栏背景色（留空=默认半透明白）", widget: color, required: false, allow_input: true }
 
           - name: hero
             label: "首页"
