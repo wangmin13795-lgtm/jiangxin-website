@@ -1,92 +1,60 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>网站内容管理后台</title>
+  <!-- SEO: 改这里 -->
+  <title>Qingdao Jiangxin Packaging Products Co., Ltd. | Custom Packaging Manufacturer</title>
+  <meta name="description" content="Qingdao Jiangxin Packaging Products Co., Ltd. is a trusted Chinese manufacturer of corrugated boxes, cartons, gift boxes and eco-friendly custom packaging for global brands." />
+  <meta name="keywords" content="packaging manufacturer, corrugated box, custom packaging, gift box, eco packaging, Qingdao packaging, China packaging" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Decap CMS（原 Netlify CMS），自动读取同目录下的 config.yml -->
-  <script src="https://unpkg.com/decap-cms@^3.3.3/dist/decap-cms.js"></script>
-  <!-- 在后台右下角注入快捷按钮：可视化编辑器 + 图片裁剪工具 -->
-  <script>
-    (function () {
-      function addBtns() {
-        if (document.getElementById('open-editor-btn')) return;
-        var baseCss = 'position:fixed;right:16px;z-index:99999;background:#155e63;color:#fff;padding:11px 16px;border-radius:10px;font:14px/1.2 -apple-system,Segoe UI,Roboto,sans-serif;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.25)';
-        var b = document.createElement('a');
-        b.id = 'open-editor-btn';
-        b.textContent = '🎨 可视化编辑器';
-        b.href = window.location.origin + '/hero-editor.html';
-        b.target = '_blank';
-        b.style.cssText = baseCss + ';bottom:64px;';
-        document.body.appendChild(b);
 
-        var c = document.createElement('a');
-        c.id = 'open-crop-btn';
-        c.textContent = '🖼️ 图片裁剪工具';
-        c.href = window.location.origin + '/crop.html';
-        c.target = '_blank';
-        c.style.cssText = baseCss + ';bottom:16px;background:#c9873c;';
-        document.body.appendChild(c);
+  <!-- ===================== 顶部导航 ===================== -->
+  <header class="header" id="top">
+    <div class="container nav">
+      <a href="#top" class="logo">
+        <span class="logo-mark">JX</span>
+        <span class="logo-text" id="logoText">Qingdao Jiangxin Packaging</span>
+      </a>
 
-        var d = document.createElement('a');
-        d.id = 'open-about-btn';
-        d.textContent = '🏭 照片墙编辑器';
-        d.href = window.location.origin + '/about-editor.html';
-        d.target = '_blank';
-        d.style.cssText = baseCss + ';bottom:112px;background:#0f474b;';
-        document.body.appendChild(d);
-      }
-      window.addEventListener('load', function () { setTimeout(addBtns, 800); });
-      var t = setInterval(addBtns, 1000);
-      setTimeout(function () { clearInterval(t); }, 12000);
-    })();
-  </script>
-  <!-- 批量上传补丁：Decap 自带媒体库只支持单张上传（源码硬编码只取第一个文件），
-       这里让文件框支持多选，并在选择多张时自动排队逐张上传 -->
-  <script>
-    (function () {
-      function patchInput(input) {
-        input.multiple = true;
-        if (input.dataset.multiPatched) return;
-        input.dataset.multiPatched = '1';
-        input.addEventListener('change', function (e) {
-          var files = Array.prototype.slice.call(e.target.files || []);
-          if (files.length <= 1) return; // 单张：走 Decap 原生流程
-          // 多张：拦截原生处理，改为排队逐张上传
-          e.stopImmediatePropagation();
-          e.preventDefault();
-          var i = 0;
-          function next() {
-            if (i >= files.length) return;
-            var dt = new DataTransfer();
-            dt.items.add(files[i]);
-            input.files = dt.files;
-            i++;
-            input.dispatchEvent(new Event('change', { bubbles: true }));
-            // Decap 上传期间会禁用输入框；等这张传完（恢复可用）再传下一张
-            var started = false, waited = 0;
-            (function wait() {
-              waited += 150;
-              if (!started) {
-                if (input.disabled) { started = true; }
-                else if (waited > 5000) { setTimeout(next, 300); return; } // 兜底：没检测到上传状态就继续
-              }
-              if (started && !input.disabled) { setTimeout(next, 400); return; } // 这张传完了
-              if (waited > 90000) { setTimeout(next, 300); return; } // 超时兜底
-              setTimeout(wait, 150);
-            })();
-          }
-          next();
-        }, true);
-      }
-      var mo = new MutationObserver(function () {
-        document.querySelectorAll('label.nc-fileUploadButton input[type=file]').forEach(patchInput);
-      });
-      function start() { mo.observe(document.body, { childList: true, subtree: true }); }
-      if (document.body) start(); else window.addEventListener('DOMContentLoaded', start);
-    })();
-  </script>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#home">Home</a>
+        <a href="#about">About Us</a>
+        <a href="gallery.html">Company Life</a>
+        <a href="#products">Products</a>
+        <a href="#why">Why Us</a>
+        <a href="#contact" class="btn btn-nav">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================== 内容区（由 script.js 从 content.json 渲染） ===================== -->
+  <main id="app"></main>
+
+  <!-- ===================== 页脚 ===================== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>
+        <span class="logo-mark">JX</span>
+        <p class="footer-name" id="footerName">Qingdao Jiangxin Packaging Products Co., Ltd.</p>
+      </div>
+      <nav class="footer-links">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="gallery.html">Company Life</a>
+        <a href="#products">Products</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <p class="copyright">© <span id="year"></span> Qingdao Jiangxin Packaging. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>

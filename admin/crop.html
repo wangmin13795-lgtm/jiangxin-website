@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>图片裁剪工具</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
+<style>
+  :root{ --teal:#155e63; --kraft:#c9873c; --ink:#102a33; --muted:#5b6b72; --line:#e3e9ea; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif; color:var(--ink); background:#f4f6f7; }
+  .wrap{ max-width:1100px; margin:0 auto; padding:24px 20px 60px; }
+  h1{ font-size:22px; margin:0 0 4px; }
+  .sub{ color:var(--muted); font-size:13px; margin-bottom:18px; line-height:1.7; }
+  .drop{ border:2px dashed var(--line); border-radius:14px; background:#fff; padding:34px 20px; text-align:center; color:var(--muted); transition:.15s; }
+  .drop.over{ border-color:var(--teal); background:#f1f7f7; color:var(--teal); }
+  .btn{ cursor:pointer; border:1px solid var(--teal); background:var(--teal); color:#fff; padding:9px 16px; border-radius:9px; font-size:13px; display:inline-block; }
+  .btn.ghost{ background:#fff; color:var(--teal); }
+  .toolbar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:18px 0; }
+  .toolbar .lab{ font-size:13px; color:var(--muted); }
+  .ratio{ border:1px solid var(--line); background:#fff; color:var(--ink); padding:7px 12px; border-radius:9px; font-size:13px; cursor:pointer; }
+  .ratio.active{ background:var(--teal); color:#fff; border-color:var(--teal); }
+  .spacer{ flex:1; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:18px; }
+  .card{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px; }
+  .card .ph{ display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px; font-size:13px; }
+  .card .ph .nm{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+  .card .box{ background:#f0f3f4; border-radius:10px; overflow:hidden; max-height:300px; display:flex; align-items:center; justify-content:center; }
+  .card .box img{ max-width:100%; display:block; }
+  .card .acts{ display:flex; gap:8px; margin-top:10px; }
+  .card .acts .btn{ flex:1; text-align:center; }
+  .empty{ color:var(--muted); font-size:13px; padding:10px 0; }
+  .ok{ color:var(--teal); font-weight:600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>图片裁剪工具</h1>
+  <div class="sub">
+    纯本地工具：图片只在你的浏览器里裁切，<b>不会上传到任何服务器</b>。裁好后点“下载”，再到后台「Media」上传即可。<br/>
+    适合把产品图/工厂图裁成统一比例（如 4:3、1:1），不用再开别家的软件。
+  </div>
+
+  <div class="drop" id="drop">
+    <p>把图片拖到这里，或
+      <label class="btn">选择图片<input type="file" id="file" accept="image/*" multiple hidden /></label>
+    </p>
+  </div>
+
+  <div class="toolbar">
+    <span class="lab">裁剪比例：</span>
+    <button class="ratio active" data-r="NaN">自由</button>
+    <button class="ratio" data-r="1">1:1</button>
+    <button class="ratio" data-r="1.3333">4:3</button>
+    <button class="ratio" data-r="0.75">3:4</button>
+    <button class="ratio" data-r="1.7778">16:9</button>
+    <span class="spacer"></span>
+    <button class="btn" id="dlAll">下载全部</button>
+    <button class="btn ghost" id="clear">清空</button>
+  </div>
+
+  <div class="grid" id="grid"><div class="empty">还没有图片，先拖进来或选择图片。</div></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+<script>
+const drop = document.getElementById('drop');
+const fileInput = document.getElementById('file');
+const grid = document.getElementById('grid');
+const ratioBtns = document.querySelectorAll('.ratio');
+let currentRatio = NaN;
+let cards = []; // {name, base, cropper, el}
+
+function clearEmpty(){ if(grid.querySelector('.empty')) grid.innerHTML=''; }
+
+function addFiles(fileList){
+  clearEmpty();
+  [...fileList].forEach(f=>{
+    if(!f.type.startsWith('image/')) return;
+    const base = f.name.replace(/\.[^.]+$/, '');
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<div class="ph"><span class="nm">${f.name}</span></div>
+        <div class="box"><img src="${e.target.result}" alt=""></div>
+        <div class="acts">
+          <button class="btn dl">下载这张</button>
+          <button class="btn ghost rm">移除</button>
+        </div>`;
+      grid.appendChild(card);
+      const img = card.querySelector('img');
+      const cropper = new Cropper(img, {
+        viewMode: 1, autoCropArea: 0.9, aspectRatio: currentRatio,
+        background: false, responsive: true
+      });
+      const rec = { name: f.name, base, cropper, el: card };
+      cards.push(rec);
+
+      card.querySelector('.dl').addEventListener('click', ()=> downloadOne(rec));
+      card.querySelector('.rm').addEventListener('click', ()=>{
+        cropper.destroy(); card.remove(); cards = cards.filter(c=>c!==rec);
+        if(!cards.length) grid.innerHTML = '<div class="empty">还没有图片，先拖进来或选择图片。</div>';
+      });
+    };
+    reader.readAsDataURL(f);
+  });
+}
+
+function downloadOne(rec){
+  const canvas = rec.cropper.getCroppedCanvas();
+  if(!canvas){ alert('请先裁切区域'); return; }
+  canvas.toBlob(blob=>{
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = rec.base + '-crop.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  }, 'image/png');
+}
+
+document.getElementById('dlAll').addEventListener('click', ()=>{
+  cards.forEach((rec,i)=> setTimeout(()=>downloadOne(rec), i*400));
+});
+
+document.getElementById('clear').addEventListener('click', ()=>{
+  cards.forEach(c=>c.cropper.destroy()); cards=[];
+  grid.innerHTML = '<div class="empty">还没有图片，先拖进来或选择图片。</div>';
+});
+
+ratioBtns.forEach(b=> b.addEventListener('click', ()=>{
+  ratioBtns.forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  currentRatio = b.dataset.r === 'NaN' ? NaN : parseFloat(b.dataset.r);
+  cards.forEach(c=> c.cropper.setAspectRatio(currentRatio));
+}));
+
+fileInput.addEventListener('change', e=>{ addFiles(e.target.files); e.target.value=''; });
+['dragenter','dragover'].forEach(ev=> drop.addEventListener(ev, e=>{ e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev=> drop.addEventListener(ev, e=>{ e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e=>{ if(e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
+// 允许直接把文件拖到页面任意位置
+window.addEventListener('drop', e=>{ if(e.dataTransfer && e.dataTransfer.files.length){ e.preventDefault(); addFiles(e.dataTransfer.files); } });
+window.addEventListener('dragover', e=> e.preventDefault());
+</script>
+</body>
+</html>
