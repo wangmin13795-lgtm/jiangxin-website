@@ -125,7 +125,7 @@
         "image": "images/about/关4.png"
       }
     ],
-    "textColor": "#000000",
+    "textColor": "#ffffff",
     "title": "Decades of packaging expertise, built for export",
     "image": "",
     "stats": [
@@ -150,7 +150,7 @@
         "label": "Customers Served"
       }
     ],
-    "panelColor": "#fffcf4"
+    "panelColor": ""
   },
   "typography": {
     "fontSize": 110,
