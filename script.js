@@ -7,6 +7,7 @@
 // 内置默认内容（与 content.json 一致，仅作离线兜底）
 const DEFAULT_CONTENT = {
   company: { name: "Qingdao Jiangxin Packaging Products Co., Ltd.", short: "Qingdao Jiangxin Packaging", logo: "" },
+  typography: { font: "", fontSize: 100, headingColor: "", textColor: "", mutedColor: "", cardBg: "", cardInk: "", cardMuted: "" },
   hero: {
     eyebrow: "Custom Packaging Manufacturer · Qingdao, China",
     title1: "Your Trusted Partner for",
@@ -212,6 +213,15 @@ function render(c) {
         return `<img src="${esc(g.image)}" alt="Our factory" loading="lazy" data-full="${esc(g.image)}" style="${style}" />`;
       }).join('')}</div>`
     : "";
+  // 关于我们区外观：文字底色块 / 文字颜色 / 字号（后台可调，留空=默认样式）
+  const abFs = parseInt(c.about.fontSize, 10);
+  const abOp = parseFloat(c.about.panelOpacity);
+  const abVars = [];
+  if (abFs > 0) abVars.push(`--about-fs:${Math.min(200, Math.max(60, abFs))}%`);
+  if (c.about.textColor) abVars.push(`--about-p-color:${c.about.textColor}`, `--about-text-color:${c.about.textColor}`);
+  const abStyle = abVars.length ? ` style="${abVars.join(';')}"` : '';
+  const aboutPanel = (c.about.panelColor && abOp > 0)
+    ? `<div class="about-panel" style="background:${esc(c.about.panelColor)};opacity:${Math.min(100, abOp) / 100}"></div>` : '';
   html += `
   <section class="section" id="about">
     <div class="container">
@@ -220,7 +230,7 @@ function render(c) {
         <h2>${esc(c.about.title)}</h2>
       </div>
       <div class="about-grid">
-        <div class="about-text">
+        <div class="about-text"${abStyle}>${aboutPanel}
           ${paras}
           <ul class="checklist">${checks}</ul>
           ${aboutImg}
@@ -388,13 +398,26 @@ function render(c) {
   applyTheme(c);
 }
 
-// 外观 / 配色：后台选了颜色就覆盖 CSS 变量；留空则沿用默认白底
+// 外观 / 配色 + 全站文字样式：后台选了就覆盖 CSS 变量；留空则沿用默认
 function applyTheme(c) {
-  const t = c.theme || {};
   const root = document.documentElement;
+  const t = c.theme || {};
   if (t.bgColor) root.style.setProperty('--bg', t.bgColor);
   if (t.bgAlt) root.style.setProperty('--bg-alt', t.bgAlt);
   if (t.headerColor) root.style.setProperty('--header-bg', t.headerColor);
+  // 全站文字样式（后台「文字样式」区块）：一次性覆盖整站字体/字号/颜色
+  const ty = c.typography || {};
+  if (ty.font) root.style.setProperty('--font-base', ty.font);
+  if (ty.fontSize != null && ty.fontSize !== '') {
+    const s = Math.min(130, Math.max(80, Number(ty.fontSize))) / 100;
+    if (s !== 1) root.style.setProperty('--fs-scale', s);
+  }
+  if (ty.headingColor) root.style.setProperty('--heading-color', ty.headingColor);
+  if (ty.textColor) root.style.setProperty('--ink', ty.textColor);
+  if (ty.mutedColor) root.style.setProperty('--muted', ty.mutedColor);
+  if (ty.cardBg) root.style.setProperty('--card-bg', ty.cardBg);
+  if (ty.cardInk) root.style.setProperty('--card-ink', ty.cardInk);
+  if (ty.cardMuted) root.style.setProperty('--card-muted', ty.cardMuted);
 }
 
 // 点击图片放大查看（lightbox，支持同组左右切换）

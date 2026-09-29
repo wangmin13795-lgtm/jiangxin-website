@@ -39,6 +39,31 @@ collections:
               - { name: bgAlt, label: "浅色区块底色（产品/关于等交替区块；留空=默认浅灰）", widget: color, required: false, allow_input: true }
               - { name: headerColor, label: "顶部导航栏背景色（留空=默认半透明白）", widget: color, required: false, allow_input: true }
 
+          - name: typography
+            label: "文字样式（全站通用）"
+            widget: object
+            fields:
+              - name: font
+                label: "全站正文字体（一次性改全站；首屏若单独设过字体则优先首屏）"
+                widget: select
+                required: false
+                default: ""
+                options:
+                  - { label: "默认（Segoe UI 现代无衬线）", value: "" }
+                  - { label: "Arial 经典无衬线", value: "Arial, sans-serif" }
+                  - { label: "Georgia 优雅衬线", value: "Georgia, 'Times New Roman', serif" }
+                  - { label: "Verdana 清晰宽体", value: "Verdana, Geneva, sans-serif" }
+                  - { label: "Trebuchet MS 圆润", value: "'Trebuchet MS', sans-serif" }
+                  - { label: "Tahoma 紧凑", value: "Tahoma, sans-serif" }
+                  - { label: "Palatino 书卷衬线", value: "'Palatino Linotype', 'Book Antiqua', serif" }
+              - { name: fontSize, label: "全局字号缩放 %（100=原大小，80=缩小、120=放大；一次性改全站）", widget: number, required: false, min: 80, max: 130, value_type: int, default: 100 }
+              - { name: headingColor, label: "标题文字颜色（各区块大标题；留空=默认深色）", widget: color, required: false, allow_input: true }
+              - { name: textColor, label: "正文文字颜色（区块里的段落、导航文字；留空=默认深灰）", widget: color, required: false, allow_input: true }
+              - { name: mutedColor, label: "次要文字颜色（小标题、引导语、页面底上的说明文字；留空=默认灰）", widget: color, required: false, allow_input: true }
+              - { name: cardBg, label: "卡片底色（产品卡/数据卡/步骤卡/场景卡/留言表单的背景；留空=白色）", widget: color, required: false, allow_input: true }
+              - { name: cardInk, label: "卡片标题颜色（卡片里的产品名/步骤名等；留空=默认深色）", widget: color, required: false, allow_input: true }
+              - { name: cardMuted, label: "卡片正文颜色（卡片里的描述文字；留空=默认灰）", widget: color, required: false, allow_input: true }
+
           - name: hero
             label: "首页"
             widget: object
@@ -136,6 +161,10 @@ collections:
                   - { name: width, label: "宽度px(可选)", widget: number, required: false }
                   - { name: rotate, label: "旋转角度(可选，如 -5)", widget: number, required: false }
               - { name: galleryColumns, label: "照片墙每行张数（2=两两成对，3=常规三列；手机上自动变单列）", widget: number, required: false, min: 1, max: 4, default: 3 }
+              - { name: textColor, label: "文字颜色（段落+要点清单；留空=默认灰/深色）", widget: color, required: false, allow_input: true }
+              - { name: fontSize, label: "字号缩放%（100=默认大小，可填 110 放大 / 90 缩小）", widget: number, required: false, min: 60, max: 200, value_type: int, default: 100 }
+              - { name: panelColor, label: "文字底色块颜色（垫在文字后面的一块色板，配合下方不透明度一起用）", widget: color, required: false, allow_input: true }
+              - { name: panelOpacity, label: "文字底色块不透明度%（0=不显示底色块，建议 60-90）", widget: number, required: false, min: 0, max: 100, value_type: int, default: 0 }
 
           - name: products
             label: "产品"

@@ -11,6 +11,13 @@
   --radius: 14px;
   --shadow: 0 10px 30px rgba(15, 71, 75, 0.08);
   --max: 1140px;
+  /* 全站文字样式（后台「文字样式」区块可调，留空沿用下方默认） */
+  --font-base: "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --fs-scale: 1;                 /* 全局字号缩放（1=原大小） */
+  --heading-color: var(--ink);   /* 标题默认跟随正文色，可单独改 */
+  --card-bg: #ffffff;            /* 卡片底色（产品卡/数据卡/步骤卡/场景卡/留言表单） */
+  --card-ink: #1c2733;           /* 卡片内标题颜色 */
+  --card-muted: #5b6b78;         /* 卡片内说明文字颜色 */
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,7 +25,8 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: var(--font-base);
+  font-size: calc(16px * var(--fs-scale));
   color: var(--ink);
   background: var(--bg);
   line-height: 1.65;
@@ -29,7 +37,7 @@ body {
 
 a { text-decoration: none; color: inherit; }
 
-h1, h2, h3 { line-height: 1.2; font-weight: 700; }
+h1, h2, h3 { line-height: 1.2; font-weight: 700; color: var(--heading-color); }
 
 .eyebrow {
   text-transform: uppercase;
@@ -169,19 +177,23 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
 
 /* ===================== 关于 ===================== */
 .about-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 50px; align-items: center; }
-.about-text p { margin-bottom: 16px; color: var(--muted); }
+/* 文字底色块：颜色/不透明度由后台控制（inline style），文字保持在上层 */
+.about-text { position: relative; font-size: var(--about-fs, 100%); }
+.about-panel { position: absolute; inset: -26px -30px; border-radius: 22px; box-shadow: 0 10px 40px rgba(31, 61, 60, .10); z-index: 0; }
+.about-text > *:not(.about-panel) { position: relative; z-index: 1; }
+.about-text p { margin-bottom: 16px; color: var(--about-p-color, var(--muted)); }
 .checklist { list-style: none; margin-top: 10px; }
-.checklist li { position: relative; padding-left: 30px; margin-bottom: 10px; color: var(--ink); font-weight: 500; }
+.checklist li { position: relative; padding-left: 30px; margin-bottom: 10px; color: var(--about-text-color, var(--ink)); font-weight: 500; }
 .checklist li::before {
   content: "✓"; position: absolute; left: 0; top: 0;
   width: 20px; height: 20px; background: var(--teal); color: #fff;
   border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700;
 }
 .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-.stat { background: #fff; border: 1px solid #eef1f2; border-radius: var(--radius); padding: 24px; text-align: center; box-shadow: var(--shadow); }
+.stat { background: var(--card-bg); border: 1px solid #eef1f2; border-radius: var(--radius); padding: 24px; text-align: center; box-shadow: var(--shadow); }
 .stat .num { font-size: 38px; font-weight: 800; color: var(--teal); }
 .stat .suffix { font-size: 24px; font-weight: 800; color: var(--teal); }
-.stat p { color: var(--muted); font-size: 14px; margin-top: 4px; }
+.stat p { color: var(--card-muted); font-size: 14px; margin-top: 4px; }
 
 /* ===================== 关于我们：工厂照片墙 ===================== */
 .about-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 34px; }
@@ -190,7 +202,7 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
 
 /* ===================== 产品卡片 ===================== */
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.card { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: transform .2s; }
+.card { background: var(--card-bg); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: transform .2s; }
 .card:hover { transform: translateY(-6px); }
 .card-img { height: 170px; }
 .ph-1 { background: linear-gradient(135deg, #c9873c, #e9b873); }
@@ -199,8 +211,8 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
 .ph-4 { background: linear-gradient(135deg, #2c3e50, #4a6581); }
 .ph-5 { background: linear-gradient(135deg, #3f7d4f, #6fb37e); }
 .ph-6 { background: linear-gradient(135deg, #b5651d, #e0a458); }
-.card h3 { font-size: 19px; margin: 18px 20px 8px; }
-.card p { color: var(--muted); font-size: 14.5px; padding: 0 20px 22px; }
+.card h3 { font-size: 19px; margin: 18px 20px 8px; color: var(--card-ink); }
+.card p { color: var(--card-muted); font-size: 14.5px; padding: 0 20px 22px; }
 
 /* ===================== 为什么选我们 ===================== */
 .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
@@ -256,12 +268,12 @@ h1, h2, h3 { line-height: 1.2; font-weight: 700; }
 a.soc:hover { background: #fff; color: var(--teal); transform: translateY(-2px); }
 .soc-off { opacity: .4; cursor: default; }
 
-.contact-form { background: #fff; border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); }
+.contact-form { background: var(--card-bg); border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); }
 .field { margin-bottom: 16px; }
-.field label { display: block; font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.field label { display: block; font-size: 13px; font-weight: 600; color: var(--card-ink); margin-bottom: 6px; }
 .field input, .field textarea {
   width: 100%; padding: 12px 14px; border: 1px solid #d7dee1; border-radius: 10px;
-  font-family: inherit; font-size: 15px; color: var(--ink); resize: vertical;
+  font-family: inherit; font-size: 15px; color: var(--card-ink); resize: vertical;
 }
 .field input:focus, .field textarea:focus { outline: none; border-color: var(--teal); }
 .form-note { margin-top: 12px; color: #2c7a3f; font-weight: 600; font-size: 14px; }
@@ -302,19 +314,19 @@ a.soc:hover { background: #fff; color: var(--teal); transform: translateY(-2px);
 
 /* ===================== 生产流程 ===================== */
 .process-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-.step { display: flex; gap: 16px; padding: 22px; border-radius: var(--radius); background: #fff; border: 1px solid #eef1f2; box-shadow: var(--shadow); }
+.step { display: flex; gap: 16px; padding: 22px; border-radius: var(--radius); background: var(--card-bg); border: 1px solid #eef1f2; box-shadow: var(--shadow); }
 .step-num { flex: 0 0 auto; width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; background: var(--teal); color: #fff; font-weight: 800; font-size: 18px; }
-.step-body h3 { font-size: 17px; margin-bottom: 6px; }
-.step-body p { color: var(--muted); font-size: 14.5px; }
+.step-body h3 { font-size: 17px; margin-bottom: 6px; color: var(--card-ink); }
+.step-body p { color: var(--card-muted); font-size: 14.5px; }
 
 /* ===================== 公司场景卡片 ===================== */
 .life-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
-.life-card { display: block; border-radius: var(--radius); overflow: hidden; background: #fff; box-shadow: var(--shadow); transition: transform .2s; }
+.life-card { display: block; border-radius: var(--radius); overflow: hidden; background: var(--card-bg); box-shadow: var(--shadow); transition: transform .2s; }
 .life-card:hover { transform: translateY(-6px); }
 .life-cover { height: 180px; }
 .life-meta { padding: 18px 20px 22px; }
-.life-meta h3 { font-size: 18px; margin-bottom: 6px; }
-.life-meta p { color: var(--muted); font-size: 14px; margin-bottom: 12px; }
+.life-meta h3 { font-size: 18px; margin-bottom: 6px; color: var(--card-ink); }
+.life-meta p { color: var(--card-muted); font-size: 14px; margin-bottom: 12px; }
 .life-cta { color: var(--teal); font-weight: 700; font-size: 14px; }
 
 /* ===================== 画廊二级页 ===================== */
