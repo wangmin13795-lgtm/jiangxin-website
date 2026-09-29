@@ -91,9 +91,9 @@
     ]
   },
   "theme": {
-    "bgColor": "#64aa8b",
-    "bgAlt": "#bdf0ee",
-    "headerColor": "#007759"
+    "bgColor": "#2ba283",
+    "bgAlt": "#b8ffed",
+    "headerColor": "#d6ffba"
   },
   "about": {
     "gallery": [
