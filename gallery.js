@@ -20,6 +20,56 @@ const DEFAULT_GALLERIES = {
 const esc = (s) => String(s == null ? "" : s)
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
+// 与首页一致：把「外观 / 配色」主题（页面背景、区块底色、导航栏背景）应用到二级页面
+function hexToRgba(hex, a) {
+  hex = (hex || '').trim();
+  if (!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(hex)) return hex;
+  let h = hex.slice(1);
+  if (h.length === 3) h = h.split('').map(x => x + x).join('');
+  const r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+function applyTheme(c) {
+  const root = document.documentElement;
+  const t = c.theme || {};
+  if (t.bgColor) root.style.setProperty('--bg', t.bgColor);
+  if (t.bgAlt) root.style.setProperty('--bg-alt', t.bgAlt);
+  if (t.headerColor) root.style.setProperty('--header-bg', t.headerColor);
+}
+// 顶部 Logo / 导航 配色（与首页一致），让二级页导航栏和首页统一
+function applyBranding(c) {
+  const b = c.branding || {};
+  const header = document.querySelector('.header');
+  if (header && b.navColor) header.style.setProperty('--nav-color', b.navColor);
+  const lt = document.getElementById('logoText');
+  if (lt) {
+    if (b.logoColor) lt.style.color = b.logoColor;
+    if (b.logoFont) lt.style.fontFamily = b.logoFont;
+    if (b.logoSize) lt.style.fontSize = b.logoSize + 'px';
+  }
+  const logo = document.querySelector('.logo');
+  if (logo && b.logoBlockColor && Number(b.logoBlockOpacity) > 0) {
+    logo.style.background = hexToRgba(b.logoBlockColor, Math.min(100, Math.max(0, Number(b.logoBlockOpacity))) / 100);
+    logo.style.padding = '6px 12px';
+    logo.style.borderRadius = '10px';
+  }
+}
+
+// 区块独立文字样式（与首页同一套变量）：本页 <section> 上生效，不影响其他页面
+function secStyle(o) {
+  o = o || {};
+  const v = [];
+  if (o.font) v.push(`--font-base:${o.font}`);
+  const fs = Number(o.fontSize);
+  if (fs && fs !== 100) v.push(`--fs-scale:${Math.min(200, Math.max(50, fs)) / 100}`);
+  if (o.headingColor) v.push(`--heading-color:${o.headingColor}`);
+  if (o.subColor) v.push(`--s-sub:${o.subColor}`);
+  if (o.textColor) v.push(`--muted:${o.textColor}`);
+  if (o.cardTitleColor) v.push(`--card-ink:${o.cardTitleColor}`);
+  if (o.cardTextColor) v.push(`--card-muted:${o.cardTextColor}`);
+  return v.length ? ` style="${v.join(';')}"` : '';
+}
+
 function renderGallery(g) {
   const app = document.getElementById('gallery-app');
   if (!g || !g.categories || !g.categories.length) {
@@ -33,6 +83,7 @@ function renderGallery(g) {
   const catSlug = params.get('cat');
   const cat = catSlug ? g.categories.find(c => c.slug === catSlug) : null;
 
+  const secAtts = secStyle(g.style);
   if (cat) {
     // 单个相册：大图墙
     const imgs = (cat.images && cat.images.length) ? cat.images : [];
@@ -45,7 +96,7 @@ function renderGallery(g) {
         }).join("")
       : '<p class="lead">No photos in this album yet. Add some in the CMS backend.</p>';
     app.innerHTML = `
-      <section class="section">
+      <section class="section"${secAtts}>
         <div class="container">
           <a class="back-link" href="gallery.html">← All albums</a>
           <div class="section-head" style="text-align:left;margin:18px 0 30px;">
@@ -69,7 +120,7 @@ function renderGallery(g) {
         + `<span class="life-cta">View gallery →</span></div></a>`;
     }).join("");
     app.innerHTML = `
-      <section class="section section-alt">
+      <section class="section section-alt"${secAtts}>
         <div class="container">
           <div class="section-head">
             <p class="eyebrow">${esc(g.eyebrow)}</p>
@@ -96,7 +147,7 @@ function renderProductAlbum(c, idx) {
       + `<figcaption>${esc(im.caption || '')}</figcaption></figure>`;
   }).join("");
   app.innerHTML = `
-    <section class="section">
+    <section class="section"${secStyle(c.products.style)}>
       <div class="container">
         <a class="back-link" href="index.html#products">← Back to Products</a>
         <div class="section-head" style="text-align:left;margin:18px 0 30px;">
@@ -184,6 +235,8 @@ fetch('content.json', { cache: 'no-cache' })
   .then(r => r.ok ? r.json() : Promise.reject())
   .then(c => {
     applyLogo(c.company && c.company.logo);
+    applyTheme(c);       // 二级页背景色跟随「外观 / 配色」
+    applyBranding(c);    // 二级页导航栏 / Logo 配色与首页统一
     const pParam = new URLSearchParams(location.search).get('product');
     if (pParam != null && c.products && c.products.items && c.products.items[+pParam]) {
       renderProductAlbum(c, +pParam);
