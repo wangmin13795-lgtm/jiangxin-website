@@ -147,6 +147,11 @@
     ],
     "image": ""
   },
+  "typography": {
+    "fontSize": 110,
+    "mutedColor": "#0c0c0c",
+    "cardMuted": "#191919"
+  },
   "process": {
     "eyebrow": "How We Work",
     "title": "From inquiry to delivery in 6 steps",
