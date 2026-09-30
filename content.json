@@ -323,8 +323,8 @@
       }
     ],
     "style": {
-      "textColor": "#ffffff",
-      "headingColor": "#fff9ac"
+      "textColor": "#606060",
+      "headingColor": "#000000"
     }
   },
   "hero": {
