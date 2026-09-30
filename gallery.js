@@ -14,7 +14,8 @@ const DEFAULT_GALLERIES = {
     { slug: "factory", title: "Factory & Production", subtitle: "Workshop, machines and workflow", cover: "", images: [ { src: "", caption: "Production line" } ] },
     { slug: "office", title: "Office & Team", subtitle: "The people behind your orders", cover: "", images: [ { src: "", caption: "Our team" } ] },
     { slug: "certificates", title: "Certificates & Events", subtitle: "Awards, trade fairs and certifications", cover: "", images: [ { src: "", caption: "Certificate / event" } ] }
-  ]
+  ],
+  style: { font: "", fontSize: 100, headingColor: "", subColor: "", textColor: "", cardTitleColor: "", cardTextColor: "", panelColor: "", panelOpacity: 0 }
 };
 
 const esc = (s) => String(s == null ? "" : s)
@@ -70,6 +71,16 @@ function secStyle(o) {
   return v.length ? ` style="${v.join(';')}"` : '';
 }
 
+// 区块文字底色块：仅当设置了底色且不透明度>0 才注入（垫在该区块 .container 内容后面）
+function secPanel(o) {
+  o = o || {};
+  const op = parseFloat(o.panelOpacity);
+  if (o.panelColor && op > 0) {
+    return `<div class="sec-panel" style="background:${esc(o.panelColor)};opacity:${Math.min(100, op) / 100}"></div>`;
+  }
+  return '';
+}
+
 function renderGallery(g) {
   const app = document.getElementById('gallery-app');
   if (!g || !g.categories || !g.categories.length) {
@@ -98,6 +109,7 @@ function renderGallery(g) {
     app.innerHTML = `
       <section class="section"${secAtts}>
         <div class="container">
+          ${secPanel(g.style)}
           <a class="back-link" href="gallery.html">← All albums</a>
           <div class="section-head" style="text-align:left;margin:18px 0 30px;">
             <p class="eyebrow">${esc(g.eyebrow)}</p>
@@ -122,6 +134,7 @@ function renderGallery(g) {
     app.innerHTML = `
       <section class="section section-alt"${secAtts}>
         <div class="container">
+          ${secPanel(g.style)}
           <div class="section-head">
             <p class="eyebrow">${esc(g.eyebrow)}</p>
             <h2>${esc(g.title)}</h2>
@@ -149,6 +162,7 @@ function renderProductAlbum(c, idx) {
   app.innerHTML = `
     <section class="section"${secStyle(c.products.style)}>
       <div class="container">
+        ${secPanel(c.products.style)}
         <a class="back-link" href="index.html#products">← Back to Products</a>
         <div class="section-head" style="text-align:left;margin:18px 0 30px;">
           <p class="eyebrow">${esc(c.products.eyebrow)}</p>

@@ -385,7 +385,7 @@ a.soc:hover { background: #fff; color: var(--teal); transform: translateY(-2px);
    ========================================================= */
 
 /* 各区块重声明 font-family，让子元素继承“本区块自己的” --font-base */
-#about, #products, #why, #process, #life, #contact { font-family: var(--font-base); }
+#about, #products, #why, #process, #life, #contact, .section { font-family: var(--font-base); }
 
 /* 区块文字底色块：仅当后台为该区块设置了底色时由脚本注入 .sec-panel；默认不显示 */
 .section .container { position: relative; }

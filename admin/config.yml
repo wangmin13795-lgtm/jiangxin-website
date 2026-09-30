@@ -318,5 +318,19 @@ collections:
                     label: "图片（可增删，每张可写说明）"
                     widget: list
                     fields:
-                      - { name: src, label: "图片", widget: image, required: false, media_folder: "images/scenes" }
-                      - { name: caption, label: "图片说明", widget: string, required: false }
+                  - { name: src, label: "图片", widget: image, required: false, media_folder: "images/scenes" }
+                  - { name: caption, label: "图片说明", widget: string, required: false }
+              - name: style
+                label: "文字样式（本区块独立，不影响其他区块；同时作用于二级页图库）"
+                widget: object
+                required: false
+                fields:
+                  - { name: font, label: "字体（留空=默认）", widget: select, required: false, default: "", options: [{ label: "默认（Segoe UI 现代无衬线）", value: "" }, { label: "Arial 经典无衬线", value: "Arial, sans-serif" }, { label: "Georgia 优雅衬线", value: "Georgia, 'Times New Roman', serif" }, { label: "Verdana 清晰宽体", value: "Verdana, Geneva, sans-serif" }, { label: "Trebuchet MS 圆润", value: "'Trebuchet MS', sans-serif" }, { label: "Tahoma 紧凑", value: "Tahoma, sans-serif" }, { label: "Palatino 书卷衬线", value: "'Palatino Linotype', 'Book Antiqua', serif" }] }
+                  - { name: fontSize, label: "字号缩放 %（100=原大小，可填 110 放大 / 90 缩小）", widget: number, required: false, min: 60, max: 200, value_type: int, default: 100 }
+                  - { name: headingColor, label: "大标题颜色（本区块 h2 大标题）", widget: color, required: false, allow_input: true }
+                  - { name: subColor, label: "小标题颜色（区块上方小标签）", widget: color, required: false, allow_input: true }
+                  - { name: textColor, label: "正文颜色（引导语等）", widget: color, required: false, allow_input: true }
+                  - { name: cardTitleColor, label: "卡片标题颜色（相册卡里的分类名）", widget: color, required: false, allow_input: true }
+                  - { name: cardTextColor, label: "卡片正文颜色（相册卡里的副标题）", widget: color, required: false, allow_input: true }
+                  - { name: panelColor, label: "文字底色块颜色（垫在本区块文字后面的一块色板）", widget: color, required: false, allow_input: true }
+                  - { name: panelOpacity, label: "文字底色块不透明度 %（0=不显示，建议 60-90）", widget: number, required: false, min: 0, max: 100, value_type: int, default: 0 }
