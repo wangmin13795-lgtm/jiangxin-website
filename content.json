@@ -318,7 +318,11 @@
           }
         ]
       }
-    ]
+    ],
+    "style": {
+      "textColor": "#ffffff",
+      "headingColor": "#fff9ac"
+    }
   },
   "hero": {
     "cta1": "Explore Products",
