@@ -318,8 +318,8 @@ collections:
                     label: "图片（可增删，每张可写说明）"
                     widget: list
                     fields:
-                  - { name: src, label: "图片", widget: image, required: false, media_folder: "images/scenes" }
-                  - { name: caption, label: "图片说明", widget: string, required: false }
+                      - { name: src, label: "图片", widget: image, required: false, media_folder: "images/scenes" }
+                      - { name: caption, label: "图片说明", widget: string, required: false }
               - name: style
                 label: "文字样式（本区块独立，不影响其他区块；同时作用于二级页图库）"
                 widget: object
